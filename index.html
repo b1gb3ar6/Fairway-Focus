@@ -27,6 +27,7 @@
     </div>
     <button onclick="generateShots()">Generate Shots</button>
     <div id="results"></div>
+    <div id="overallScore"></div>
 
     <script>
         function generateShots() {
@@ -35,6 +36,7 @@
             const quantity = parseInt(document.getElementById('quantity').value);
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = '';
+            document.getElementById('overallScore').innerHTML = '';
 
             if (isNaN(min) || isNaN(max) || isNaN(quantity) || min >= max || quantity < 1) {
                 resultsDiv.innerHTML = 'Please enter valid numbers (min < max, quantity ≥ 1).';
@@ -47,8 +49,8 @@
                 shotDiv.className = 'shot';
                 shotDiv.innerHTML = `
                     <p>Shot ${i + 1}: Hit to ${distance} yards</p>
-                    <label>Total Distance (yards):</label>
-                    <input type="number" id="totalDistance${i}" placeholder="Enter total distance">
+                    <label>Carry Distance (yards):</label>
+                    <input type="number" id="carryDistance${i}" placeholder="Enter carry distance">
                     <label>Lateral Deviation (feet, left or right):</label>
                     <input type="number" id="lateralDeviation${i}" placeholder="Enter feet off target line">
                     <button onclick="calculateScore(${i}, ${distance})">Score Shot</button>
@@ -56,20 +58,24 @@
                 `;
                 resultsDiv.appendChild(shotDiv);
             }
+            const averageButton = document.createElement('button');
+            averageButton.innerHTML = 'Calculate Overall Average';
+            averageButton.onclick = calculateOverallAverage;
+            resultsDiv.appendChild(averageButton);
         }
 
         function calculateScore(shotIndex, targetDistance) {
-            const totalDistance = parseFloat(document.getElementById(`totalDistance${shotIndex}`).value);
+            const carryDistance = parseFloat(document.getElementById(`carryDistance${shotIndex}`).value);
             const lateralDeviation = parseFloat(document.getElementById(`lateralDeviation${shotIndex}`).value);
             const scoreElement = document.getElementById(`score${shotIndex}`);
 
-            if (isNaN(totalDistance) || isNaN(lateralDeviation)) {
-                scoreElement.innerHTML = 'Please enter valid numbers for total distance and lateral deviation.';
+            if (isNaN(carryDistance) || isNaN(lateralDeviation)) {
+                scoreElement.innerHTML = 'Please enter valid numbers for carry distance and lateral deviation.';
                 return;
             }
 
             // Distance Accuracy Score
-            const distanceError = Math.abs(targetDistance - totalDistance);
+            const distanceError = Math.abs(targetDistance - carryDistance);
             const maxDistanceError = targetDistance * 0.2; // 20% of target distance
             const distanceScore = Math.max(0, 50 * (1 - distanceError / maxDistanceError));
 
@@ -81,6 +87,32 @@
             const totalScore = Math.round(distanceScore + lateralScore);
 
             scoreElement.innerHTML = `Score: ${totalScore}/100`;
+        }
+
+        function calculateOverallAverage() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            let totalScore = 0;
+            let scoredShots = 0;
+
+            for (let i = 0; i < quantity; i++) {
+                const scoreElement = document.getElementById(`score${i}`);
+                const scoreText = scoreElement.innerHTML;
+                if (scoreText.startsWith('Score: ')) {
+                    const score = parseInt(scoreText.replace('Score: ', '').replace('/100', ''));
+                    if (!isNaN(score)) {
+                        totalScore += score;
+                        scoredShots++;
+                    }
+                }
+            }
+
+            const overallScoreElement = document.getElementById('overallScore');
+            if (scoredShots === 0) {
+                overallScoreElement.innerHTML = 'No scores entered yet. Score at least one shot first.';
+            } else {
+                const averageScore = Math.round(totalScore / scoredShots);
+                overallScoreElement.innerHTML = `Overall Average Score: ${averageScore}/100`;
+            }
         }
     </script>
 </body>
