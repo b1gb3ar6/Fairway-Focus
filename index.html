@@ -3,33 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golf Shot Randomizer & Scorer</title>
+    <meta name="description" content="A tool to test golf distance control with random yardages.">
+    <meta name="author" content="Your Name">
+    <title>Golf Distance Control Test</title>
+    <!-- Link to Google Fonts for professional typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Favicon (replace 'icon.png' with your golf-themed icon file) -->
+    <link rel="icon" type="image/png" href="icon.png">
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        input, button { margin: 10px; padding: 5px; }
-        #results { margin-top: 20px; }
-        .shot { margin: 10px; padding: 10px; border: 1px solid #ccc; }
+        /* Reset default styles and set global properties */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header styling */
+        header {
+            background-color: #2e7d32;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* Form and input styling */
+        .input-group {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        label {
+            font-weight: 500;
+            margin-right: 5px;
+        }
+
+        input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 80px;
+            text-align: center;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2e7d32;
+            box-shadow: 0 0 5px rgba(46, 125, 50, 0.5);
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #1b5e20;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        /* Results and shot styling */
+        #results {
+            margin-top: 20px;
+        }
+
+        .shot {
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        #overallScore {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2e7d32;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            input {
+                width: 60px;
+            }
+
+            button {
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            .input-group {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Golf Shot Randomizer & Scorer</h1>
-    <div>
+    <header>
+        <h1>Golf Distance Control Test</h1>
+    </header>
+    <div class="input-group">
         <label>Min Distance (yards):</label>
         <input type="number" id="minRange" value="50">
-    </div>
-    <div>
         <label>Max Distance (yards):</label>
         <input type="number" id="maxRange" value="200">
-    </div>
-    <div>
         <label>Number of Shots:</label>
         <input type="number" id="quantity" value="5">
     </div>
     <button onclick="generateShots()">Generate Shots</button>
+    <button onclick="resetAll()" style="background-color: #d32f2f;">Reset All</button>
     <div id="results"></div>
     <div id="overallScore"></div>
 
     <script>
+        // Generate random shots with target distances
         function generateShots() {
             const min = parseInt(document.getElementById('minRange').value);
             const max = parseInt(document.getElementById('maxRange').value);
@@ -64,6 +183,7 @@
             resultsDiv.appendChild(averageButton);
         }
 
+        // Calculate individual shot score
         function calculateScore(shotIndex, targetDistance) {
             const carryDistance = parseFloat(document.getElementById(`carryDistance${shotIndex}`).value);
             const lateralDeviation = parseFloat(document.getElementById(`lateralDeviation${shotIndex}`).value);
@@ -74,21 +194,18 @@
                 return;
             }
 
-            // Distance Accuracy Score
             const distanceError = Math.abs(targetDistance - carryDistance);
-            const maxDistanceError = targetDistance * 0.2; // 20% of target distance
+            const maxDistanceError = targetDistance * 0.2;
             const distanceScore = Math.max(0, 50 * (1 - distanceError / maxDistanceError));
 
-            // Lateral Accuracy Score
-            const maxLateralDeviation = 90; // 90 feet (30 yards)
+            const maxLateralDeviation = 90;
             const lateralScore = Math.max(0, 50 * (1 - Math.abs(lateralDeviation) / maxLateralDeviation));
 
-            // Total Score
             const totalScore = Math.round(distanceScore + lateralScore);
-
             scoreElement.innerHTML = `Score: ${totalScore}/100`;
         }
 
+        // Calculate average score across all shots
         function calculateOverallAverage() {
             const quantity = parseInt(document.getElementById('quantity').value);
             let totalScore = 0;
@@ -113,6 +230,15 @@
                 const averageScore = Math.round(totalScore / scoredShots);
                 overallScoreElement.innerHTML = `Overall Average Score: ${averageScore}/100`;
             }
+        }
+
+        // Reset all inputs and scores
+        function resetAll() {
+            document.getElementById('minRange').value = '50';
+            document.getElementById('maxRange').value = '200';
+            document.getElementById('quantity').value = '5';
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('overallScore').innerHTML = '';
         }
     </script>
 </body>
