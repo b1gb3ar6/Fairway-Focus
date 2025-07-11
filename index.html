@@ -412,7 +412,7 @@
             } else {
                 const averageScore = Math.round(totalScore / scoredShots);
                 overallScoreElement.innerHTML = `Overall Average Score: ${averageScore}/100`;
-                history.push({ score: averageScore, timestamp: new Date().toLocaleString() });
+                history.push({ score: averageScore, timestamp: new Date().getTime() }); // Use timestamp in milliseconds
                 localStorage.setItem('pinSeekerHistory', JSON.stringify(history));
                 updateHistory();
                 drawGraph();
@@ -424,7 +424,7 @@
             historyList.innerHTML = '';
             history.forEach(entry => {
                 const li = document.createElement('li');
-                li.textContent = `${entry.timestamp}: ${entry.score}/100`;
+                li.textContent = `${new Date(entry.timestamp).toLocaleString()}: ${entry.score}/100`;
                 historyList.appendChild(li);
             });
             drawGraph();
@@ -436,9 +436,11 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             const scores = history.map(entry => entry.score);
-            const timestamps = history.map(entry => new Date(entry.timestamp).getTime());
+            const timestamps = history.map(entry => entry.timestamp);
             const maxScore = Math.max(...scores, 100);
             const minScore = Math.min(...scores, 0);
+            const minTime = Math.min(...timestamps) || Date.now();
+            const maxTime = Math.max(...timestamps) || Date.now();
 
             // Set graph style
             ctx.strokeStyle = '#D4A017'; // Gold line
@@ -448,27 +450,28 @@
 
             // Draw axes
             ctx.beginPath();
-            ctx.moveTo(50, 20);
-            ctx.lineTo(50, canvas.height - 30);
-            ctx.lineTo(canvas.width - 20, canvas.height - 30);
+            ctx.moveTo(50, canvas.height - 30); // x-axis at bottom
+            ctx.lineTo(50, 20); // y-axis at left
+            ctx.lineTo(canvas.width - 20, canvas.height - 30); // x-axis to right
             ctx.stroke();
 
             // Labels
             ctx.fillText('Score', 20, 30);
             ctx.save();
             ctx.rotate(-Math.PI / 2);
-            ctx.fillText('Time', -canvas.height / 2, 35);
+            ctx.fillText('Time', -canvas.height / 2 + 10, 35);
             ctx.restore();
 
             // Draw data points and line
             if (scores.length > 0) {
-                const stepX = (canvas.width - 70) / (scores.length - 1 || 1);
-                const stepY = (canvas.height - 50) / (maxScore - minScore);
-
+                const width = canvas.width - 70;
+                const height = canvas.height - 50;
+                const stepY = height / (maxScore - minScore);
+                const timeRange = maxTime - minTime;
                 ctx.beginPath();
                 ctx.moveTo(50, canvas.height - 30 - (scores[0] - minScore) * stepY);
                 for (let i = 0; i < scores.length; i++) {
-                    const x = 50 + i * stepX;
+                    const x = 50 + (timestamps[i] - minTime) / timeRange * width;
                     const y = canvas.height - 30 - (scores[i] - minScore) * stepY;
                     ctx.lineTo(x, y);
                     ctx.arc(x, y, 3, 0, Math.PI * 2);
