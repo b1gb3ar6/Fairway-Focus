@@ -186,9 +186,20 @@
             transform: translateY(-5px);
         }
 
-        .shot p {
-            color: #1A3C34; /* Forest Green for shot text */
-            font-weight: 500;
+        .shot .target-distance {
+            font-weight: 700; /* Bold */
+            font-size: 1.5rem; /* Slightly larger */
+            color: #1A3C34; /* Forest Green */
+            margin-bottom: 10px;
+        }
+
+        .shot p,
+        .shot label,
+        .shot input,
+        .shot button {
+            font-weight: 400; /* Regular weight */
+            font-size: 1rem; /* Standard size */
+            color: #1A3C34; /* Forest Green */
         }
 
         #overallScore {
@@ -282,6 +293,10 @@
             #score-graph {
                 height: 200px; /* Reduced height for mobile */
             }
+
+            .shot .target-distance {
+                font-size: 1.3rem; /* Slightly smaller on mobile for fit */
+            }
         }
     </style>
 </head>
@@ -345,7 +360,7 @@
                 const shotDiv = document.createElement('div');
                 shotDiv.className = 'shot';
                 shotDiv.innerHTML = `
-                    <p>Shot ${i + 1}: Hit to ${distance} yards</p>
+                    <p class="target-distance">Shot ${i + 1}: Hit to <strong>${distance}</strong> yards</p>
                     <label>Carry Distance (yards):</label>
                     <input type="number" id="carryDistance${i}" placeholder="Enter carry distance">
                     <label>Lateral Deviation (feet, left or right):</label>
