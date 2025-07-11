@@ -30,35 +30,6 @@
             min-height: 100vh;
         }
 
-        /* Tabs */
-        .tab-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .tab-button {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #2E7D32, #1A3C34); /* Light to dark green */
-            color: #FFFFFF;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .tab-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .tab-button.active {
-            background: linear-gradient(135deg, #D4A017, #1A3C34); /* Gold to dark green for active tab */
-        }
-
         /* Header with logo */
         header {
             display: flex;
@@ -110,11 +81,35 @@
             background: rgba(255, 255, 255, 0.95); /* White card with opacity */
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            display: none; /* Hidden by default, shown based on tab */
+            display: none; /* Hidden by default, shown based on page */
         }
 
         .container.active {
             display: block;
+        }
+
+        /* Homepage */
+        #homepage {
+            display: block; /* Default page */
+        }
+
+        #homepage h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #D4A017; /* Gold for welcome text */
+        }
+
+        #homepage p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #FFFFFF;
+        }
+
+        #homepage .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
         /* Input group */
@@ -260,13 +255,9 @@
                 flex-grow: 1; /* Allow title to take remaining space */
             }
 
-            .tab-buttons {
+            #homepage .button-group {
                 flex-direction: column;
-                gap: 5px;
-            }
-
-            .tab-button {
-                width: 100%;
+                gap: 10px;
             }
 
             .input-group {
@@ -300,11 +291,15 @@
         <span>Pin Seeker</span>
         <h1>Pin Seeker</h1>
     </header>
-    <div class="tab-buttons">
-        <button class="tab-button active" onclick="showTab('game')">Game</button>
-        <button class="tab-button" onclick="showTab('history')">History</button>
+    <div id="homepage" class="container">
+        <h2>Welcome to Pin Seeker</h2>
+        <p>Time to practice with purpose and put your distance control to the test!</p>
+        <div class="button-group">
+            <button onclick="showPage('game-container')">Game</button>
+            <button onclick="showPage('history-container')">History</button>
+        </div>
     </div>
-    <div id="game-container" class="container active">
+    <div id="game-container" class="container">
         <div class="input-group">
             <label>Min Distance (yards):</label>
             <input type="number" id="minRange" value="50">
@@ -326,12 +321,10 @@
     <script>
         let history = JSON.parse(localStorage.getItem('pinSeekerHistory')) || [];
 
-        function showTab(tab) {
+        function showPage(pageId) {
             document.querySelectorAll('.container').forEach(container => container.classList.remove('active'));
-            document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
-            document.getElementById(`${tab}-container`).classList.add('active');
-            document.querySelector(`.tab-button[onclick="showTab('${tab}')"]`).classList.add('active');
-            if (tab === 'history') updateHistory();
+            document.getElementById(pageId).classList.add('active');
+            if (pageId === 'history-container') updateHistory();
         }
 
         function generateShots() {
