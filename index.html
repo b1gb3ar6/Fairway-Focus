@@ -424,7 +424,7 @@
             historyList.innerHTML = '';
             history.forEach(entry => {
                 const li = document.createElement('li');
-                li.textContent = `${new Date(entry.timestamp).toLocaleString()}: ${entry.score}/100`;
+                li.textContent = `${new Date(entry.timestamp).toLocaleDateString()}: ${entry.score}/100`;
                 historyList.appendChild(li);
             });
             drawGraph();
@@ -435,12 +435,12 @@
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const scores = history.map(entry => entry.score);
-            const timestamps = history.map(entry => entry.timestamp);
-            const maxScore = Math.max(...scores, 100);
-            const minScore = Math.min(...scores, 0);
-            const minTime = Math.min(...timestamps) || Date.now();
-            const maxTime = Math.max(...timestamps) || Date.now();
+            // Use only the last 10 entries
+            const recentHistory = history.slice(-10).reverse(); // Reverse for chronological order
+            const scores = recentHistory.map(entry => entry.score);
+            const timestamps = recentHistory.map(entry => entry.timestamp);
+            const maxScore = 100; // Fixed y-axis range
+            const minScore = 0;
 
             // Set graph style
             ctx.strokeStyle = '#D4A017'; // Gold line
@@ -455,30 +455,49 @@
             ctx.lineTo(canvas.width - 20, canvas.height - 30); // x-axis to right
             ctx.stroke();
 
-            // Labels
-            ctx.fillText('Score', 20, 30);
-            ctx.save();
-            ctx.rotate(-Math.PI / 2);
-            ctx.fillText('Time', -canvas.height / 2 + 10, 35);
-            ctx.restore();
+            // Draw grid lines for y-axis (0-100)
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+            for (let i = 0; i <= 100; i += 20) {
+                ctx.beginPath();
+                ctx.moveTo(50, canvas.height - 30 - (i / 100) * (canvas.height - 50));
+                ctx.lineTo(canvas.width - 20, canvas.height - 30 - (i / 100) * (canvas.height - 50));
+                ctx.stroke();
+                ctx.fillText(i, 30, canvas.height - 30 - (i / 100) * (canvas.height - 50) + 5);
+            }
+
+            // Draw x-axis labels (last 10 dates)
+            if (timestamps.length > 0) {
+                const stepX = (canvas.width - 70) / (timestamps.length - 1 || 1);
+                timestamps.forEach((timestamp, index) => {
+                    const x = 50 + index * stepX;
+                    ctx.fillText(new Date(timestamp).toLocaleDateString(), x - 20, canvas.height - 15);
+                });
+            }
 
             // Draw data points and line
             if (scores.length > 0) {
-                const width = canvas.width - 70;
-                const height = canvas.height - 50;
-                const stepY = height / (maxScore - minScore);
-                const timeRange = maxTime - minTime;
+                const stepX = (canvas.width - 70) / (scores.length - 1 || 1);
+                const stepY = (canvas.height - 50) / (maxScore - minScore);
                 ctx.beginPath();
                 ctx.moveTo(50, canvas.height - 30 - (scores[0] - minScore) * stepY);
                 for (let i = 0; i < scores.length; i++) {
-                    const x = 50 + (timestamps[i] - minTime) / timeRange * width;
+                    const x = 50 + i * stepX;
                     const y = canvas.height - 30 - (scores[i] - minScore) * stepY;
                     ctx.lineTo(x, y);
                     ctx.arc(x, y, 3, 0, Math.PI * 2);
                     ctx.fill();
                 }
+                ctx.strokeStyle = '#D4A017';
                 ctx.stroke();
             }
+
+            // Labels
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText('Score', 20, 30);
+            ctx.save();
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Date', -canvas.height / 2 + 10, 35);
+            ctx.restore();
         }
 
         function resetAll() {
