@@ -195,11 +195,17 @@
 
         .shot p,
         .shot label,
-        .shot input,
-        .shot button {
+        .shot input {
             font-weight: 400; /* Regular weight */
             font-size: 1rem; /* Standard size */
             color: #1A3C34; /* Forest Green */
+        }
+
+        .shot button {
+            font-weight: 600; /* Semi-bold for buttons */
+            font-size: 1rem;
+            color: #FFFFFF; /* White text for Score Shot button */
+            background: linear-gradient(135deg, #2E7D32, #1A3C34); /* Default button gradient */
         }
 
         #overallScore {
@@ -207,6 +213,13 @@
             font-size: 1.3rem;
             font-weight: 700;
             color: #D4A017; /* Gold for overall score */
+        }
+
+        /* Custom styling for Calculate Overall Average button */
+        .average-button {
+            background: linear-gradient(135deg, #D4A017, #FFD700); /* Gold gradient */
+            color: #1A3C34; /* Dark green text */
+            margin-top: 10px;
         }
 
         /* History Tab */
@@ -371,6 +384,7 @@
                 resultsDiv.appendChild(shotDiv);
             }
             const averageButton = document.createElement('button');
+            averageButton.className = 'average-button';
             averageButton.innerHTML = 'Calculate Overall Average';
             averageButton.onclick = calculateOverallAverage;
             resultsDiv.appendChild(averageButton);
