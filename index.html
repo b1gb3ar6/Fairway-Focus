@@ -450,9 +450,10 @@
 
             // Draw axes
             ctx.beginPath();
-            ctx.moveTo(50, canvas.height - 30); // x-axis at bottom
-            ctx.lineTo(50, 20); // y-axis at left
-            ctx.lineTo(canvas.width - 20, canvas.height - 30); // x-axis to right
+            ctx.moveTo(50, canvas.height - 30); // y-axis base
+            ctx.lineTo(50, 20); // y-axis up
+            ctx.moveTo(50, canvas.height - 30); // x-axis start
+            ctx.lineTo(canvas.width - 20, canvas.height - 30); // x-axis horizontal
             ctx.stroke();
 
             // Draw grid lines for y-axis (0-100)
@@ -487,7 +488,6 @@
                     ctx.arc(x, y, 3, 0, Math.PI * 2);
                     ctx.fill();
                 }
-                ctx.strokeStyle = '#D4A017';
                 ctx.stroke();
             }
 
