@@ -25,85 +25,96 @@
         body {
             font-family: 'Montserrat', sans-serif;
             text-align: center;
-            padding: 10px;
-            background: linear-gradient(135deg, #1A3C34 0%, #1A3C34 100%);
+            padding: 20px;
+            background: linear-gradient(135deg, #1A3C34 0%, #2E7D32 100%);
             color: #FFFFFF;
-            line-height: 1.5;
+            line-height: 1.6;
             min-height: 100vh;
             position: relative;
+            overflow-x: hidden;
         }
 
         /* Header */
         header {
             display: flex;
             align-items: center;
+            justify-content: center;
             background-color: rgba(26, 60, 52, 0.95);
-            padding: 10px 15px;
-            border-radius: 10px;
-            margin: 0 auto 20px;
-            max-width: 800px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 0 auto 30px;
+            max-width: 900px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         header img.logo {
-            height: 30px;
-            width: 30px;
+            height: 40px;
+            width: 40px;
             object-fit: contain;
-            margin-right: 10px;
+            margin-right: 15px;
         }
 
         header span {
-            font-size: 1rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            color: #FFFFFF;
-            margin-right: 10px;
+            color: #D4A017;
+            margin-right: 15px;
             display: none;
         }
 
         header h1 {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: #FFFFFF;
             flex-grow: 1;
             text-align: center;
+            letter-spacing: 1px;
         }
 
         /* Container */
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             display: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
         }
 
         .container.active {
             display: block;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Homepage */
         #homepage {
             display: block;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         #homepage h2 {
-            font-size: 1.6rem;
-            margin-bottom: 15px;
+            font-size: 2rem;
+            margin-bottom: 20px;
             color: #D4A017;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         #homepage p {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
             color: #1A3C34;
         }
 
         .button-group {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
             flex-wrap: wrap;
         }
 
@@ -123,13 +134,13 @@
         }
 
         #user-container h2 {
-            font-size: 1.6rem;
-            margin-bottom: 15px;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
             color: #2E7D32;
         }
 
         #user-container button#toggle-bag {
-            margin: 0 auto 10px;
+            margin: 0 auto 15px;
             display: block;
         }
 
@@ -138,71 +149,79 @@
             margin-top: 0;
             text-align: left;
             position: absolute;
-            top: 70px;
+            top: 80px;
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
-            max-width: 600px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-            padding: 10px;
+            max-width: 700px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            padding: 15px;
             z-index: 10;
+            transition: opacity 0.3s ease;
         }
 
         #bag-section.active {
             display: block;
+            opacity: 1;
         }
 
         .club-row {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 5px;
+            gap: 15px;
+            margin-bottom: 10px;
         }
 
         .club-button {
-            margin: 5px 5px 5px 0;
-            padding: 5px 10px;
+            margin: 5px 0;
+            padding: 8px 15px;
             background: #FFFFFF;
             border: 2px solid #D4A017;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #1A3C34;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .club-button:hover {
+            transform: translateY(-2px);
         }
 
         .club-button.selected {
             background: #2E7D32;
             color: #FFFFFF;
+            border-color: #2E7D32;
         }
 
         #save-bag {
-            margin-top: 10px;
+            margin-top: 15px;
+            width: 100%;
         }
 
         /* Input group */
         .input-group {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
             flex-wrap: wrap;
-            margin: 15px 0;
+            margin: 20px 0;
         }
 
         label {
             font-weight: 600;
             color: #1A3C34;
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
 
         input {
-            padding: 8px;
+            padding: 10px;
             border: 2px solid #D4A017;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            width: 80px;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100px;
             text-align: center;
             background: #FFFFFF;
             transition: border-color 0.3s, box-shadow 0.3s;
@@ -211,14 +230,14 @@
         input:focus {
             outline: none;
             border-color: #2E7D32;
-            box-shadow: 0 0 6px rgba(46, 125, 50, 0.3);
+            box-shadow: 0 0 8px rgba(46, 125, 50, 0.3);
         }
 
         select {
-            padding: 8px;
+            padding: 10px;
             border: 2px solid #D4A017;
-            border-radius: 6px;
-            font-size: 0.9rem;
+            border-radius: 8px;
+            font-size: 1rem;
             background: #FFFFFF;
             color: #1A3C34;
             transition: border-color 0.3s;
@@ -227,24 +246,24 @@
         select:focus {
             outline: none;
             border-color: #2E7D32;
-            box-shadow: 0 0 6px rgba(46, 125, 50, 0.3);
+            box-shadow: 0 0 8px rgba(46, 125, 50, 0.3);
         }
 
         button {
-            padding: 10px 20px;
+            padding: 12px 25px;
             background: linear-gradient(135deg, #2E7D32, #1A3C34);
             color: #FFFFFF;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 600;
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         button:active {
@@ -257,27 +276,27 @@
 
         /* Results and shot styling */
         #results {
-            margin-top: 20px;
+            margin-top: 25px;
         }
 
         .shot {
-            margin: 15px 0;
-            padding: 15px;
+            margin: 20px 0;
+            padding: 20px;
             background: #F8F9FA;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s;
         }
 
         .shot:hover {
-            transform: translateY(-3px);
+            transform: translateY(-5px);
         }
 
         .shot .target-distance {
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: #1A3C34;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .shot p,
@@ -285,42 +304,42 @@
         .shot input,
         .shot select {
             font-weight: 400;
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #1A3C34;
         }
 
         .shot button {
             font-weight: 600;
-            font-size: 0.9rem;
-            color: #FFFFFF;
-            background: linear-gradient(135deg, #2E7D32, #1A3C34);
+            font-size: 1rem;
+            margin-top: 10px;
         }
 
         #overallScore {
-            margin-top: 20px;
-            font-size: 1.1rem;
+            margin-top: 25px;
+            font-size: 1.2rem;
             font-weight: 700;
             color: #D4A017;
         }
 
         #insights {
-            margin-top: 15px;
-            font-size: 0.9rem;
+            margin-top: 20px;
+            font-size: 1rem;
             color: #1A3C34;
             text-align: left;
-            padding: 8px;
+            padding: 15px;
             background: rgba(255, 255, 255, 0.9);
-            border-radius: 6px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         /* Graphs */
         #history-graph, #club-distance-graph {
-            width: 90%;
-            max-width: 600px;
-            margin: 15px auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
             position: relative;
         }
@@ -333,35 +352,37 @@
         }
 
         #club-distance-graph {
-            height: 670px;
-            max-height: 670px;
+            height: 700px;
+            max-height: 700px;
         }
 
         /* Responsive design */
         @media (max-width: 600px) {
             header {
-                padding: 8px 10px;
+                padding: 10px 15px;
             }
 
             header img.logo {
-                margin-right: 5px;
+                height: 30px;
+                width: 30px;
+                margin-right: 10px;
             }
 
             header h1 {
-                font-size: 1.3rem;
+                font-size: 1.5rem;
             }
 
             #homepage h2 {
-                font-size: 1.4rem;
+                font-size: 1.6rem;
             }
 
             #homepage p {
-                font-size: 1rem;
+                font-size: 1.1rem;
             }
 
             .button-group {
                 flex-direction: column;
-                gap: 8px;
+                gap: 10px;
             }
 
             .input-group {
@@ -371,16 +392,16 @@
 
             input, select, .club-button {
                 width: 100%;
-                max-width: 150px;
+                max-width: 200px;
             }
 
             button {
                 width: 100%;
-                margin: 5px 0;
+                margin: 8px 0;
             }
 
             .container {
-                padding: 10px;
+                padding: 15px;
             }
 
             #history-graph {
@@ -389,30 +410,25 @@
             }
 
             #club-distance-graph {
-                height: 670px;
+                height: 600px;
                 width: 100%;
             }
 
             .shot .target-distance {
-                font-size: 1.1rem;
+                font-size: 1.2rem;
             }
 
             #insights {
-                font-size: 0.8rem;
-                padding: 5px;
-            }
-
-            .club-button {
-                margin: 3px 3px 3px 0;
-                padding: 4px 8px;
+                font-size: 0.9rem;
+                padding: 10px;
             }
 
             .club-row input {
-                width: 60px;
+                width: 80px;
             }
 
             #bag-section {
-                top: 60px;
+                top: 70px;
                 width: 95%;
             }
         }
@@ -424,9 +440,9 @@
         <span>Pin Seeker</span>
         <h1>Pin Seeker</h1>
     </header>
-    <div id="homepage" class="container">
+    <div id="homepage" class="container active">
         <h2>Welcome to Pin Seeker</h2>
-        <p>Time to practice with purpose and put your distance control to the test!</p>
+        <p>Practice with purpose and test your golf distance control!</p>
         <div class="button-group">
             <button onclick="showPage('game-container')">Game</button>
             <button onclick="showPage('user-container')">User</button>
@@ -449,14 +465,14 @@
     </div>
     <div id="user-container" class="container">
         <h2>Profile</h2>
-        <button id="toggle-bag">Bag</button>
+        <button id="toggle-bag">Manage Bag</button>
         <div id="bag-section" class="container">
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Driver')">Driver</button></div>
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, '3 Wood')">3 Wood</button></div>
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, '5 Wood')">5 Wood</button></div>
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, '7 Wood')">7 Wood</button></div>
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, '9 Wood')">9 Wood</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Hybrid')">Hybrid</button><input type="number" id="hybrid-deg" placeholder="°" min="15" max="30" style="width: 60px;"></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Hybrid')">Hybrid</button><input type="number" id="hybrid-deg" placeholder="°" min="15" max="30" style="width: 80px;"></div>
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, '2 Iron')">2 Iron</button></div>
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, '3 Iron')">3 Iron</button></div>
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, '4 Iron')">4 Iron</button></div>
@@ -465,10 +481,10 @@
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, '7 Iron')">7 Iron</button></div>
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, '8 Iron')">8 Iron</button></div>
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, '9 Iron')">9 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Pitching Wedge')">Pitching Wedge</button><input type="number" id="pitching-wedge-deg" placeholder="°" min="40" max="50" style="width: 60px;"></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Gap Wedge')">Gap Wedge</button><input type="number" id="gap-wedge-deg" placeholder="°" min="45" max="55" style="width: 60px;"></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Sand Wedge')">Sand Wedge</button><input type="number" id="sand-wedge-deg" placeholder="°" min="50" max="58" style="width: 60px;"></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Lob Wedge')">Lob Wedge</button><input type="number" id="lob-wedge-deg" placeholder="°" min="50" max="64" style="width: 60px;"></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Pitching Wedge')">Pitching Wedge</button><input type="number" id="pitching-wedge-deg" placeholder="°" min="40" max="50" style="width: 80px;"></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Gap Wedge')">Gap Wedge</button><input type="number" id="gap-wedge-deg" placeholder="°" min="45" max="55" style="width: 80px;"></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Sand Wedge')">Sand Wedge</button><input type="number" id="sand-wedge-deg" placeholder="°" min="50" max="58" style="width: 80px;"></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Lob Wedge')">Lob Wedge</button><input type="number" id="lob-wedge-deg" placeholder="°" min="50" max="64" style="width: 80px;"></div>
             <button id="save-bag">Save Bag</button>
         </div>
         <div class="button-group">
@@ -483,6 +499,24 @@
     <script>
         let history = JSON.parse(localStorage.getItem('pinSeekerHistory')) || [];
         let bag = JSON.parse(localStorage.getItem('pinSeekerBag')) || [];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('homepage'); // Ensure homepage is shown on load
+            // Load selected clubs
+            bag.forEach(club => {
+                const clubName = club.replace(/\s\(.*\)/, '');
+                const button = document.querySelector(`.club-button[onclick*="'${clubName}'"]`);
+                if (button) {
+                    button.classList.add('selected');
+                    const degMatch = club.match(/\((\d+)°\)/);
+                    if (degMatch) {
+                        const degInput = document.getElementById(`${clubName.toLowerCase().replace(/ /g, '-')}-deg`);
+                        if (degInput) degInput.value = degMatch[1];
+                    }
+                }
+            });
+        });
 
         // Toggle bag section visibility
         document.getElementById('toggle-bag').addEventListener('click', function() {
@@ -499,8 +533,17 @@
         }
 
         function showPage(pageId) {
-            document.querySelectorAll('.container').forEach(container => container.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.remove('active');
+                container.style.opacity = '0';
+                container.style.transform = 'translateY(20px)';
+            });
+            const targetContainer = document.getElementById(pageId);
+            targetContainer.classList.add('active');
+            setTimeout(() => {
+                targetContainer.style.opacity = '1';
+                targetContainer.style.transform = 'translateY(0)';
+            }, 50);
             if (pageId === 'user-container') {
                 drawHistoryGraph();
                 drawClubDistanceGraph();
@@ -536,12 +579,12 @@
             document.getElementById('insights').innerHTML = '';
 
             if (isNaN(min) || isNaN(max) || isNaN(quantity) || min < 0 || max > 300 || min >= max || quantity < 1 || quantity > 50) {
-                resultsDiv.innerHTML = 'Please enter valid numbers: min ≥ 0, max ≤ 300, min < max, 1 ≤ shots ≤ 50.';
+                resultsDiv.innerHTML = '<p style="color: #D32F2F;">Please enter valid numbers: min ≥ 0, max ≤ 300, min < max, 1 ≤ shots ≤ 50.</p>';
                 return;
             }
 
             if (bag.length === 0) {
-                resultsDiv.innerHTML = 'Please set up your bag in the User tab first.';
+                resultsDiv.innerHTML = '<p style="color: #D32F2F;">Please set up your bag in the User tab first.</p>';
                 return;
             }
 
@@ -549,9 +592,13 @@
                 const distance = Math.floor(Math.random() * (max - min + 1)) + min;
                 const shotDiv = document.createElement('div');
                 shotDiv.className = 'shot';
-                const clubOptions = bag.map(club => `<option value="${club}">${club}</option>`).join('');
+                const clubOptions = bag.map(club => {
+                    const clubName = club.replace(/\s\(.*\)/, '');
+                    const suggestion = suggestClub(distance, club);
+                    return `<option value="${club}" ${suggestion ? 'selected' : ''}>${club}${suggestion ? ' (Recommended)' : ''}</option>`;
+                }).join('');
                 shotDiv.innerHTML = `
-                    <p class="target-distance">ShotJud ${i + 1}: Hit to <strong>${distance}</strong> yards</p>
+                    <p class="target-distance">Shot ${i + 1}: Hit to <strong>${distance}</strong> yards</p>
                     <label>Club Used:</label>
                     <select id="club${i}">${clubOptions}</select>
                     <label>Carry Distance (yards):</label>
@@ -569,10 +616,17 @@
             }
             const averageButton = document.createElement('button');
             averageButton.className = 'average-button';
-.average-button';
             averageButton.innerHTML = 'Calculate Overall Average';
             averageButton.onclick = calculateOverallAverage;
             resultsDiv.appendChild(averageButton);
+        }
+
+        // Suggest a club based on historical average distances
+        function suggestClub(targetDistance, club) {
+            const clubData = history.filter(entry => entry.club === club);
+            if (clubData.length === 0) return false;
+            const avgDistance = clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length;
+            return Math.abs(avgDistance - targetDistance) < 10; // Suggest if within 10 yards
         }
 
         function calculateScore(shotIndex, targetDistance) {
@@ -583,7 +637,7 @@
             const scoreElement = document.getElementById(`score${shotIndex}`);
 
             if (isNaN(carryDistance) || isNaN(lateralDeviation) || carryDistance < 0 || lateralDeviation < 0) {
-                scoreElement.innerHTML = 'Please enter valid numbers for carry distance and lateral deviation (≥ 0).';
+                scoreElement.innerHTML = '<span style="color: #D32F2F;">Please enter valid numbers for carry distance and lateral deviation (≥ 0).</span>';
                 return;
             }
 
@@ -597,7 +651,7 @@
 
             const totalScore = Math.round(distanceScore + lateralScore);
             scoreElement.innerHTML = `Score: ${totalScore}/100`;
-            history.push({ score: totalScore, carryDistance, club, lateralDeviation: effectiveLateralDeviation, timestamp: new Date().getTime() });
+            history.push({ score: totalScore, carryDistance, club, lateralDeviation: effectiveLateralDeviation, timestamp: new Date().getTime(), targetDistance });
             localStorage.setItem('pinSeekerHistory', JSON.stringify(history));
             drawHistoryGraph();
             drawClubDistanceGraph();
@@ -621,7 +675,8 @@
                             index: i,
                             score: score,
                             carryDistance: parseFloat(document.getElementById(`carryDistance${i}`).value),
-                            lateralDeviation: parseFloat(document.getElementById(`lateralDeviation${i}`).value) * parseInt(document.getElementById(`lateralDirection${i}`).value)
+                            lateralDeviation: parseFloat(document.getElementById(`lateralDeviation${i}`).value) * parseInt(document.getElementById(`lateralDirection${i}`).value),
+                            club: document.getElementById(`club${i}`).value
                         });
                     }
                 }
@@ -629,7 +684,7 @@
 
             const overallScoreElement = document.getElementById('overallScore');
             if (scoredShots === 0) {
-                overallScoreElement.innerHTML = 'No scores entered yet. Score at least one shot first.';
+                overallScoreElement.innerHTML = '<span style="color: #D32F2F;">No scores entered yet. Score at least one shot first.</span>';
                 document.getElementById('insights').innerHTML = '';
             } else {
                 const averageScore = Math.round(totalScore / scoredShots);
@@ -680,6 +735,18 @@
                 } else {
                     insights += '<li>Keep practicing! Try shorter shots to build confidence.</li>';
                 }
+
+                // Club suggestion improvement
+                const clubDistances = {};
+                history.forEach(entry => {
+                    if (!clubDistances[entry.club]) clubDistances[entry.club] = [];
+                    clubDistances[entry.club].push(entry.carryDistance);
+                });
+                for (const club in clubDistances) {
+                    const distances = clubDistances[club];
+                    const avgDistance = distances.reduce((sum, d) => sum + d, 0) / distances.length;
+                    insights += `<li>Average distance with ${club}: ${avgDistance.toFixed(1)} yards.</li>`;
+                }
             }
 
             insights += '</ul>';
@@ -714,7 +781,9 @@
                         borderColor: '#2E7D32',
                         backgroundColor: 'rgba(46, 125, 50, 0.2)',
                         fill: true,
-                        tension: 0.4
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 8
                     }]
                 },
                 options: {
@@ -723,6 +792,10 @@
                     scales: {
                         y: { min: 0, max: 100, title: { display: true, text: 'Score' } },
                         x: { title: { display: true, text: 'Date' } }
+                    },
+                    plugins: {
+                        legend: { display: true, position: 'top' },
+                        tooltip: { enabled: true }
                     }
                 }
             });
@@ -760,6 +833,10 @@
                     scales: {
                         x: { title: { display: true, text: 'Distance (yards)' } },
                         y: { title: { display: true, text: 'Clubs' } }
+                    },
+                    plugins: {
+                        legend: { display: true, position: 'top' },
+                        tooltip: { enabled: true }
                     }
                 }
             });
