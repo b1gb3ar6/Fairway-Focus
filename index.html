@@ -164,14 +164,7 @@
         #user-container button#toggle-bag {
             margin: 0 auto 10px;
             display: block;
-            z-index: 20; /* Ensure button is clickable */
-        }
-
-        #average-circle {
-            text-align: center;
-            margin: 8px auto;
-            width: 180px;
-            height: 60px;
+            z-index: 20;
             position: relative;
         }
 
@@ -189,14 +182,16 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             padding: 15px;
-            z-index: 30; /* Increased z-index to ensure visibility */
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 30;
+            transition: opacity 0.3s ease, transform 0.3s ease, display 0.3s ease;
+            visibility: hidden;
         }
 
         #bag-section.active {
-            display: block;
+            display: block !important;
             opacity: 1;
             transform: translateX(-50%) translateY(0);
+            visibility: visible;
         }
 
         .club-row {
@@ -546,19 +541,6 @@
         let bag = JSON.parse(localStorage.getItem('pinSeekerBag')) || [];
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Ensure Manage Bag button is functional
-            const toggleBagButton = document.getElementById('toggle-bag');
-            if (toggleBagButton) {
-                toggleBagButton.addEventListener('click', function() {
-                    const bagSection = document.getElementById('bag-section');
-                    console.log('Toggle Bag clicked, current display:', bagSection.style.display);
-                    bagSection.classList.toggle('active');
-                    console.log('Bag section classList:', bagSection.classList);
-                });
-            } else {
-                console.error('Toggle Bag button not found');
-            }
-
             // Load saved bag
             bag.forEach(club => {
                 const clubName = typeof club === 'string' ? club.replace(/\s\(.*\)/, '') : club.name;
@@ -577,6 +559,22 @@
             showPage('game-container');
             updateNavButtons('game-container');
         });
+
+        // Move toggle-bag event listener outside DOMContentLoaded to avoid rebinding
+        const toggleBagButton = document.getElementById('toggle-bag');
+        if (toggleBagButton) {
+            toggleBagButton.addEventListener('click', function() {
+                const bagSection = document.getElementById('bag-section');
+                console.log('Toggle Bag clicked, current display:', bagSection.style.display, 'classes:', bagSection.classList);
+                bagSection.classList.toggle('active');
+                // Force visibility check after transition
+                setTimeout(() => {
+                    console.log('After toggle, display:', window.getComputedStyle(bagSection).display, 'visibility:', window.getComputedStyle(bagSection).visibility);
+                }, 300);
+            });
+        } else {
+            console.error('Toggle Bag button not found');
+        }
 
         function updateNavButtons(activePage) {
             document.querySelectorAll('.nav-bar button').forEach(button => {
@@ -610,6 +608,13 @@
                 container.style.display = 'none';
                 container.style.opacity = '0';
                 container.style.transform = 'translateY(20px)';
+                // Ensure bag-section remains visible if active
+                if (container.id === 'bag-section' && container.classList.contains('active')) {
+                    container.style.display = 'block';
+                    container.style.opacity = '1';
+                    container.style.transform = 'translateX(-50%) translateY(0)';
+                    container.style.visibility = 'visible';
+                }
             });
             const targetContainer = document.getElementById(pageId);
             targetContainer.classList.add('active');
@@ -718,7 +723,7 @@
         }
 
         function suggestClub(targetDistance, club) {
-            const clubName = typeof club === 'string' ? club : `${club.name}${club.loft ? ` (${club.loft}°)` : ''}`;
+            const clubName = typeof club === 'string' ? club : `${club.name}${club.loft && ['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(club.name) ? ` (${club.loft}°)` : club.loft ? ` (${club.loft}°)` : ''}`;
             const clubData = history.filter(entry => entry.club === clubName);
             if (clubData.length === 0) return false;
             const avgDistance = clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length;
