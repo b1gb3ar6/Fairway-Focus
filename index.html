@@ -23,7 +23,7 @@
         body {
             font-family: 'Montserrat', sans-serif;
             text-align: center;
-            padding: 10px; /* Reduced for mobile */
+            padding: 10px;
             background: linear-gradient(135deg, #1A3C34 0%, #1A3C34 100%);
             color: #FFFFFF;
             line-height: 1.5;
@@ -392,7 +392,7 @@
                 margin: 3px 0;
                 padding-left: 2px;
                 flex-wrap: nowrap;
-                overflow-x: auto; /* Allow horizontal scroll if needed */
+                overflow-x: auto;
                 max-width: 100%;
             }
 
@@ -686,7 +686,7 @@
                 sessions[date].push(entry.score);
             });
 
-            const dates = Object.keys(sessions).sort(); // Sort dates chronologically
+            const dates = Object.keys(sessions).sort();
             const scores = dates.map(date => {
                 const sessionScores = sessions[date];
                 return sessionScores.length > 0 ? Math.round(sessionScores.reduce((sum, score) => sum + score, 0) / sessionScores.length) : 0;
@@ -695,48 +695,24 @@
             ctx.strokeStyle = '#D4A017'; // Gold
             ctx.lineWidth = 2;
             ctx.font = '12px Montserrat';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
 
             // Draw background and border
             ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-            // Draw axes starting at 0
-            const margin = 50;
+            // Draw axes without labels
+            const margin = 20; // Reduced margin since no labels
             ctx.beginPath();
-            ctx.moveTo(margin, canvas.height - margin); // X-axis at bottom
-            ctx.lineTo(canvas.width - 20, canvas.height - margin); // Horizontal X-axis
-            ctx.moveTo(margin, canvas.height - margin); // Y-axis at left
-            ctx.lineTo(margin, margin); // Vertical Y-axis
+            ctx.moveTo(margin, canvas.height - margin);
+            ctx.lineTo(canvas.width - margin, canvas.height - margin);
+            ctx.moveTo(margin, canvas.height - margin);
+            ctx.lineTo(margin, margin);
             ctx.stroke();
 
-            // Draw grid lines and score markers (0 to 100)
-            ctx.strokeStyle = 'rgba(212, 160, 23, 0.2)'; // Light Gold
-            for (let i = 0; i <= 100; i += 20) {
-                const y = canvas.height - margin - (i / 100) * (canvas.height - 2 * margin);
-                ctx.beginPath();
-                ctx.moveTo(margin, y);
-                ctx.lineTo(canvas.width - 20, y);
-                ctx.stroke();
-                ctx.fillStyle = '#1A3C34';
-                ctx.fillText(i, margin - 10, y + 5);
-            }
-
-            // Draw date markers starting at 0
+            // Draw data points and line (no grid or labels)
             if (dates.length > 0) {
-                const stepX = (canvas.width - margin - 20) / (dates.length - 1 || 1);
-                for (let i = 0; i < dates.length; i++) {
-                    const x = margin + i * stepX;
-                    ctx.fillStyle = '#1A3C34';
-                    ctx.fillText(dates[i].split('/')[1] + '/' + dates[i].split('/')[2], x, canvas.height - margin + 20); // MM/YY
-                }
-            }
-
-            // Draw data points and line
-            if (dates.length > 0) {
-                const stepX = (canvas.width - margin - 20) / (dates.length - 1 || 1);
+                const stepX = (canvas.width - 2 * margin) / (dates.length - 1 || 1);
                 const stepY = (canvas.height - 2 * margin) / 100;
                 ctx.beginPath();
                 ctx.moveTo(margin, canvas.height - margin - (scores[0] * stepY));
@@ -753,15 +729,6 @@
                 }
                 ctx.stroke();
             }
-
-            // Labels
-            ctx.fillStyle = '#D4A017';
-            ctx.fillText('Score', margin / 2, canvas.height / 2, margin - 10);
-            ctx.save();
-            ctx.translate(margin - 20, canvas.height / 2);
-            ctx.rotate(-Math.PI / 2);
-            ctx.fillText('Date', 0, 0);
-            ctx.restore();
         }
 
         function drawClubDistanceGraph() {
@@ -810,9 +777,9 @@
                 ctx.fillText(i, x, canvas.height - margin + 15);
             }
 
-            // Draw horizontal bars (reversed order: Driver top, Lob Wedge bottom)
-            const barHeight = (canvas.height - 2 * margin) / bag.length;
-            bag.slice().reverse().forEach((club, index) => {
+            // Draw horizontal bars (Driver top to Lob Wedge bottom)
+            const barHeight = (canvas.height - 2 * margin) / bag.length; // Equal spacing
+            bag.forEach((club, index) => {
                 const y = margin + index * barHeight;
                 const distance = clubAverages[club];
                 const barLength = distance > 0 ? (distance / maxDistance) * (canvas.width - margin - 20) : 0;
