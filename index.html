@@ -159,20 +159,20 @@
         }
 
         #user-container h2 {
-           's's font-size: 1.6rem;
+            font-size: 1.6rem;
             margin-bottom: 15px;
             color: #2E7D32;
         }
 
         #user-container button#toggle-bag {
-            margin: 0 auto 15px; /* Adjusted margin for spacing */
+            margin: 0 auto 15px;
             display: block;
             z-index: 20;
             position: relative;
         }
 
         #average-circle {
-            margin: 15px auto; /* Adjusted for equidistant spacing */
+            margin: 15px auto;
             width: 180px;
         }
 
@@ -196,6 +196,7 @@
             z-index: 100;
             visibility: hidden;
             transition: opacity 0.3s ease, transform 0.3s ease;
+            position: relative; /* Added for close button positioning */
         }
 
         #user-container #bag-section.active {
@@ -205,6 +206,34 @@
             visibility: visible;
             pointer-events: auto;
             background: rgba(255, 255, 255, 0.98);
+        }
+
+        #close-bag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #D32F2F;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            z-index: 110;
+        }
+
+        #close-bag:hover {
+            background: #B71C1C;
+            transform: scale(1.1);
+        }
+
+        #close-bag:active {
+            transform: scale(1);
         }
 
         .club-row {
@@ -341,7 +370,7 @@
         .shot .target-distance {
             font-weight: 700;
             font-size: 1.2rem;
-            color1A3C34;
+            color: #1A3C34;
             margin-bottom: 10px;
         }
 
@@ -480,11 +509,23 @@
 
             #bag-section {
                 top: 60px;
-                width%.
+                width: 100%;
+                max-width: 340px;
+                max-height: calc(100vh - 80px);
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
 
             #average-circle {
-                margin: 12px auto; /* Adjusted for mobile equidistant spacing */
+                margin: 12px auto;
                 width: 180px;
+            }
+
+            #close-bag {
+                width: 24px;
+                height: 24px;
+                font-size: 1rem;
+                line-height: 24px;
             }
         }
     </style>
@@ -523,6 +564,7 @@
         <button id="toggle-bag">Manage Bag</button>
         <div id="average-circle"></div>
         <div id="bag-section" class="container">
+            <button id="close-bag">X</button>
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Driver')">Driver</button></div>
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, '3 Wood')">3 Wood</button></div>
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, '5 Wood')">5 Wood</button></div>
@@ -573,32 +615,41 @@
 
         // Toggle bag event listener
         const toggleBagButton = document.getElementById('toggle-bag');
+        const closeBagButton = document.getElementById('close-bag');
+
+        function toggleBagSection() {
+            const bagSection = document.getElementById('bag-section');
+            console.log('Toggle Bag clicked, current display:', bagSection.style.display, 'classes:', bagSection.classList);
+            bagSection.classList.toggle('active');
+            // Force style update
+            if (bagSection.classList.contains('active')) {
+                bagSection.style.display = 'block';
+                bagSection.style.opacity = '1';
+                bagSection.style.visibility = 'visible';
+                bagSection.style.transform = 'translateX(-50%) translateY(0)';
+            } else {
+                bagSection.style.display = 'none';
+                bagSection.style.opacity = '0';
+                bagSection.style.visibility = 'hidden';
+            }
+            // Log computed styles after transition
+            setTimeout(() => {
+                const computedStyle = window.getComputedStyle(bagSection);
+                console.log('After toggle, display:', computedStyle.display, 'visibility:', computedStyle.visibility, 'opacity:', computedStyle.opacity);
+                console.log('Parent (#user-container) overflow:', window.getComputedStyle(document.getElementById('user-container')).overflow);
+            }, 300);
+        }
+
         if (toggleBagButton) {
-            toggleBagButton.addEventListener('click', function() {
-                const bagSection = document.getElementById('bag-section');
-                console.log('Toggle Bag clicked, current display:', bagSection.style.display, 'classes:', bagSection.classList);
-                bagSection.classList.toggle('active');
-                // Force style update
-                if (bagSection.classList.contains('active')) {
-                    bagSection.style.display = 'block';
-                    bagSection.style.opacity = '1';
-                    bagSection.style.visibility = 'visible';
-                    bagSection.style.transform = 'translateX(-50%) translateY(0)';
-                } else {
-                    bagSection.style.display = 'none';
-                    bagSection.style.opacity = '0';
-                    bagSection.style.visibility = 'hidden';
-                }
-                // Log computed styles after transition
-                setTimeout(() => {
-                    const computedStyle = window.getComputedStyle(bagSection);
-                    console.log('After toggle, display:', computedStyle.display, 'visibility:', computedStyle.visibility, 'opacity:', computedStyle.opacity);
-                    // Log parent styles for debugging
-                    console.log('Parent (#user-container) overflow:', window.getComputedStyle(document.getElementById('user-container')).overflow);
-                }, 300);
-            });
+            toggleBagButton.addEventListener('click', toggleBagSection);
         } else {
             console.error('Toggle Bag button not found');
+        }
+
+        if (closeBagButton) {
+            closeBagButton.addEventListener('click', toggleBagSection);
+        } else {
+            console.error('Close Bag button not found');
         }
 
         function updateNavButtons(activePage) {
@@ -628,7 +679,6 @@
         }
 
         function showPage(pageId) {
-            // Check if already on the target page to prevent redundant redraws
             const currentPage = document.querySelector('.container.active:not(#bag-section)');
             if (currentPage && currentPage.id === pageId) return;
 
@@ -983,8 +1033,8 @@
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true;
+                    maintainAspectRatio: false;
                     scales: {
                         y: { 
                             min: 0, 
