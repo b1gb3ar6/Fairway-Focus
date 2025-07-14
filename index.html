@@ -197,7 +197,7 @@
             visibility: hidden;
             transition: opacity 0.3s ease, transform 0.3s ease;
             position: relative;
-            border: 3px solid #2E7D32; /* Added border for visibility */
+            border: 3px solid #2E7D32;
         }
 
         #user-container #bag-section.active {
@@ -209,47 +209,35 @@
             background: rgba(255, 255, 255, 0.98);
         }
 
-       #close-bag {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: transparent; /* No fill, transparent background */
-    color: #333333; /* Dark grey X */
-    border: 2px solid #D3D3D3; /* Light grey outline */
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    display: flex; /* Use Flexbox for centering */
-    align-items: center; /* Center vertically */
-    justify-content: center; /* Center horizontally */
-    cursor: pointer;
-    transition: border-color 0.2s, transform 0.2s;
-    z-index: 110;
-}
+        #close-bag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            color: #333333;
+            border: 2px solid #D3D3D3;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: border-color 0.2s, transform 0.2s;
+            z-index: 110;
+        }
 
-#close-bag:hover {
-    border-color: #B0B0B0; /* Slightly darker grey outline on hover */
-    transform: scale(1.1);
-}
+        #close-bag:hover {
+            border-color: #B0B0B0;
+            transform: scale(1.1);
+        }
 
-#close-bag:active {
-    transform: scale(1);
-}
+        #close-bag:active {
+            transform: scale(1);
+        }
 
-/* Media query for mobile */
-@media (max-width: 393px) {
-    #close-bag {
-        width: 24px;
-        height: 24px;
-        font-size: 1rem;
-        border: 2px solid #D3D3D3; /* Consistent light grey outline */
-        display: flex; /* Ensure Flexbox centering on mobile */
-        align-items: center; /* Center vertically */
-        justify-content: center; /* Center horizontally */
-    }
-}
         .club-row {
             display: flex;
             align-items: center;
@@ -358,8 +346,13 @@
             transform: translateY(0);
         }
 
-        button.reset {
+        button.reset, button.reset-all-data {
             background: linear-gradient(135deg, #D32F2F, #B71C1C);
+        }
+
+        #reset-all-data {
+            margin: 20px auto 15px;
+            display: block;
         }
 
         #results {
@@ -438,6 +431,56 @@
 
         #club-distance-graph {
             height: 400px;
+        }
+
+        #reset-confirm {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: calc(100% - 30px);
+            max-width: 300px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            z-index: 120;
+            border: 3px solid #2E7D32;
+            text-align: center;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #reset-confirm.active {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%);
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        #reset-confirm p {
+            font-size: 1rem;
+            color: #1A3C34;
+            margin-bottom: 15px;
+        }
+
+        #reset-confirm .confirm-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        #reset-confirm button {
+            flex: 1;
+            max-width: 100px;
+        }
+
+        #confirm-no {
+            background: linear-gradient(135deg, #D3D3D3, #B0B0B0);
+            color: #1A3C34;
         }
 
         @media (max-width: 393px) {
@@ -528,7 +571,7 @@
                 max-height: calc(100vh - 80px);
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
-                border: 3px solid #2E7D32; /* Added border for mobile */
+                border: 3px solid #2E7D32;
             }
 
             #average-circle {
@@ -540,7 +583,28 @@
                 width: 24px;
                 height: 24px;
                 font-size: 1rem;
-                line-height: 24px;
+                border: 2px solid #D3D3D3;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #reset-all-data {
+                margin: 15px auto 10px;
+            }
+
+            #reset-confirm {
+                width: calc(100% - 20px);
+                max-width: 280px;
+                padding: 10px;
+            }
+
+            #reset-confirm p {
+                font-size: 0.9rem;
+            }
+
+            #reset-confirm button {
+                max-width: 90px;
             }
         }
     </style>
@@ -602,6 +666,14 @@
         </div>
         <div id="history-graph"></div>
         <div id="club-distance-graph"></div>
+        <button id="reset-all-data" class="reset-all-data" aria-label="Reset all profile data">Reset All Data</button>
+        <div id="reset-confirm" class="container">
+            <p>Are you sure you want to delete all your data? This cannot be undone.</p>
+            <div class="confirm-buttons">
+                <button id="confirm-yes" class="reset" aria-label="Confirm reset all data">Yes</button>
+                <button id="confirm-no" aria-label="Cancel reset all data">No</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -612,11 +684,11 @@
         // Page navigation
         function showPage(pageId) {
             console.log(`showPage called with pageId: ${pageId}`);
-            const currentPage = document.querySelector('.container.active:not(#bag-section)');
+            const currentPage = document.querySelector('.container.active:not(#bag-section):not(#reset-confirm)');
             if (currentPage && currentPage.id === pageId) return;
 
             document.querySelectorAll('.container').forEach(container => {
-                if (container.id !== 'bag-section') {
+                if (container.id !== 'bag-section' && container.id !== 'reset-confirm') {
                     container.classList.remove('active');
                     container.style.display = 'none';
                     container.style.opacity = '0';
@@ -723,6 +795,48 @@
             console.log('Bag saved:', bag);
         }
 
+        // Reset all data
+        function toggleResetConfirm() {
+            console.log('toggleResetConfirm called');
+            const resetConfirm = document.getElementById('reset-confirm');
+            resetConfirm.classList.toggle('active');
+            if (resetConfirm.classList.contains('active')) {
+                resetConfirm.style.display = 'block';
+                resetConfirm.style.opacity = '1';
+                resetConfirm.style.visibility = 'visible';
+                resetConfirm.style.transform = 'translate(-50%, -50%)';
+            } else {
+                resetConfirm.style.display = 'none';
+                resetConfirm.style.opacity = '0';
+                resetConfirm.style.visibility = 'hidden';
+            }
+            setTimeout(() => {
+                const computedStyle = window.getComputedStyle(resetConfirm);
+                console.log('After toggle reset-confirm, display:', computedStyle.display, 'visibility:', computedStyle.visibility, 'opacity:', computedStyle.opacity);
+            }, 300);
+        }
+
+        function resetAllData() {
+            console.log('resetAllData called');
+            localStorage.removeItem('pinSeekerBag');
+            localStorage.removeItem('pinSeekerHistory');
+            bag = [];
+            history = [];
+            document.querySelectorAll('.club-button.selected').forEach(button => {
+                button.classList.remove('selected');
+                const club = button.getAttribute('data-club');
+                const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
+                if (degInput) degInput.value = '';
+            });
+            document.getElementById('average-circle').innerHTML = '';
+            document.getElementById('history-graph').innerHTML = '';
+            document.getElementById('club-distance-graph').innerHTML = '';
+            toggleResetConfirm();
+            showPage('user-container');
+            alert('All data has been reset.');
+            console.log('All data reset, bag:', bag, 'history:', history);
+        }
+
         // Game logic
         function generateShots() {
             console.log('generateShots called');
@@ -751,7 +865,6 @@
                     const shotDiv = document.createElement('div');
                     shotDiv.className = 'shot';
 
-                    // Build club options
                     const clubOptions = bag.map(club => {
                         const clubName = typeof club === 'string' ? club : club.name;
                         const clubLoft = typeof club === 'string' ? (club.match(/\((\d+)°\)/) || [])[1] : club.loft;
@@ -783,7 +896,6 @@
                     `;
                     resultsDiv.appendChild(shotDiv);
 
-                    // Attach event listener to Score Shot button
                     const scoreButton = shotDiv.querySelector(`.score-shot[data-shot-index="${i}"]`);
                     if (scoreButton) {
                         scoreButton.addEventListener('click', () => {
@@ -1220,7 +1332,6 @@
         console.log('Attaching DOMContentLoaded listener');
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOMContentLoaded event fired');
-            // Load saved bag
             console.log('Loading saved bag');
             bag.forEach(club => {
                 const clubName = typeof club === 'string' ? club.replace(/\s\(.*\)/, '') : club.name;
@@ -1238,7 +1349,6 @@
             });
             console.log('Saved bag loaded:', bag);
 
-            // Navigation buttons
             const navGameButton = document.getElementById('nav-game');
             const navUserButton = document.getElementById('nav-user');
             if (navGameButton) {
@@ -1254,7 +1364,6 @@
                 console.error('Nav User button not found');
             }
 
-            // Bag management buttons
             const toggleBagButton = document.getElementById('toggle-bag');
             const closeBagButton = document.getElementById('close-bag');
             const saveBagButton = document.getElementById('save-bag');
@@ -1277,14 +1386,12 @@
                 console.error('Save Bag button not found');
             }
 
-            // Club selection buttons
             document.querySelectorAll('.club-button').forEach(button => {
                 const club = button.getAttribute('data-club');
                 button.addEventListener('click', () => toggleClub(button, club));
                 console.log(`Club button listener attached for ${club}`);
             });
 
-            // Game buttons
             const generateShotsButton = document.getElementById('generate-shots');
             const resetAllButton = document.getElementById('reset-all');
             if (generateShotsButton) {
@@ -1300,7 +1407,28 @@
                 console.error('Reset All button not found');
             }
 
-            // Initialize page
+            const resetAllDataButton = document.getElementById('reset-all-data');
+            const confirmYesButton = document.getElementById('confirm-yes');
+            const confirmNoButton = document.getElementById('confirm-no');
+            if (resetAllDataButton) {
+                resetAllDataButton.addEventListener('click', toggleResetConfirm);
+                console.log('Reset All Data button listener attached');
+            } else {
+                console.error('Reset All Data button not found');
+            }
+            if (confirmYesButton) {
+                confirmYesButton.addEventListener('click', resetAllData);
+                console.log('Confirm Yes button listener attached');
+            } else {
+                console.error('Confirm Yes button not found');
+            }
+            if (confirmNoButton) {
+                confirmNoButton.addEventListener('click', toggleResetConfirm);
+                console.log('Confirm No button listener attached');
+            } else {
+                console.error('Confirm No button not found');
+            }
+
             console.log('Initializing page to game-container');
             showPage('game-container');
             updateNavButtons('game-container');
