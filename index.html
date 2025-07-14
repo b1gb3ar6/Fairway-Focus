@@ -117,7 +117,7 @@
             display: block;
         }
 
-        /* Profile Tab (User) */
+        /* User Tab */
         .club-checkbox {
             margin: 10px 0;
             color: #1A3C34;
@@ -265,32 +265,11 @@
             color: #D4A017;
         }
 
-        /* Custom styling for Calculate Overall Average button */
-        .average-button {
-            background: linear-gradient(135deg, #D4A017, #FFD700);
-            color: #1A3C34;
-            margin-top: 10px;
-        }
-
-        /* History and Graphs */
-        #history-list {
-            list-style: none;
-            text-align: left;
-            margin: 20px 0;
-        }
-
-        #history-list li {
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.9);
-            margin-bottom: 5px;
-            border-radius: 8px;
-            color: #1A3C34;
-        }
-
+        /* Graphs */
         #club-distance-graph, #score-graph {
             width: 100%;
             max-width: 600px;
-            height: 300px;
+            height: 600px; /* Increased height for 14 clubs */
             margin: 20px auto;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
@@ -350,7 +329,7 @@
             }
 
             #club-distance-graph, #score-graph {
-                height: 200px;
+                height: 400px; /* Adjusted for mobile */
             }
 
             .shot .target-distance {
@@ -469,8 +448,7 @@
             <input type="number" id="lw-deg" placeholder="°" min="40" max="60" value="60">
         </div>
         <button id="save-bag">Save Bag</button>
-        <ul id="history-list"></ul>
-        <canvas id="score-graph"></canvas>
+        <div id="history-summary"></div>
         <canvas id="club-distance-graph"></canvas>
     </div>
 
@@ -488,8 +466,7 @@
             document.querySelectorAll('.container').forEach(container => container.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             if (pageId === 'user-container') {
-                updateHistory();
-                drawGraph();
+                updateHistorySummary();
                 drawClubDistanceGraph();
             }
         }
@@ -504,7 +481,7 @@
             });
             localStorage.setItem('pinSeekerBag', JSON.stringify(bag));
             alert('Bag saved successfully!');
-            showPage('game-container'); // Return to Game after saving
+            showPage('game-container');
         }
 
         document.getElementById('save-bag').addEventListener('click', saveBag);
@@ -574,7 +551,7 @@
             scoreElement.innerHTML = `Score: ${totalScore}/100`;
             history.push({ score: totalScore, carryDistance, club, timestamp: new Date().getTime() });
             localStorage.setItem('pinSeekerHistory', JSON.stringify(history));
-            updateHistory();
+            updateHistorySummary();
             drawClubDistanceGraph();
         }
 
@@ -604,78 +581,18 @@
             }
         }
 
-        function updateHistory() {
-            const historyList = document.getElementById('history-list');
-            historyList.innerHTML = '';
-            history.forEach(entry => {
-                const li = document.createElement('li');
-                li.textContent = `${new Date(entry.timestamp).toLocaleDateString()}: ${entry.club} - ${entry.score}/100 - ${entry.carryDistance} yards`;
-                historyList.appendChild(li);
-            });
-            drawGraph();
-        }
-
-        function drawGraph() {
-            const canvas = document.getElementById('score-graph');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            const recentHistory = history.slice(-10).reverse();
-            const scores = recentHistory.map(entry => entry.score);
-            const timestamps = recentHistory.map(entry => entry.timestamp);
-            const maxScore = 100;
-            const minScore = 0;
-
-            ctx.strokeStyle = '#D4A017';
-            ctx.lineWidth = 2;
-            ctx.fillStyle = '#2E7D32';
-            ctx.font = '12px Montserrat';
-
-            ctx.beginPath();
-            ctx.moveTo(50, canvas.height - 30);
-            ctx.lineTo(50, 20);
-            ctx.moveTo(50, canvas.height - 30);
-            ctx.lineTo(canvas.width - 20, canvas.height - 30);
-            ctx.stroke();
-
-            ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
-            for (let i = 0; i <= 100; i += 20) {
-                ctx.beginPath();
-                ctx.moveTo(50, canvas.height - 30 - (i / 100) * (canvas.height - 50));
-                ctx.lineTo(canvas.width - 20, canvas.height - 30 - (i / 100) * (canvas.height - 50));
-                ctx.stroke();
-                ctx.fillText(i, 30, canvas.height - 30 - (i / 100) * (canvas.height - 50) + 5);
+        function updateHistorySummary() {
+            const summaryDiv = document.getElementById('history-summary');
+            summaryDiv.innerHTML = '<h3>Recent 5-Day Averages</h3>';
+            const recentHistory = history.slice(-5).reverse();
+            if (recentHistory.length > 0) {
+                let totalScore = 0;
+                recentHistory.forEach(entry => totalScore += entry.score);
+                const averageScore = Math.round(totalScore / recentHistory.length);
+                summaryDiv.innerHTML += `<p>Average Score for last ${recentHistory.length} days: ${averageScore}/100</p>`;
+            } else {
+                summaryDiv.innerHTML += '<p>No recent scores available.</p>';
             }
-
-            if (timestamps.length > 0) {
-                const stepX = (canvas.width - 70) / (timestamps.length - 1 || 1);
-                timestamps.forEach((timestamp, index) => {
-                    const x = 50 + index * stepX;
-                    ctx.fillText(new Date(timestamp).toLocaleDateString(), x - 20, canvas.height - 15);
-                });
-            }
-
-            if (scores.length > 0) {
-                const stepX = (canvas.width - 70) / (scores.length - 1 || 1);
-                const stepY = (canvas.height - 50) / (maxScore - minScore);
-                ctx.beginPath();
-                ctx.moveTo(50, canvas.height - 30 - (scores[0] - minScore) * stepY);
-                for (let i = 0; i < scores.length; i++) {
-                    const x = 50 + i * stepX;
-                    const y = canvas.height - 30 - (scores[i] - minScore) * stepY;
-                    ctx.lineTo(x, y);
-                    ctx.arc(x, y, 3, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-                ctx.stroke();
-            }
-
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillText('Score', 20, 30);
-            ctx.save();
-            ctx.rotate(-Math.PI / 2);
-            ctx.fillText('Date', -canvas.height / 2 + 10, 35);
-            ctx.restore();
         }
 
         function drawClubDistanceGraph() {
@@ -686,6 +603,12 @@
             if (bag.length === 0) return;
 
             const clubAverages = {};
+            const clubAbbreviations = {
+                'Driver': 'Dr', '3 Wood': '3w', '5 Wood': '5w', '7 Wood': '7w', '9 Wood': '9w',
+                'Hybrid': 'Hy', '2 Iron': '2i', '3 Iron': '3i', '4 Iron': '4i', '5 Iron': '5i',
+                '6 Iron': '6i', '7 Iron': '7i', '8 Iron': '8i', '9 Iron': '9i',
+                'Pitching Wedge': 'PW', 'Gap Wedge': 'GW', 'Sand Wedge': 'SW', 'Lob Wedge': 'LW'
+            };
             bag.forEach(club => {
                 const clubData = history.filter(entry => entry.club === club);
                 if (clubData.length > 0) {
@@ -697,13 +620,16 @@
 
             ctx.strokeStyle = '#D4A017';
             ctx.lineWidth = 2;
-            ctx.fillStyle = '#2E7D32';
-            ctx.font = '12px Montserrat';
+            ctx.font = '14px Montserrat'; // Increased font size for crispness
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
 
-            const maxDistance = Math.max(...Object.values(clubAverages)) || 300;
-            const stepY = (canvas.height - 50) / bag.length;
-            const stepX = (canvas.width - 70) / maxDistance;
+            const maxDistance = Math.max(...Object.values(clubAverages), 300); // Cap at 300 for scale
+            const numClubs = bag.length;
+            const barWidth = (canvas.width - 70) / (numClubs + 1);
+            const stepY = (canvas.height - 50) / numClubs;
 
+            // Draw axes
             ctx.beginPath();
             ctx.moveTo(50, canvas.height - 30);
             ctx.lineTo(50, 20);
@@ -711,32 +637,40 @@
             ctx.lineTo(canvas.width - 20, canvas.height - 30);
             ctx.stroke();
 
-            bag.forEach((club, index) => {
-                const y = canvas.height - 30 - index * stepY;
-                ctx.fillText(club, 30, y + 5);
-                const distance = clubAverages[club] || 0;
-                const x = 50 + distance * stepX;
-                ctx.beginPath();
-                ctx.arc(x, y, 3, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillText(distance, x + 5, y + 5);
-            });
-
+            // Draw distance markers
             ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
             for (let i = 0; i <= maxDistance; i += 50) {
                 ctx.beginPath();
-                ctx.moveTo(50 + i * stepX, canvas.height - 30);
-                ctx.lineTo(50 + i * stepX, 20);
+                ctx.moveTo(50 + (i / maxDistance) * (canvas.width - 70), canvas.height - 30);
+                ctx.lineTo(50 + (i / maxDistance) * (canvas.width - 70), 20);
                 ctx.stroke();
-                ctx.fillText(i, 50 + i * stepX, canvas.height - 15);
+                ctx.fillStyle = '#1A3C34';
+                ctx.fillText(i, 50 + (i / maxDistance) * (canvas.width - 70), canvas.height - 15);
             }
 
+            // Draw bars
+            bag.forEach((club, index) => {
+                const y = canvas.height - 30 - (index + 0.5) * stepY;
+                const distance = clubAverages[club] || 0;
+                const barHeight = (distance / maxDistance) * (canvas.height - 50);
+                const grad = ctx.createLinearGradient(50, canvas.height - 30 - barHeight, 50 + barWidth, canvas.height - 30);
+                const hue = (index * 20) % 360; // Vary hue for each club
+                grad.addColorStop(0, `hsl(${hue}, 70%, 50%)`);
+                grad.addColorStop(1, `hsl(${hue + 20}, 70%, 30%)`);
+                ctx.fillStyle = grad;
+                ctx.fillRect(50, y - barHeight / 2, barWidth - 10, barHeight);
+                ctx.fillStyle = '#1A3C34';
+                ctx.fillText(clubAbbreviations[club.replace(/\s\(.*\)/, '')] || club, 50 + barWidth * (index + 0.5), y);
+            });
+
+            // Labels
             ctx.fillStyle = '#FFFFFF';
-            ctx.fillText('Distance (yards)', canvas.width / 2 - 20, canvas.height - 5);
             ctx.save();
+            ctx.translate(25, canvas.height / 2);
             ctx.rotate(-Math.PI / 2);
-            ctx.fillText('Clubs', -canvas.height / 2 + 10, 35);
+            ctx.fillText('Clubs', 0, 0);
             ctx.restore();
+            ctx.fillText('Distance (yards)', canvas.width / 2, canvas.height - 10);
         }
 
         function resetAll() {
