@@ -878,19 +878,24 @@
 
             // Update average circle in DOM
             const averageCircle = document.getElementById('average-circle');
-            let text = `${overallAverage}`;
-            let color = '#000000';
+            const number = `${overallAverage}`;
+            let numberColor = '#000000';
+            let arrow = '';
+            let arrowColor = '#000000';
             if (trend === 'up') {
-                text += ' ⬆';
-                color = '#00FF00';
+                arrow = '⬆';
+                numberColor = '#008000'; // Darker green for number
+                arrowColor = '#00FF00'; // Bright green for arrow
             } else if (trend === 'down') {
-                text += ' ⬇';
-                color = '#FF0000';
+                arrow = '⬇';
+                numberColor = '#FF0000'; // Red for number
+                arrowColor = '#FF0000'; // Red for arrow
             }
             averageCircle.innerHTML = `
                 <svg width="60" height="60">
                     <circle cx="30" cy="30" r="28" fill="rgba(255, 255, 255, 0.9)" stroke="#2E7D32" stroke-width="2" />
-                    <text x="30" y="30" font-family="Montserrat" font-size="12" font-weight="bold" fill="${color}" text-anchor="middle" dominant-baseline="central">${text}</text>
+                    <text x="30" y="30" font-family="Montserrat" font-size="18" font-weight="bold" fill="${numberColor}" text-anchor="middle" dominant-baseline="central">${number}</text>
+                    ${arrow ? `<text x="48" y="30" font-family="Montserrat" font-size="12" font-weight="bold" fill="${arrowColor}" text-anchor="middle" dominant-baseline="central">${arrow}</text>` : ''}
                 </svg>
             `;
 
