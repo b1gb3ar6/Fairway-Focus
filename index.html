@@ -97,30 +97,27 @@
             color: #1A3C34;
         }
 
-        #homepage .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        /* Menu Tab */
-        #menu-container {
+        #menu-options {
             display: none;
-        }
-
-        .sub-tab-buttons {
-            display: flex;
-            justify-content: center;
+            flex-direction: column;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-top: 20px;
         }
 
-        /* Profile Tab (renamed to User) */
-        #user-container {
+        #menu-options.active {
+            display: flex;
+        }
+
+        /* Game and User Containers */
+        #game-container, #user-container {
             display: none;
         }
 
+        #game-container.active, #user-container.active {
+            display: block;
+        }
+
+        /* Profile Tab (User) */
         .club-checkbox {
             margin: 10px 0;
             color: #1A3C34;
@@ -275,11 +272,7 @@
             margin-top: 10px;
         }
 
-        /* User Tab (includes History graph) */
-        #user-container.active {
-            display: block;
-        }
-
+        /* History and Graphs */
         #history-list {
             list-style: none;
             text-align: left;
@@ -294,19 +287,7 @@
             color: #1A3C34;
         }
 
-        /* Club Distance Graph */
-        #club-distance-graph {
-            width: 100%;
-            max-width: 600px;
-            height: 300px;
-            margin: 20px auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Score Graph */
-        #score-graph {
+        #club-distance-graph, #score-graph {
             width: 100%;
             max-width: 600px;
             height: 300px;
@@ -344,6 +325,11 @@
                 gap: 10px;
             }
 
+            #menu-options {
+                flex-direction: column;
+                gap: 5px;
+            }
+
             .input-group {
                 flex-direction: column;
                 align-items: center;
@@ -363,12 +349,7 @@
                 padding: 15px;
             }
 
-            .sub-tab-buttons {
-                flex-direction: column;
-                gap: 5px;
-            }
-
-            #score-graph, #club-distance-graph {
+            #club-distance-graph, #score-graph {
                 height: 200px;
             }
 
@@ -388,133 +369,129 @@
         <h2>Welcome to Pin Seeker</h2>
         <p>Time to practice with purpose and put your distance control to the test!</p>
         <div class="button-group">
-            <button onclick="showPage('menu-container')">Menu</button>
+            <button id="menu-button">Menu</button>
+        </div>
+        <div id="menu-options" class="button-group">
+            <button onclick="showPage('game-container')">Game</button>
+            <button onclick="showPage('user-container')">User</button>
         </div>
     </div>
-    <div id="menu-container" class="container">
-        <h2>Menu</h2>
-        <div class="sub-tab-buttons">
-            <button onclick="showSubPage('game-container')">Game</button>
-            <button onclick="showSubPage('user-container')">User</button>
+    <div id="game-container" class="container">
+        <div class="input-group">
+            <label>Min Distance (yards):</label>
+            <input type="number" id="minRange" value="50">
+            <label>Max Distance (yards):</label>
+            <input type="number" id="maxRange" value="200">
+            <label>Number of Shots:</label>
+            <input type="number" id="quantity" value="5">
         </div>
-        <div id="game-container" class="container">
-            <div class="input-group">
-                <label>Min Distance (yards):</label>
-                <input type="number" id="minRange" value="50">
-                <label>Max Distance (yards):</label>
-                <input type="number" id="maxRange" value="200">
-                <label>Number of Shots:</label>
-                <input type="number" id="quantity" value="5">
-            </div>
-            <button onclick="generateShots()">Generate Shots</button>
-            <button onclick="resetAll()" class="reset">Reset All</button>
-            <div id="results"></div>
-            <div id="overallScore"></div>
+        <button onclick="generateShots()">Generate Shots</button>
+        <button onclick="resetAll()" class="reset">Reset All</button>
+        <div id="results"></div>
+        <div id="overallScore"></div>
+    </div>
+    <div id="user-container" class="container">
+        <h2>User Profile</h2>
+        <div class="club-checkbox">
+            <input type="checkbox" id="driver" name="clubs" value="Driver">
+            <label for="driver">Driver</label>
         </div>
-        <div id="user-container" class="container">
-            <h2>User Profile</h2>
-            <div class="club-checkbox">
-                <input type="checkbox" id="driver" name="clubs" value="Driver">
-                <label for="driver">Driver</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="3-wood" name="clubs" value="3 Wood">
-                <label for="3-wood">3 Wood</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="5-wood" name="clubs" value="5 Wood">
-                <label for="5-wood">5 Wood</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="7-wood" name="clubs" value="7 Wood">
-                <label for="7-wood">7 Wood</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="9-wood" name="clubs" value="9 Wood">
-                <label for="9-wood">9 Wood</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="hybrid" name="clubs" value="Hybrid">
-                <label for="hybrid">Hybrid</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="2-iron" name="clubs" value="2 Iron">
-                <label for="2-iron">2 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="3-iron" name="clubs" value="3 Iron">
-                <label for="3-iron">3 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="4-iron" name="clubs" value="4 Iron">
-                <label for="4-iron">4 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="5-iron" name="clubs" value="5 Iron">
-                <label for="5-iron">5 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="6-iron" name="clubs" value="6 Iron">
-                <label for="6-iron">6 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="7-iron" name="clubs" value="7 Iron">
-                <label for="7-iron">7 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="8-iron" name="clubs" value="8 Iron">
-                <label for="8-iron">8 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="9-iron" name="clubs" value="9 Iron">
-                <label for="9-iron">9 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="pw" name="clubs" value="Pitching Wedge">
-                <label for="pw">Pitching Wedge</label>
-                <input type="number" id="pw-deg" placeholder="°" min="40" max="60">
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="gw" name="clubs" value="Gap Wedge">
-                <label for="gw">Gap Wedge</label>
-                <input type="number" id="gw-deg" placeholder="°" min="40" max="60">
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="sw" name="clubs" value="Sand Wedge">
-                <label for="sw">Sand Wedge</label>
-                <input type="number" id="sw-deg" placeholder="°" min="40" max="60">
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="lw" name="clubs" value="Lob Wedge">
-                <label for="lw">Lob Wedge</label>
-                <input type="number" id="lw-deg" placeholder="°" min="40" max="60" value="60">
-            </div>
-            <button id="save-bag">Save Bag</button>
-            <ul id="history-list"></ul>
-            <canvas id="score-graph"></canvas>
-            <canvas id="club-distance-graph"></canvas>
+        <div class="club-checkbox">
+            <input type="checkbox" id="3-wood" name="clubs" value="3 Wood">
+            <label for="3-wood">3 Wood</label>
         </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="5-wood" name="clubs" value="5 Wood">
+            <label for="5-wood">5 Wood</label>
+        </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="7-wood" name="clubs" value="7 Wood">
+            <label for="7-wood">7 Wood</label>
+        </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="9-wood" name="clubs" value="9 Wood">
+            <label for="9-wood">9 Wood</label>
+        </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="hybrid" name="clubs" value="Hybrid">
+            <label for="hybrid">Hybrid</label>
+        </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="2-iron" name="clubs" value="2 Iron">
+            <label for="2-iron">2 Iron</label>
+        </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="3-iron" name="clubs" value="3 Iron">
+            <label for="3-iron">3 Iron</label>
+        </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="4-iron" name="clubs" value="4 Iron">
+            <label for="4-iron">4 Iron</label>
+        </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="5-iron" name="clubs" value="5 Iron">
+            <label for="5-iron">5 Iron</label>
+        </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="6-iron" name="clubs" value="6 Iron">
+            <label for="6-iron">6 Iron</label>
+        </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="7-iron" name="clubs" value="7 Iron">
+            <label for="7-iron">7 Iron</label>
+        </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="8-iron" name="clubs" value="8 Iron">
+            <label for="8-iron">8 Iron</label>
+        </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="9-iron" name="clubs" value="9 Iron">
+            <label for="9-iron">9 Iron</label>
+        </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="pw" name="clubs" value="Pitching Wedge">
+            <label for="pw">Pitching Wedge</label>
+            <input type="number" id="pw-deg" placeholder="°" min="40" max="60">
+        </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="gw" name="clubs" value="Gap Wedge">
+            <label for="gw">Gap Wedge</label>
+            <input type="number" id="gw-deg" placeholder="°" min="40" max="60">
+        </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="sw" name="clubs" value="Sand Wedge">
+            <label for="sw">Sand Wedge</label>
+            <input type="number" id="sw-deg" placeholder="°" min="40" max="60">
+        </div>
+        <div class="club-checkbox">
+            <input type="checkbox" id="lw" name="clubs" value="Lob Wedge">
+            <label for="lw">Lob Wedge</label>
+            <input type="number" id="lw-deg" placeholder="°" min="40" max="60" value="60">
+        </div>
+        <button id="save-bag">Save Bag</button>
+        <ul id="history-list"></ul>
+        <canvas id="score-graph"></canvas>
+        <canvas id="club-distance-graph"></canvas>
     </div>
 
     <script>
         let history = JSON.parse(localStorage.getItem('pinSeekerHistory')) || [];
         let bag = JSON.parse(localStorage.getItem('pinSeekerBag')) || [];
 
+        // Toggle menu options visibility
+        document.getElementById('menu-button').addEventListener('click', function() {
+            const menuOptions = document.getElementById('menu-options');
+            menuOptions.classList.toggle('active');
+        });
+
         function showPage(pageId) {
             document.querySelectorAll('.container').forEach(container => container.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            if (pageId === 'menu-container') {
-                showSubPage('game-container'); // Default to Game sub-tab
-            } else if (pageId === 'user-container') {
+            if (pageId === 'user-container') {
                 updateHistory();
                 drawGraph();
                 drawClubDistanceGraph();
             }
-        }
-
-        function showSubPage(subPageId) {
-            document.querySelectorAll('#menu-container .container').forEach(container => container.style.display = 'none');
-            document.getElementById(subPageId).style.display = 'block';
         }
 
         function saveBag() {
@@ -527,8 +504,7 @@
             });
             localStorage.setItem('pinSeekerBag', JSON.stringify(bag));
             alert('Bag saved successfully!');
-            showPage('menu-container');
-            showSubPage('game-container');
+            showPage('game-container'); // Return to Game after saving
         }
 
         document.getElementById('save-bag').addEventListener('click', saveBag);
