@@ -180,8 +180,8 @@
         /* Average Circle Container */
         #average-circle {
             text-align: center;
-            margin: 10px auto;
-            width: 120px; /* Increased to fit text and arrow */
+            margin: 8px auto;
+            width: 160px; /* Increased to fit text and circle */
             height: 60px;
             position: relative;
         }
@@ -492,7 +492,7 @@
 
             #average-circle {
                 margin: 8px auto;
-                width: 120px;
+                width: 160px;
             }
         }
     </style>
@@ -891,23 +891,20 @@
             const averageCircle = document.getElementById('average-circle');
             const number = `${overallAverage}`;
             let numberColor = '#000000';
-            let arrow = '';
-            let arrowColor = '#000000';
+            let ringColor = '#808080'; // Gray for no trend
             if (trend === 'up') {
-                arrow = '⬆';
                 numberColor = '#008000'; // Darker green for number
-                arrowColor = '#00FF00'; // Bright green for up arrow
+                ringColor = '#00FF00'; // Bright green for up trend
             } else if (trend === 'down') {
-                arrow = '⬇';
                 numberColor = '#FF0000'; // Red for number
-                arrowColor = '#FF0000'; // Red for down arrow
+                ringColor = '#FF0000'; // Red for down trend
             }
             averageCircle.innerHTML = `
-                <svg width="120" height="60">
+                <svg width="160" height="60">
                     <text x="0" y="30" font-family="Montserrat" font-size="12" font-weight="bold" fill="#000000" text-anchor="start" dominant-baseline="central">5 Session Avg.</text>
-                    <circle cx="80" cy="30" r="28" fill="rgba(255, 255, 255, 0.9)" stroke="#2E7D32" stroke-width="2" />
-                    <text x="80" y="30" font-family="Montserrat" font-size="24" font-weight="bold" fill="${numberColor}" text-anchor="middle" dominant-baseline="central">${number}</text>
-                    ${arrow ? `<text x="112" y="30" font-family="Montserrat" font-size="12" font-weight="bold" fill="${arrowColor}" text-anchor="middle" dominant-baseline="central">${arrow}</text>` : ''}
+                    <circle cx="100" cy="30" r="28" fill="none" stroke="${ringColor}" stroke-width="4" />
+                    <circle cx="100" cy="30" r="28" fill="rgba(255, 255, 255, 0.9)" stroke="#2E7D32" stroke-width="2" />
+                    <text x="100" y="30" font-family="Montserrat" font-size="24" font-weight="bold" fill="${numberColor}" text-anchor="middle" dominant-baseline="central">${number}</text>
                 </svg>
             `;
 
@@ -1050,7 +1047,7 @@
             document.getElementById('maxRange').value = '200';
             document.getElementById('quantity').value = '5';
             document.getElementById('results').innerHTML = '';
-            document.getElementById('overallScore').innerHTML = '';
+            document.getElementByCol('overallScore').innerHTML = '';
             document.getElementById('insights').innerHTML = '';
         }
     </script>
