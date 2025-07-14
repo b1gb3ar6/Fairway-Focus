@@ -61,10 +61,14 @@
             border-color: var(--accent-gold);
         }
 
-        body.dark-mode #user-container h2,
-        body.dark-mode #progress-dashboard h3,
-        body.dark-mode #goal-setting label {
-            color: var(--text-light);
+        body.dark-mode [style*="color: var(--secondary-green)"] {
+            color: var(--text-light) !important;
+        }
+
+        body.dark-mode .club-button.selected {
+            background: var(--accent-gold);
+            color: var(--text-dark);
+            border-color: var(--accent-gold);
         }
 
         header {
@@ -1023,7 +1027,7 @@
 
         function calculateScore(shotIndex, targetDistance) {
             const carryDistance = parseFloat(document.getElementById(`carryDistance${shotIndex}`).value);
-            const lateralDeviation = parseFloat(document.getElementById(`lateralDeviation${i}`).value);
+            const lateralDeviation = parseFloat(document.getElementById(`lateralDeviation${shotIndex}`).value);
             const lateralDirection = parseInt(document.getElementById(`lateralDirection${shotIndex}`).value);
             const club = document.getElementById(`club${shotIndex}`).value.split('|')[0];
             const scoreElement = document.getElementById(`score${shotIndex}`);
