@@ -118,6 +118,21 @@
         }
 
         /* User Tab */
+        #user-container h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #2E7D32; /* Green for Profile */
+        }
+
+        #bag-section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #bag-section.active {
+            display: block;
+        }
+
         .club-checkbox {
             margin: 10px 0;
             color: #1A3C34;
@@ -265,11 +280,21 @@
             color: #D4A017;
         }
 
+        #insights {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: #1A3C34;
+            text-align: left;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+        }
+
         /* Graphs */
-        #club-distance-graph, #score-graph {
+        #history-graph, #club-distance-graph {
             width: 100%;
             max-width: 600px;
-            height: 600px; /* Increased height for 14 clubs */
+            height: 300px;
             margin: 20px auto;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
@@ -328,12 +353,17 @@
                 padding: 15px;
             }
 
-            #club-distance-graph, #score-graph {
-                height: 400px; /* Adjusted for mobile */
+            #history-graph, #club-distance-graph {
+                height: 200px;
             }
 
             .shot .target-distance {
                 font-size: 1.3rem;
+            }
+
+            #insights {
+                font-size: 1rem;
+                padding: 5px;
             }
         }
     </style>
@@ -368,87 +398,91 @@
         <button onclick="resetAll()" class="reset">Reset All</button>
         <div id="results"></div>
         <div id="overallScore"></div>
+        <div id="insights"></div>
     </div>
     <div id="user-container" class="container">
-        <h2>User Profile</h2>
-        <div class="club-checkbox">
-            <input type="checkbox" id="driver" name="clubs" value="Driver">
-            <label for="driver">Driver</label>
+        <h2>Profile</h2>
+        <button id="toggle-bag">Bag</button>
+        <div id="bag-section" class="container">
+            <div class="club-checkbox">
+                <input type="checkbox" id="driver" name="clubs" value="Driver">
+                <label for="driver">Driver</label>
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="3-wood" name="clubs" value="3 Wood">
+                <label for="3-wood">3 Wood</label>
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="5-wood" name="clubs" value="5 Wood">
+                <label for="5-wood">5 Wood</label>
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="7-wood" name="clubs" value="7 Wood">
+                <label for="7-wood">7 Wood</label>
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="9-wood" name="clubs" value="9 Wood">
+                <label for="9-wood">9 Wood</label>
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="hybrid" name="clubs" value="Hybrid">
+                <label for="hybrid">Hybrid</label>
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="2-iron" name="clubs" value="2 Iron">
+                <label for="2-iron">2 Iron</label>
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="3-iron" name="clubs" value="3 Iron">
+                <label for="3-iron">3 Iron</label>
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="4-iron" name="clubs" value="4 Iron">
+                <label for="4-iron">4 Iron</label>
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="5-iron" name="clubs" value="5 Iron">
+                <label for="5-iron">5 Iron</label>
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="6-iron" name="clubs" value="6 Iron">
+                <label for="6-iron">6 Iron</label>
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="7-iron" name="clubs" value="7 Iron">
+                <label for="7-iron">7 Iron</label>
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="8-iron" name="clubs" value="8 Iron">
+                <label for="8-iron">8 Iron</label>
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="9-iron" name="clubs" value="9 Iron">
+                <label for="9-iron">9 Iron</label>
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="pw" name="clubs" value="Pitching Wedge">
+                <label for="pw">Pitching Wedge</label>
+                <input type="number" id="pw-deg" placeholder="°" min="40" max="60">
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="gw" name="clubs" value="Gap Wedge">
+                <label for="gw">Gap Wedge</label>
+                <input type="number" id="gw-deg" placeholder="°" min="40" max="60">
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="sw" name="clubs" value="Sand Wedge">
+                <label for="sw">Sand Wedge</label>
+                <input type="number" id="sw-deg" placeholder="°" min="40" max="60">
+            </div>
+            <div class="club-checkbox">
+                <input type="checkbox" id="lw" name="clubs" value="Lob Wedge">
+                <label for="lw">Lob Wedge</label>
+                <input type="number" id="lw-deg" placeholder="°" min="40" max="60" value="60">
+            </div>
+            <button id="save-bag">Save Bag</button>
         </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="3-wood" name="clubs" value="3 Wood">
-            <label for="3-wood">3 Wood</label>
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="5-wood" name="clubs" value="5 Wood">
-            <label for="5-wood">5 Wood</label>
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="7-wood" name="clubs" value="7 Wood">
-            <label for="7-wood">7 Wood</label>
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="9-wood" name="clubs" value="9 Wood">
-            <label for="9-wood">9 Wood</label>
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="hybrid" name="clubs" value="Hybrid">
-            <label for="hybrid">Hybrid</label>
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="2-iron" name="clubs" value="2 Iron">
-            <label for="2-iron">2 Iron</label>
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="3-iron" name="clubs" value="3 Iron">
-            <label for="3-iron">3 Iron</label>
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="4-iron" name="clubs" value="4 Iron">
-            <label for="4-iron">4 Iron</label>
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="5-iron" name="clubs" value="5 Iron">
-            <label for="5-iron">5 Iron</label>
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="6-iron" name="clubs" value="6 Iron">
-            <label for="6-iron">6 Iron</label>
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="7-iron" name="clubs" value="7 Iron">
-            <label for="7-iron">7 Iron</label>
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="8-iron" name="clubs" value="8 Iron">
-            <label for="8-iron">8 Iron</label>
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="9-iron" name="clubs" value="9 Iron">
-            <label for="9-iron">9 Iron</label>
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="pw" name="clubs" value="Pitching Wedge">
-            <label for="pw">Pitching Wedge</label>
-            <input type="number" id="pw-deg" placeholder="°" min="40" max="60">
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="gw" name="clubs" value="Gap Wedge">
-            <label for="gw">Gap Wedge</label>
-            <input type="number" id="gw-deg" placeholder="°" min="40" max="60">
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="sw" name="clubs" value="Sand Wedge">
-            <label for="sw">Sand Wedge</label>
-            <input type="number" id="sw-deg" placeholder="°" min="40" max="60">
-        </div>
-        <div class="club-checkbox">
-            <input type="checkbox" id="lw" name="clubs" value="Lob Wedge">
-            <label for="lw">Lob Wedge</label>
-            <input type="number" id="lw-deg" placeholder="°" min="40" max="60" value="60">
-        </div>
-        <button id="save-bag">Save Bag</button>
-        <div id="history-summary"></div>
+        <canvas id="history-graph"></canvas>
         <canvas id="club-distance-graph"></canvas>
     </div>
 
@@ -462,11 +496,17 @@
             menuOptions.classList.toggle('active');
         });
 
+        // Toggle bag section visibility
+        document.getElementById('toggle-bag').addEventListener('click', function() {
+            const bagSection = document.getElementById('bag-section');
+            bagSection.classList.toggle('active');
+        });
+
         function showPage(pageId) {
             document.querySelectorAll('.container').forEach(container => container.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             if (pageId === 'user-container') {
-                updateHistorySummary();
+                drawHistoryGraph();
                 drawClubDistanceGraph();
             }
         }
@@ -493,6 +533,7 @@
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = '';
             document.getElementById('overallScore').innerHTML = '';
+            document.getElementById('insights').innerHTML = '';
 
             if (isNaN(min) || isNaN(max) || isNaN(quantity) || min >= max || quantity < 1) {
                 resultsDiv.innerHTML = 'Please enter valid numbers (min < max, quantity ≥ 1).';
@@ -551,7 +592,7 @@
             scoreElement.innerHTML = `Score: ${totalScore}/100`;
             history.push({ score: totalScore, carryDistance, club, timestamp: new Date().getTime() });
             localStorage.setItem('pinSeekerHistory', JSON.stringify(history));
-            updateHistorySummary();
+            drawHistoryGraph();
             drawClubDistanceGraph();
         }
 
@@ -559,6 +600,7 @@
             const quantity = parseInt(document.getElementById('quantity').value);
             let totalScore = 0;
             let scoredShots = 0;
+            const scores = [];
 
             for (let i = 0; i < quantity; i++) {
                 const scoreElement = document.getElementById(`score${i}`);
@@ -568,6 +610,7 @@
                     if (!isNaN(score)) {
                         totalScore += score;
                         scoredShots++;
+                        scores.push({ index: i, score: score, carryDistance: parseFloat(document.getElementById(`carryDistance${i}`).value), lateralDeviation: parseFloat(document.getElementById(`lateralDeviation${i}`).value) });
                     }
                 }
             }
@@ -575,24 +618,144 @@
             const overallScoreElement = document.getElementById('overallScore');
             if (scoredShots === 0) {
                 overallScoreElement.innerHTML = 'No scores entered yet. Score at least one shot first.';
+                document.getElementById('insights').innerHTML = '';
             } else {
                 const averageScore = Math.round(totalScore / scoredShots);
                 overallScoreElement.innerHTML = `Overall Average Score: ${averageScore}/100`;
+                generateInsights(scores, averageScore);
             }
         }
 
-        function updateHistorySummary() {
-            const summaryDiv = document.getElementById('history-summary');
-            summaryDiv.innerHTML = '<h3>Recent 5-Day Averages</h3>';
-            const recentHistory = history.slice(-5).reverse();
-            if (recentHistory.length > 0) {
-                let totalScore = 0;
-                recentHistory.forEach(entry => totalScore += entry.score);
-                const averageScore = Math.round(totalScore / recentHistory.length);
-                summaryDiv.innerHTML += `<p>Average Score for last ${recentHistory.length} days: ${averageScore}/100</p>`;
+        function generateInsights(scores, overallAverage) {
+            const insightsDiv = document.getElementById('insights');
+            let insights = '<h3>Performance Insights</h3><ul>';
+
+            // Calculate average distance error and lateral deviation
+            const distanceErrors = scores.map(s => Math.abs(s.carryDistance - (Math.random() * 150 + 50))); // Simulated target distance
+            const avgDistanceError = distanceErrors.reduce((sum, err) => sum + err, 0) / distanceErrors.length || 0;
+            const lateralDeviations = scores.map(s => Math.abs(s.lateralDeviation));
+            const avgLateralDeviation = lateralDeviations.reduce((sum, dev) => sum + dev, 0) / lateralDeviations.length || 0;
+
+            // Compare with historical data if available
+            const historicalSessions = {};
+            history.forEach(entry => {
+                const date = new Date(entry.timestamp).toLocaleDateString();
+                if (!historicalSessions[date]) historicalSessions[date] = [];
+                historicalSessions[date].push(entry.score);
+            });
+            const historicalAverages = Object.values(historicalSessions).map(scores => scores.length > 0 ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0);
+            const prevAverage = historicalAverages.length > 1 ? historicalAverages[historicalAverages.length - 2] : null;
+
+            // Insights generation
+            if (overallAverage >= 80) {
+                insights += '<li>Excellent performance! Your accuracy and consistency are top-notch.</li>';
+            } else if (overallAverage >= 60) {
+                insights += '<li>Good effort! You’re on the right track, but there’s room to refine your precision.</li>';
             } else {
-                summaryDiv.innerHTML += '<p>No recent scores available.</p>';
+                insights += '<li>Needs improvement. Focus on both distance control and lateral accuracy.</li>';
             }
+
+            if (avgDistanceError > 20) {
+                insights += '<li>Work on distance control: Your average distance error is ${avgDistanceError.toFixed(1)} yards, which is relatively high.</li>';
+            } else if (avgDistanceError > 10) {
+                insights += '<li>Distance control is decent, but aim to reduce errors below 10 yards for better results.</li>';
+            } else {
+                insights += '<li>Great distance control! Your average error is only ${avgDistanceError.toFixed(1)} yards.</li>';
+            }
+
+            if (avgLateralDeviation > 30) {
+                insights += '<li>Improve lateral accuracy: Your average deviation is ${avgLateralDeviation.toFixed(1)} feet, suggesting inconsistency in alignment.</li>';
+            } else if (avgLateralDeviation > 15) {
+                insights += '<li>Lateral accuracy is fair; try to keep deviations under 15 feet for precision.</li>';
+            } else {
+                insights += '<li>Excellent lateral accuracy! Your average deviation is just ${avgLateralDeviation.toFixed(1)} feet.</li>';
+            }
+
+            if (prevAverage !== null) {
+                const improvement = overallAverage - prevAverage;
+                if (improvement > 5) {
+                    insights += '<li>Great progress! You’ve improved by ${improvement} points since your last session.</li>';
+                } else if (improvement > 0) {
+                    insights += '<li>Steady improvement! You’re up by ${improvement} points from your last session.</li>';
+                } else if (improvement < -5) {
+                    insights += '<li>Area to work on: Your score dropped by ${-improvement} points compared to your last session.</li>';
+                }
+            }
+
+            insights += '</ul>';
+            insightsDiv.innerHTML = insights;
+        }
+
+        function drawHistoryGraph() {
+            const canvas = document.getElementById('history-graph');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Group history by date
+            const sessions = {};
+            history.forEach(entry => {
+                const date = new Date(entry.timestamp).toLocaleDateString();
+                if (!sessions[date]) sessions[date] = [];
+                sessions[date].push(entry.score);
+            });
+
+            const dates = Object.keys(sessions);
+            const scores = dates.map(date => {
+                const sessionScores = sessions[date];
+                return sessionScores.length > 0 ? Math.round(sessionScores.reduce((sum, score) => sum + score, 0) / sessionScores.length) : 0;
+            });
+
+            ctx.strokeStyle = '#D4A017';
+            ctx.lineWidth = 2;
+            ctx.font = '14px Montserrat'; // Crisp text
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Draw axes
+            ctx.beginPath();
+            ctx.moveTo(50, canvas.height - 30);
+            ctx.lineTo(50, 20);
+            ctx.moveTo(50, canvas.height - 30);
+            ctx.lineTo(canvas.width - 20, canvas.height - 30);
+            ctx.stroke();
+
+            // Draw score markers (0 to 100)
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+            for (let i = 0; i <= 100; i += 20) {
+                ctx.beginPath();
+                ctx.moveTo(50, canvas.height - 30 - (i / 100) * (canvas.height - 50));
+                ctx.lineTo(canvas.width - 20, canvas.height - 30 - (i / 100) * (canvas.height - 50));
+                ctx.stroke();
+                ctx.fillStyle = '#1A3C34';
+                ctx.fillText(i, 30, canvas.height - 30 - (i / 100) * (canvas.height - 50) + 5);
+            }
+
+            // Draw data points and line
+            if (dates.length > 0) {
+                const stepX = (canvas.width - 70) / (dates.length - 1 || 1);
+                const stepY = (canvas.height - 50) / 100;
+                ctx.beginPath();
+                ctx.moveTo(50, canvas.height - 30 - (scores[0] * stepY));
+                for (let i = 0; i < scores.length; i++) {
+                    const x = 50 + i * stepX;
+                    const y = canvas.height - 30 - (scores[i] * stepY);
+                    ctx.lineTo(x, y);
+                    ctx.arc(x, y, 3, 0, Math.PI * 2);
+                    ctx.fillStyle = '#2E7D32';
+                    ctx.fill();
+                    ctx.fillStyle = '#1A3C34';
+                    ctx.fillText(dates[i], x, canvas.height - 15);
+                }
+                ctx.stroke();
+            }
+
+            // Labels
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText('Score', 20, 30);
+            ctx.save();
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Date', -canvas.height / 2 + 10, 35);
+            ctx.restore();
         }
 
         function drawClubDistanceGraph() {
@@ -603,31 +766,20 @@
             if (bag.length === 0) return;
 
             const clubAverages = {};
-            const clubAbbreviations = {
-                'Driver': 'Dr', '3 Wood': '3w', '5 Wood': '5w', '7 Wood': '7w', '9 Wood': '9w',
-                'Hybrid': 'Hy', '2 Iron': '2i', '3 Iron': '3i', '4 Iron': '4i', '5 Iron': '5i',
-                '6 Iron': '6i', '7 Iron': '7i', '8 Iron': '8i', '9 Iron': '9i',
-                'Pitching Wedge': 'PW', 'Gap Wedge': 'GW', 'Sand Wedge': 'SW', 'Lob Wedge': 'LW'
-            };
             bag.forEach(club => {
                 const clubData = history.filter(entry => entry.club === club);
-                if (clubData.length > 0) {
-                    clubAverages[club] = Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length);
-                } else {
-                    clubAverages[club] = 0;
-                }
+                clubAverages[club] = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length) : 0;
             });
 
             ctx.strokeStyle = '#D4A017';
             ctx.lineWidth = 2;
-            ctx.font = '14px Montserrat'; // Increased font size for crispness
+            ctx.font = '14px Montserrat'; // Crisp text
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
             const maxDistance = Math.max(...Object.values(clubAverages), 300); // Cap at 300 for scale
             const numClubs = bag.length;
             const barWidth = (canvas.width - 70) / (numClubs + 1);
-            const stepY = (canvas.height - 50) / numClubs;
 
             // Draw axes
             ctx.beginPath();
@@ -650,27 +802,29 @@
 
             // Draw bars
             bag.forEach((club, index) => {
-                const y = canvas.height - 30 - (index + 0.5) * stepY;
-                const distance = clubAverages[club] || 0;
-                const barHeight = (distance / maxDistance) * (canvas.height - 50);
-                const grad = ctx.createLinearGradient(50, canvas.height - 30 - barHeight, 50 + barWidth, canvas.height - 30);
-                const hue = (index * 20) % 360; // Vary hue for each club
-                grad.addColorStop(0, `hsl(${hue}, 70%, 50%)`);
-                grad.addColorStop(1, `hsl(${hue + 20}, 70%, 30%)`);
+                const x = 50 + (index + 0.5) * barWidth;
+                const distance = clubAverages[club];
+                const barHeight = distance > 0 ? (distance / maxDistance) * (canvas.height - 50) : 0;
+                const grad = ctx.createLinearGradient(x - barWidth / 2, canvas.height - 30, x - barWidth / 2, canvas.height - 30 - barHeight);
+                const hue = (index * 30) % 360; // Different hue for each club
+                grad.addColorStop(0, `hsl(${hue}, 70%, 80%)`); // Light at bottom
+                grad.addColorStop(1, `hsl(${hue}, 70%, 40%)`); // Dark at top
                 ctx.fillStyle = grad;
-                ctx.fillRect(50, y - barHeight / 2, barWidth - 10, barHeight);
-                ctx.fillStyle = '#1A3C34';
-                ctx.fillText(clubAbbreviations[club.replace(/\s\(.*\)/, '')] || club, 50 + barWidth * (index + 0.5), y);
+                ctx.fillRect(x - barWidth / 2, canvas.height - 30 - barHeight, barWidth - 10, barHeight);
+                if (distance > 0) {
+                    ctx.fillStyle = '#FFFFFF'; // White text for visibility
+                    ctx.fillText(distance, x, canvas.height - 30 - barHeight / 2);
+                }
             });
 
             // Labels
             ctx.fillStyle = '#FFFFFF';
+            ctx.fillText('Distance (yards)', canvas.width / 2, canvas.height - 10);
             ctx.save();
             ctx.translate(25, canvas.height / 2);
             ctx.rotate(-Math.PI / 2);
             ctx.fillText('Clubs', 0, 0);
             ctx.restore();
-            ctx.fillText('Distance (yards)', canvas.width / 2, canvas.height - 10);
         }
 
         function resetAll() {
@@ -679,6 +833,7 @@
             document.getElementById('quantity').value = '5';
             document.getElementById('results').innerHTML = '';
             document.getElementById('overallScore').innerHTML = '';
+            document.getElementById('insights').innerHTML = '';
         }
     </script>
 </body>
