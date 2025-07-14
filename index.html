@@ -97,15 +97,11 @@
             color: #1A3C34;
         }
 
-        #menu-options {
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        #menu-options.active {
+        .button-group {
             display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
         /* Game and User Containers */
@@ -340,11 +336,6 @@
                 gap: 10px;
             }
 
-            #menu-options {
-                flex-direction: column;
-                gap: 5px;
-            }
-
             .input-group {
                 flex-direction: column;
                 align-items: center;
@@ -409,9 +400,6 @@
         <h2>Welcome to Pin Seeker</h2>
         <p>Time to practice with purpose and put your distance control to the test!</p>
         <div class="button-group">
-            <button id="menu-button">Menu</button>
-        </div>
-        <div id="menu-options" class="button-group">
             <button onclick="showPage('game-container')">Game</button>
             <button onclick="showPage('user-container')">User</button>
         </div>
@@ -520,12 +508,6 @@
     <script>
         let history = JSON.parse(localStorage.getItem('pinSeekerHistory')) || [];
         let bag = JSON.parse(localStorage.getItem('pinSeekerBag')) || [];
-
-        // Toggle menu options visibility
-        document.getElementById('menu-button').addEventListener('click', function() {
-            const menuOptions = document.getElementById('menu-options');
-            menuOptions.classList.toggle('active');
-        });
 
         // Toggle bag section visibility
         document.getElementById('toggle-bag').addEventListener('click', function() {
@@ -755,4 +737,152 @@
 
             // Draw background and border
             ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-            ctx
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+            // Draw axes
+            const margin = 50;
+            ctx.beginPath();
+            ctx.moveTo(margin, canvas.height - margin);
+            ctx.lineTo(margin, margin);
+            ctx.lineTo(canvas.width - 20, canvas.height - margin);
+            ctx.stroke();
+
+            // Draw grid lines and score markers (0 to 100)
+            ctx.strokeStyle = 'rgba(212, 160, 23, 0.2)'; // Light Gold
+            for (let i = 0; i <= 100; i += 20) {
+                const y = canvas.height - margin - (i / 100) * (canvas.height - 2 * margin);
+                ctx.beginPath();
+                ctx.moveTo(margin, y);
+                ctx.lineTo(canvas.width - 20, y);
+                ctx.stroke();
+                ctx.fillStyle = '#1A3C34';
+                ctx.fillText(i, margin - 10, y + 5);
+            }
+
+            // Draw date markers
+            if (dates.length > 0) {
+                const stepX = (canvas.width - margin - 20) / (dates.length - 1 || 1);
+                for (let i = 0; i < dates.length; i++) {
+                    const x = margin + i * stepX;
+                    ctx.fillStyle = '#1A3C34';
+                    ctx.fillText(dates[i].split('/')[1] + '/' + dates[i].split('/')[2], x, canvas.height - margin + 20); // Show MM/YY
+                }
+            }
+
+            // Draw data points and line
+            if (dates.length > 0) {
+                const stepX = (canvas.width - margin - 20) / (dates.length - 1 || 1);
+                const stepY = (canvas.height - 2 * margin) / 100;
+                ctx.beginPath();
+                ctx.moveTo(margin, canvas.height - margin - (scores[0] * stepY));
+                ctx.strokeStyle = '#2E7D32'; // Light Green
+                for (let i = 0; i < scores.length; i++) {
+                    const x = margin + i * stepX;
+                    const y = canvas.height - margin - (scores[i] * stepY);
+                    ctx.lineTo(x, y);
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#1A3C34';
+                    ctx.fill();
+                    ctx.stroke();
+                }
+                ctx.stroke();
+            }
+
+            // Labels
+            ctx.fillStyle = '#D4A017';
+            ctx.fillText('Score', margin / 2, canvas.height / 2, margin - 10);
+            ctx.save();
+            ctx.translate(margin - 20, canvas.height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Date', 0, 0);
+            ctx.restore();
+        }
+
+        function drawClubDistanceGraph() {
+            const canvas = document.getElementById('club-distance-graph');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (bag.length === 0) return;
+
+            const clubAverages = {};
+            bag.forEach(club => {
+                const clubData = history.filter(entry => entry.club === club);
+                clubAverages[club] = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length) : 0;
+            });
+
+            ctx.strokeStyle = '#D4A017'; // Gold
+            ctx.lineWidth = 2;
+            ctx.font = '12px Montserrat';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Draw background and border
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+            // Draw axes
+            const margin = 50;
+            ctx.beginPath();
+            ctx.moveTo(margin, canvas.height - margin);
+            ctx.lineTo(canvas.width - 20, canvas.height - margin);
+            ctx.moveTo(margin, 0);
+            ctx.lineTo(margin, canvas.height - margin);
+            ctx.stroke();
+
+            // Draw grid lines and distance markers (0 to 300)
+            const maxDistance = 300;
+            ctx.strokeStyle = 'rgba(212, 160, 23, 0.2)'; // Light Gold
+            for (let i = 0; i <= maxDistance; i += 50) {
+                const x = margin + (i / maxDistance) * (canvas.width - margin - 20);
+                ctx.beginPath();
+                ctx.moveTo(x, margin);
+                ctx.lineTo(x, canvas.height - margin);
+                ctx.stroke();
+                ctx.fillStyle = '#1A3C34';
+                ctx.fillText(i, x, canvas.height - margin + 15);
+            }
+
+            // Draw horizontal bars (reversed order: Driver top, Lob Wedge bottom)
+            const barHeight = (canvas.height - 2 * margin) / bag.length;
+            bag.slice().reverse().forEach((club, index) => {
+                const y = margin + index * barHeight;
+                const distance = clubAverages[club];
+                const barLength = distance > 0 ? (distance / maxDistance) * (canvas.width - margin - 20) : 0;
+                const grad = ctx.createLinearGradient(margin, y, margin + barLength, y);
+                grad.addColorStop(0, '#2E7D32'); // Light Green
+                grad.addColorStop(1, '#1A3C34'); // Forest Green
+                ctx.fillStyle = grad;
+                ctx.fillRect(margin, y - barHeight / 2, barLength, barHeight - 2);
+                if (distance > 0) {
+                    ctx.fillStyle = '#D4A017'; // Gold
+                    ctx.fillText(distance, margin + barLength, y);
+                }
+                ctx.fillStyle = '#1A3C34';
+                ctx.fillText(club.replace(/\s\(.*\)/, '').slice(0, 3), margin - 20, y); // Abbreviated club names
+            });
+
+            // Labels
+            ctx.fillStyle = '#D4A017';
+            ctx.fillText('Distance (yards)', canvas.width / 2, canvas.height - margin / 2);
+            ctx.save();
+            ctx.translate(margin - 20, canvas.height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Clubs', 0, 0);
+            ctx.restore();
+        }
+
+        function resetAll() {
+            document.getElementById('minRange').value = '50';
+            document.getElementById('maxRange').value = '200';
+            document.getElementById('quantity').value = '5';
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('overallScore').innerHTML = '';
+            document.getElementById('insights').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
