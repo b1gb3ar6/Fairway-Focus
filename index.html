@@ -366,7 +366,7 @@
             margin: 15px auto;
             background: rgba(255, 255, 255, 0.98);
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             overflow: hidden;
         }
 
@@ -423,9 +423,7 @@
 
             button {
                 width: 100%;
-               
-
- margin: 5px 0;
+                margin: 5px 0;
             }
 
             .container {
@@ -798,6 +796,7 @@
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            // Group history by date and get the most recent 5 sessions
             const sessions = {};
             history.forEach(entry => {
                 const date = new Date(entry.timestamp).toLocaleDateString();
@@ -805,19 +804,52 @@
                 sessions[date].push(entry.score);
             });
 
-            const dates = Object.keys(sessions).sort();
+            // Sort dates in descending order and take the most recent 5
+            const dates = Object.keys(sessions).sort((a, b) => new Date(b) - new Date(a)).slice(0, 5);
             const scores = dates.map(date => {
                 const sessionScores = sessions[date];
                 return sessionScores.length > 0 ? Math.round(sessionScores.reduce((sum, score) => sum + score, 0) / sessionScores.length) : 0;
             });
 
+            // Calculate the overall average across the displayed sessions
+            const overallAverage = scores.length > 0 ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0;
+
+            // Custom plugin to draw the average box in the top-right corner
+            const averageBoxPlugin = {
+                id: 'averageBox',
+                afterDraw(chart) {
+                    const ctx = chart.ctx;
+                    const chartArea = chart.chartArea;
+                    const boxWidth = 80;
+                    const boxHeight = 30;
+                    const boxX = chartArea.right - boxWidth - 10;
+                    const boxY = chartArea.top + 10;
+
+                    // Draw box background
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
+
+                    // Draw box border
+                    ctx.strokeStyle = '#2E7D32';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
+
+                    // Draw text
+                    ctx.font = 'bold 12px Montserrat';
+                    ctx.fillStyle = '#000000';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(`Avg: ${overallAverage}/100`, boxX + boxWidth / 2, boxY + boxHeight / 2);
+                }
+            };
+
             new Chart(canvas, {
                 type: 'line',
                 data: {
-                    labels: dates.map(d => d.split('/')[1] + '/' + d.split('/')[2]),
+                    labels: dates.map(d => d.split('/')[1] + '/' + d.split('/')[2]).reverse(), // Reverse to show oldest to newest
                     datasets: [{
                         label: 'Average Score',
-                        data: scores,
+                        data: scores.reverse(), // Reverse to match labels
                         borderColor: '#2E7D32',
                         backgroundColor: 'rgba(46, 125, 50, 0.2)',
                         fill: true,
@@ -830,14 +862,23 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: { min: 0, max: 100, title: { display: true, text: 'Score' } },
-                        x: { title: { display: true, text: 'Date' } }
+                        y: { 
+                            min: 0, 
+                            max: 100, 
+                            title: { display: true, text: 'Score' } 
+                        },
+                        x: { 
+                            title: { display: true, text: 'Date' },
+                            reverse: false // Ensure oldest to newest
+                        }
                     },
                     plugins: {
                         legend: { display: true, position: 'top' },
-                        tooltip: { enabled: true }
+                        tooltip: { enabled: true },
+                        averageBox: true // Enable the custom average box plugin
                     }
-                }
+                },
+                plugins: [averageBoxPlugin] // Register the custom plugin
             });
         }
 
@@ -856,6 +897,30 @@
                 clubAverages[club] = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length) : 0;
             });
 
+            // Custom plugin to display data labels at the end of bars
+            const dataLabelsPlugin = {
+                id: 'dataLabels',
+                afterDatasetsDraw(chart) {
+                    const ctx = chart.ctx;
+                    ctx.font = 'bold 12px Montserrat';
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+
+                    chart.data.datasets.forEach((dataset, datasetIndex) => {
+                        const meta = chart.getDatasetMeta(datasetIndex);
+                        meta.data.forEach((bar, index) => {
+                            const value = dataset.data[index];
+                            if (value !== 0) { // Only display non-zero values
+                                const x = bar.x + 5; // Offset to the right of the bar
+                                const y = bar.y;
+                                ctx.fillText(`${value} yds`, x, y);
+                            }
+                        });
+                    });
+                }
+            };
+
             new Chart(canvas, {
                 type: 'bar',
                 data: {
@@ -873,14 +938,19 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: { title: { display: true, text: 'Distance (yards)' } },
+                        x: {
+                            title: { display: true, text: 'Distance (yards)' },
+                            suggestedMax: Math.max(...bag.map(club => clubAverages[club]), 100) + 20 // Add padding for labels
+                        },
                         y: { title: { display: true, text: 'Clubs' } }
                     },
                     plugins: {
                         legend: { display: true, position: 'top' },
-                        tooltip: { enabled: true }
+                        tooltip: { enabled: true },
+                        dataLabels: true // Enable the custom data labels plugin
                     }
-                }
+                },
+                plugins: [dataLabelsPlugin] // Register the custom plugin
             });
         }
 
