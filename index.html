@@ -722,7 +722,8 @@
                             score: score,
                             carryDistance: parseFloat(document.getElementById(`carryDistance${i}`).value),
                             lateralDeviation: parseFloat(document.getElementById(`lateralDeviation${i}`).value) * parseInt(document.getElementById(`lateralDirection${i}`).value),
-                            club: document.getElementById(`club${i}`).value
+                            club: document.getElementById(`club${i}`).value,
+                            targetDistance: parseFloat(document.getElementById(`carryDistance${i}`).parentElement.querySelector('.target-distance strong').textContent)
                         });
                     }
                 }
@@ -750,7 +751,7 @@
                 const avgLateral = scores.reduce((sum, s) => sum + Math.abs(s.lateralDeviation), 0) / scores.length;
                 insights += `<li>Session average score: ${overallAverage}/100, with ${avgLateral.toFixed(1)} feet average lateral deviation.</li>`;
 
-                // Identify key area for improvement
+                // Identify key area for improvement based only on current session
                 let keyIssue = '';
                 const rightMisses = scores.filter(s => s.lateralDeviation > 0).length;
                 if (rightMisses / scores.length > 0.6) {
@@ -758,25 +759,26 @@
                 } else if (rightMisses / scores.length < 0.4) {
                     keyIssue = 'You frequently miss left. Practice aligning your stance slightly right of the target.';
                 } else {
-                    const clubVariances = {};
-                    history.forEach(entry => {
-                        if (!clubVariances[entry.club]) clubVariances[entry.club] = [];
-                        clubVariances[entry.club].push(entry.carryDistance);
+                    // Check for distance consistency in the current session
+                    const clubDistances = {};
+                    scores.forEach(shot => {
+                        if (!clubDistances[shot.club]) clubDistances[shot.club] = [];
+                        clubDistances[shot.club].push(Math.abs(shot.carryDistance - shot.targetDistance));
                     });
                     let maxVarianceClub = '';
                     let maxVariance = 0;
-                    for (const club in clubVariances) {
-                        const distances = clubVariances[club];
-                        if (distances.length > 1) {
-                            const avg = distances.reduce((sum, d) => sum + d, 0) / distances.length;
-                            const variance = distances.reduce((sum, d) => sum + Math.pow(d - avg, 2), 0) / distances.length;
+                    for (const club in clubDistances) {
+                        const errors = clubDistances[club];
+                        if (errors.length > 1) {
+                            const avgError = errors.reduce((sum, e) => sum + e, 0) / errors.length;
+                            const variance = errors.reduce((sum, e) => sum + Math.pow(e - avgError, 2), 0) / errors.length;
                             if (variance > maxVariance) {
                                 maxVariance = variance;
                                 maxVarianceClub = club;
                             }
                         }
                     }
-                    if (maxVariance > 100) {
+                    if (maxVariance > 100 && maxVarianceClub) {
                         keyIssue = `Inconsistent distances with ${maxVarianceClub}. Practice this club to improve consistency.`;
                     } else {
                         keyIssue = overallAverage > 60 ? 'Solid session. Refine your distance control with shorter clubs.' : 'Focus on hitting closer to target distances to boost your score.';
@@ -804,6 +806,9 @@
                 sessions[date].push(entry.score);
             });
 
+            // Log sessions for debugging
+            console.log('History Sessions:', sessions);
+
             // Sort dates in descending order and take the most recent 5
             const dates = Object.keys(sessions).sort((a, b) => new Date(b) - new Date(a)).slice(0, 5);
             const scores = dates.map(date => {
@@ -814,13 +819,30 @@
             // Calculate the overall average across the displayed sessions
             const overallAverage = scores.length > 0 ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0;
 
-            // Custom plugin to draw the average box in the top-right corner
+            // Calculate trend using simple linear regression slope
+            let trend = null;
+            if (scores.length >= 2) {
+                const n = scores.length;
+                const x = Array.from({ length: n }, (_, i) => i);
+                const y = scores;
+                const xMean = x.reduce((sum, xi) => sum + xi, 0) / n;
+                const yMean = y.reduce((sum, yi) => sum + yi, 0) / n;
+                let num = 0, den = 0;
+                for (let i = 0; i < n; i++) {
+                    num += (x[i] - xMean) * (y[i] - yMean);
+                    den += (x[i] - xMean) ** 2;
+                }
+                const slope = den !== 0 ? num / den : 0;
+                trend = slope > 0.5 ? 'up' : slope < -0.5 ? 'down' : null;
+            }
+
+            // Custom plugin to draw the average box with trend arrow
             const averageBoxPlugin = {
                 id: 'averageBox',
                 afterDraw(chart) {
                     const ctx = chart.ctx;
                     const chartArea = chart.chartArea;
-                    const boxWidth = 80;
+                    const boxWidth = 100; // Increased to accommodate arrow
                     const boxHeight = 30;
                     const boxX = chartArea.right - boxWidth - 10;
                     const boxY = chartArea.top + 10;
@@ -834,19 +856,30 @@
                     ctx.lineWidth = 2;
                     ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
 
-                    // Draw text
+                    // Draw text and arrow
                     ctx.font = 'bold 12px Montserrat';
                     ctx.fillStyle = '#000000';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
-                    ctx.fillText(`Avg: ${overallAverage}/100`, boxX + boxWidth / 2, boxY + boxHeight / 2);
+                    let text = `Avg: ${overallAverage}/100`;
+                    if (trend === 'up') {
+                        ctx.fillStyle = '#00FF00';
+                        text += ' ⬆';
+                    } else if (trend === 'down') {
+                        ctx.fillStyle = '#FF0000';
+                        text += ' ⬇';
+                    }
+                    ctx.fillText(text, boxX + boxWidth / 2, boxY + boxHeight / 2);
                 }
             };
 
             new Chart(canvas, {
                 type: 'line',
                 data: {
-                    labels: dates.map(d => d.split('/')[1] + '/' + d.split('/')[2]).reverse(), // Reverse to show oldest to newest
+                    labels: dates.map(date => {
+                        const d = new Date(date);
+                        return d.getDate().toString().padStart(2, '0') + '/' + (d.getMonth() + 1).toString().padStart(2, '0');
+                    }).reverse(), // Reverse to show oldest to newest
                     datasets: [{
                         label: 'Average Score',
                         data: scores.reverse(), // Reverse to match labels
@@ -914,7 +947,7 @@
                             if (value !== 0) { // Only display non-zero values
                                 const x = bar.x + 5; // Offset to the right of the bar
                                 const y = bar.y;
-                                ctx.fillText(`${value} yds`, x, y);
+                                ctx.fillText(`${value}`, x, y); // Show integer value only
                             }
                         });
                     });
@@ -940,7 +973,7 @@
                     scales: {
                         x: {
                             title: { display: true, text: 'Distance (yards)' },
-                            suggestedMax: Math.max(...bag.map(club => clubAverages[club]), 100) + 20 // Add padding for labels
+                            suggestedMax: Math.max(...bag.map(club => clubAverages[club]), 100) + 30 // Increased padding for labels
                         },
                         y: { title: { display: true, text: 'Clubs' } }
                     },
