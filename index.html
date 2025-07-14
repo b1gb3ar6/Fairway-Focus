@@ -181,7 +181,7 @@
         #average-circle {
             text-align: center;
             margin: 10px auto;
-            width: 60px;
+            width: 120px; /* Increased to fit text and arrow */
             height: 60px;
             position: relative;
         }
@@ -492,6 +492,7 @@
 
             #average-circle {
                 margin: 8px auto;
+                width: 120px;
             }
         }
     </style>
@@ -901,14 +902,12 @@
                 numberColor = '#FF0000'; // Red for number
                 arrowColor = '#FF0000'; // Red for down arrow
             }
-            // Center the number and arrow as a unit
-            const numberX = arrow ? 26 : 30; // Shift left if arrow is present
-            const arrowX = 38; // Position arrow to the right of number
             averageCircle.innerHTML = `
-                <svg width="60" height="60">
-                    <circle cx="30" cy="30" r="28" fill="rgba(255, 255, 255, 0.9)" stroke="#2E7D32" stroke-width="2" />
-                    <text x="${numberX}" y="30" font-family="Montserrat" font-size="18" font-weight="bold" fill="${numberColor}" text-anchor="middle" dominant-baseline="central">${number}</text>
-                    ${arrow ? `<text x="${arrowX}" y="30" font-family="Montserrat" font-size="12" font-weight="bold" fill="${arrowColor}" text-anchor="middle" dominant-baseline="central">${arrow}</text>` : ''}
+                <svg width="120" height="60">
+                    <text x="0" y="30" font-family="Montserrat" font-size="12" font-weight="bold" fill="#000000" text-anchor="start" dominant-baseline="central">5 Session Avg.</text>
+                    <circle cx="80" cy="30" r="28" fill="rgba(255, 255, 255, 0.9)" stroke="#2E7D32" stroke-width="2" />
+                    <text x="80" y="30" font-family="Montserrat" font-size="24" font-weight="bold" fill="${numberColor}" text-anchor="middle" dominant-baseline="central">${number}</text>
+                    ${arrow ? `<text x="112" y="30" font-family="Montserrat" font-size="12" font-weight="bold" fill="${arrowColor}" text-anchor="middle" dominant-baseline="central">${arrow}</text>` : ''}
                 </svg>
             `;
 
