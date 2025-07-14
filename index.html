@@ -44,7 +44,7 @@
             border-radius: 12px;
             margin: 0 auto 10px;
             max-width: 100%;
-            width: calc(100% - 30px); /* Fit within viewport */
+            width: calc(100% - 30px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
@@ -113,7 +113,7 @@
         /* Container */
         .container {
             max-width: 100%;
-            width: calc(100% - 30px); /* Fit within viewport */
+            width: calc(100% - 30px);
             margin: 0 auto;
             padding: 15px;
             background: rgba(255, 255, 255, 0.98);
@@ -177,6 +177,15 @@
             display: block;
         }
 
+        /* Average Circle Container */
+        #average-circle {
+            text-align: center;
+            margin: 10px auto;
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+
         #bag-section {
             display: none;
             margin-top: 0;
@@ -186,7 +195,7 @@
             left: 50%;
             transform: translateX(-50%);
             width: calc(100% - 30px);
-            max-width: 360px; /* Fit iPhone 16 */
+            max-width: 360px;
             background: rgba(255, 255, 255, 0.98);
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -377,7 +386,7 @@
         /* Graphs */
         #history-graph, #club-distance-graph {
             width: 100%;
-            max-width: 360px; /* Fit iPhone 16 */
+            max-width: 360px;
             margin: 15px auto;
             background: rgba(255, 255, 255, 0.98);
             border-radius: 12px;
@@ -390,7 +399,7 @@
         }
 
         #club-distance-graph {
-            height: 400px; /* Increased for more clubs */
+            height: 400px;
         }
 
         /* Responsive design */
@@ -480,6 +489,10 @@
                 width: 100%;
                 max-width: 340px;
             }
+
+            #average-circle {
+                margin: 8px auto;
+            }
         }
     </style>
 </head>
@@ -515,6 +528,7 @@
     <div id="user-container" class="container">
         <h2>Profile</h2>
         <button id="toggle-bag">Manage Bag</button>
+        <div id="average-circle"></div>
         <div id="bag-section" class="container">
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Driver')">Driver</button></div>
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, '3 Wood')">3 Wood</button></div>
@@ -535,11 +549,6 @@
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Sand Wedge')">Sand Wedge</button><input type="number" id="sand-wedge-deg" placeholder="°" min="50" max="58" style="width: 60px;"></div>
             <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Lob Wedge')">Lob Wedge</button><input type="number" id="lob-wedge-deg" placeholder="°" min="50" max="64" style="width: 60px;"></div>
             <button id="save-bag">Save Bag</button>
-        </div>
-        <div class="button-group">
-            <button onclick="exportData()">Export Data</button>
-            <button onclick="importData()">Import Data</button>
-            <input type="file" id="import-file" style="display: none;" accept=".json">
         </div>
         <div id="history-graph"></div>
         <div id="club-distance-graph"></div>
@@ -816,11 +825,11 @@
 
             console.log('History Data:', history);
 
-            // Group shots into sessions based on timestamp
+            // Group shots into sessions
             const sessions = [];
             let currentSession = [];
             let lastTimestamp = null;
-            const timeThreshold = 60 * 1000; // 1 minute
+            const timeThreshold = 60 * 1000;
 
             history.sort((a, b) => a.timestamp - b.timestamp);
             history.forEach(entry => {
@@ -837,7 +846,6 @@
                 sessions.push(currentSession);
             }
 
-            // Take the most recent 5 sessions
             const recentSessions = sessions.slice(-5);
             const scores = recentSessions.map(session => {
                 return session.length > 0 ? Math.round(session.reduce((sum, score) => sum + score, 0) / session.length) : 0;
@@ -868,42 +876,33 @@
                 console.log('Trend Slope:', slope, 'Trend:', trend);
             }
 
-            // Custom plugin for circular average indicator
-            const averageCirclePlugin = {
-                id: 'averageCircle',
-                afterDraw(chart) {
-                    const ctx = chart.ctx;
-                    const chartArea = chart.chartArea;
-                    const radius = 30;
-                    const centerX = chartArea.right - radius - 10;
-                    const centerY = chartArea.top + radius + 5; // Higher position
+            // Update average circle in DOM
+            const averageCircle = document.getElementById('average-circle');
+            let text = `${overallAverage}/100`;
+            let color = '#000000';
+            if (trend === 'up') {
+                text += ' ⬆';
+                color = '#00FF00';
+            } else if (trend === 'down') {
+                text += ' ⬇';
+                color = '#FF0000';
+            }
+            averageCircle.innerHTML = `
+                <svg width="60" height="60">
+                    <circle cx="30" cy="30" r="28" fill="rgba(255, 255, 255, 0.9)" stroke="#2E7D32" stroke-width="2" />
+                    <text x="30" y="30" font-family="Montserrat" font-size="12" font-weight="bold" fill="${color}" text-anchor="middle" dominant-baseline="central">${text}</text>
+                </svg>
+            `;
 
-                    // Draw circle
-                    ctx.beginPath();
-                    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-                    ctx.fill();
-                    ctx.strokeStyle = '#2E7D32';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
+            // Create gradient for fill
+            const gradientFill = ctx.createLinearGradient(0, canvas.height, 0, 0);
+            gradientFill.addColorStop(0, 'rgba(46, 125, 50, 0.3)');
+            gradientFill.addColorStop(1, 'rgba(46, 125, 50, 0.1)');
 
-                    // Draw text and arrow
-                    ctx.font = 'bold 12px Montserrat';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    let text = `${overallAverage}/100`;
-                    if (trend === 'up') {
-                        ctx.fillStyle = '#00FF00';
-                        text += ' ⬆';
-                    } else if (trend === 'down') {
-                        ctx.fillStyle = '#FF0000';
-                        text += ' ⬇';
-                    } else {
-                        ctx.fillStyle = '#000000';
-                    }
-                    ctx.fillText(text, centerX, centerY);
-                }
-            };
+            // Create gradient for border
+            const gradientBorder = ctx.createLinearGradient(0, canvas.height, 0, 0);
+            gradientBorder.addColorStop(0, '#1A3C34');
+            gradientBorder.addColorStop(1, '#2E7D32');
 
             new Chart(canvas, {
                 type: 'line',
@@ -912,12 +911,15 @@
                     datasets: [{
                         label: 'Average Score',
                         data: scores,
-                        borderColor: '#2E7D32',
-                        backgroundColor: 'rgba(46, 125, 50, 0.2)',
+                        borderColor: gradientBorder,
+                        backgroundColor: gradientFill,
                         fill: true,
                         tension: 0.4,
                         pointRadius: 5,
-                        pointHoverRadius: 8
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: gradientBorder,
+                        pointBorderColor: '#FFFFFF',
+                        pointBorderWidth: 2
                     }]
                 },
                 options: {
@@ -935,12 +937,10 @@
                         }
                     },
                     plugins: {
-                        legend: { display: true, position: 'top' },
-                        tooltip: { enabled: true },
-                        averageCircle: true
+                        legend: { display: false },
+                        tooltip: { enabled: true }
                     }
-                },
-                plugins: [averageCirclePlugin]
+                }
             });
         }
 
@@ -969,7 +969,7 @@
                 afterDatasetsDraw(chart) {
                     const ctx = chart.ctx;
                     ctx.font = 'bold 12px Montserrat';
-                    ctx.fillStyle = '#000000'; // Black for contrast
+                    ctx.fillStyle = '#000000';
                     ctx.textAlign = 'left';
                     ctx.textBaseline = 'middle';
 
@@ -987,15 +987,25 @@
                 }
             };
 
+            // Create gradient for bar fill
+            const gradientFill = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            gradientFill.addColorStop(0, '#2E7D32');
+            gradientFill.addColorStop(1, '#1A3C34');
+
+            // Create gradient for bar border
+            const gradientBorder = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            gradientBorder.addColorStop(0, '#D4A017');
+            gradientBorder.addColorStop(1, '#FFD700');
+
             new Chart(canvas, {
                 type: 'bar',
                 data: {
-                    labels: bag.map(club => club), // Full club names
+                    labels: bag.map(club => club),
                     datasets: [{
                         label: 'Average Distance (yards)',
                         data: bag.map(club => clubAverages[club]),
-                        backgroundColor: 'rgba(46, 125, 50, 0.8)',
-                        borderColor: '#D4A017',
+                        backgroundColor: gradientFill,
+                        borderColor: gradientBorder,
                         borderWidth: 2
                     }]
                 },
@@ -1010,11 +1020,11 @@
                         },
                         y: { 
                             title: { display: true, text: 'Clubs' },
-                            ticks: { font: { size: 10 } } // Smaller font for many clubs
+                            ticks: { font: { size: 10 } }
                         }
                     },
                     plugins: {
-                        legend: { display: true, position: 'top' },
+                        legend: { display: false },
                         tooltip: { enabled: true },
                         dataLabels: true
                     }
@@ -1022,45 +1032,6 @@
                 plugins: [dataLabelsPlugin]
             });
         }
-
-        function exportData() {
-            const data = JSON.stringify({ history, bag });
-            const blob = new Blob([data], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'pin_seeker_data.json';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function importData() {
-            document.getElementById('import-file').click();
-        }
-
-        document.getElementById('import-file').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (data.history && data.bag) {
-                        history = data.history;
-                        bag = data.bag;
-                        localStorage.setItem('pinSeekerHistory', JSON.stringify(history));
-                        localStorage.setItem('pinSeekerBag', JSON.stringify(bag));
-                        alert('Data imported successfully!');
-                        showPage('user-container');
-                    } else {
-                        alert('Invalid file format.');
-                    }
-                } catch (err) {
-                    alert('Error importing data.');
-                }
-            };
-            reader.readAsText(file);
-        });
 
         function resetAll() {
             document.getElementById('minRange').value = '50';
