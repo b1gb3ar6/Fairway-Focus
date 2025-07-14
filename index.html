@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Pin Seeker: Master your golf distance control with precision yardage challenges.">
     <meta name="author" content="Your Name">
     <title>Pin Seeker - Golf Distance Control</title>
@@ -43,7 +43,8 @@
             padding: 10px 20px;
             border-radius: 12px;
             margin: 0 auto 10px;
-            max-width: 900px;
+            max-width: 100%;
+            width: calc(100% - 30px); /* Fit within viewport */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
@@ -75,8 +76,10 @@
         .nav-bar {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 10px;
             margin-bottom: 15px;
+            flex-wrap: wrap;
+            width: 100%;
         }
 
         .nav-bar button {
@@ -89,6 +92,8 @@
             font-size: 1rem;
             font-weight: 600;
             transition: transform 0.2s, box-shadow 0.2s;
+            flex: 1;
+            max-width: 150px;
         }
 
         .nav-bar button.active {
@@ -107,7 +112,8 @@
 
         /* Container */
         .container {
-            max-width: 900px;
+            max-width: 100%;
+            width: calc(100% - 30px); /* Fit within viewport */
             margin: 0 auto;
             padding: 15px;
             background: rgba(255, 255, 255, 0.98);
@@ -179,8 +185,8 @@
             top: 70px;
             left: 50%;
             transform: translateX(-50%);
-            width: 90%;
-            max-width: 700px;
+            width: calc(100% - 30px);
+            max-width: 360px; /* Fit iPhone 16 */
             background: rgba(255, 255, 255, 0.98);
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -199,6 +205,7 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 8px;
+            flex-wrap: wrap;
         }
 
         .club-button {
@@ -211,6 +218,8 @@
             font-size: 0.9rem;
             color: #1A3C34;
             transition: background 0.3s, transform 0.2s;
+            flex: 1;
+            min-width: 100px;
         }
 
         .club-button:hover {
@@ -268,6 +277,7 @@
             background: #FFFFFF;
             color: #1A3C34;
             transition: border-color 0.3s;
+            max-width: 150px;
         }
 
         select:focus {
@@ -286,6 +296,8 @@
             font-size: 0.9rem;
             font-weight: 600;
             transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            max-width: 200px;
         }
 
         button:hover {
@@ -304,6 +316,7 @@
         /* Results and shot styling */
         #results {
             margin-top: 20px;
+            width: 100%;
         }
 
         .shot {
@@ -313,6 +326,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s;
+            width: 100%;
         }
 
         .shot:hover {
@@ -357,12 +371,13 @@
             background: rgba(255, 255, 255, 0.9);
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
         }
 
         /* Graphs */
         #history-graph, #club-distance-graph {
             width: 100%;
-            max-width: 360px; /* Optimized for iPhone 16 width */
+            max-width: 360px; /* Fit iPhone 16 */
             margin: 15px auto;
             background: rgba(255, 255, 255, 0.98);
             border-radius: 12px;
@@ -371,17 +386,23 @@
         }
 
         #history-graph {
-            height: 200px; /* Reduced for iPhone 16 */
+            height: 200px;
         }
 
         #club-distance-graph {
-            height: 300px; /* Reduced for iPhone 16 */
+            height: 400px; /* Increased for more clubs */
         }
 
         /* Responsive design */
         @media (max-width: 393px) {
+            body {
+                padding: 10px;
+                overflow-x: hidden;
+            }
+
             header {
                 padding: 8px 15px;
+                width: 100%;
             }
 
             header img.logo {
@@ -403,12 +424,13 @@
             }
 
             .nav-bar {
-                gap: 10px;
+                gap: 8px;
             }
 
             .nav-bar button {
                 padding: 8px 15px;
                 font-size: 0.9rem;
+                max-width: 120px;
             }
 
             .input-group {
@@ -418,26 +440,26 @@
 
             input, select, .club-button {
                 width: 100%;
-                max-width: 180px;
+                max-width: 160px;
             }
 
             button {
-                width: 100%;
-                margin: 5px 0;
+                max-width: 160px;
             }
 
             .container {
                 padding: 10px;
+                width: 100%;
             }
 
             #history-graph {
                 height: 180px;
-                max-width: 340px;
+                max-width: 100%;
             }
 
             #club-distance-graph {
-                height: 280px;
-                max-width: 340px;
+                height: 380px;
+                max-width: 100%;
             }
 
             .shot .target-distance {
@@ -455,7 +477,8 @@
 
             #bag-section {
                 top: 60px;
-                width: 95%;
+                width: 100%;
+                max-width: 340px;
             }
         }
     </style>
@@ -528,8 +551,7 @@
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', () => {
-            showPage('game-container'); // Start on game page
-            // Load selected clubs
+            showPage('game-container');
             bag.forEach(club => {
                 const clubName = club.replace(/\s\(.*\)/, '');
                 const button = document.querySelector(`.club-button[onclick*="'${clubName}'"]`);
@@ -744,11 +766,9 @@
             if (scores.length === 0) {
                 insights += '<li>No shots scored yet.</li>';
             } else {
-                // General session summary
                 const avgLateral = scores.reduce((sum, s) => sum + Math.abs(s.lateralDeviation), 0) / scores.length;
                 insights += `<li>Session average score: ${overallAverage}/100, with ${avgLateral.toFixed(1)} feet average lateral deviation.</li>`;
 
-                // Identify key area for improvement based only on current session
                 let keyIssue = '';
                 const rightMisses = scores.filter(s => s.lateralDeviation > 0).length;
                 if (rightMisses / scores.length > 0.6) {
@@ -756,7 +776,6 @@
                 } else if (rightMisses / scores.length < 0.4) {
                     keyIssue = 'You frequently miss left. Practice aligning your stance slightly right of the target.';
                 } else {
-                    // Check for distance consistency in the current session
                     const clubDistances = {};
                     scores.forEach(shot => {
                         if (!clubDistances[shot.club]) clubDistances[shot.club] = [];
@@ -795,18 +814,15 @@
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Log history for debugging
             console.log('History Data:', history);
 
-            // Treat each shot as a session or group by close timestamps
+            // Group shots into sessions based on timestamp
             const sessions = [];
             let currentSession = [];
             let lastTimestamp = null;
-            const timeThreshold = 60 * 1000; // 1 minute in milliseconds
+            const timeThreshold = 60 * 1000; // 1 minute
 
-            // Sort history by timestamp
             history.sort((a, b) => a.timestamp - b.timestamp);
-
             history.forEach(entry => {
                 if (lastTimestamp && entry.timestamp - lastTimestamp > timeThreshold) {
                     if (currentSession.length > 0) {
@@ -827,17 +843,13 @@
                 return session.length > 0 ? Math.round(session.reduce((sum, score) => sum + score, 0) / session.length) : 0;
             });
 
-            // Log sessions for debugging
             console.log('Recent Sessions:', recentSessions);
             console.log('Session Scores:', scores);
 
-            // Generate labels (Session 1, Session 2, etc.)
             const labels = scores.map((_, index) => `Session ${index + 1}`);
 
-            // Calculate the overall average across the displayed sessions
             const overallAverage = scores.length > 0 ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0;
 
-            // Calculate trend using simple linear regression slope
             let trend = null;
             let slope = 0;
             if (scores.length >= 2) {
@@ -852,35 +864,34 @@
                     den += (x[i] - xMean) ** 2;
                 }
                 slope = den !== 0 ? num / den : 0;
-                trend = slope > 0.2 ? 'up' : slope < -0.2 ? 'down' : null; // Lowered threshold for testing
+                trend = slope > 0.2 ? 'up' : slope < -0.2 ? 'down' : null;
                 console.log('Trend Slope:', slope, 'Trend:', trend);
             }
 
-            // Custom plugin to draw the average box with trend arrow
-            const averageBoxPlugin = {
-                id: 'averageBox',
+            // Custom plugin for circular average indicator
+            const averageCirclePlugin = {
+                id: 'averageCircle',
                 afterDraw(chart) {
                     const ctx = chart.ctx;
                     const chartArea = chart.chartArea;
-                    const boxWidth = 120; // Increased for arrow
-                    const boxHeight = 30;
-                    const boxX = chartArea.right - boxWidth - 10;
-                    const boxY = chartArea.top + 10;
+                    const radius = 30;
+                    const centerX = chartArea.right - radius - 10;
+                    const centerY = chartArea.top + radius + 5; // Higher position
 
-                    // Draw box background
+                    // Draw circle
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-                    ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
-
-                    // Draw box border
+                    ctx.fill();
                     ctx.strokeStyle = '#2E7D32';
                     ctx.lineWidth = 2;
-                    ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
+                    ctx.stroke();
 
                     // Draw text and arrow
                     ctx.font = 'bold 12px Montserrat';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
-                    let text = `Avg: ${overallAverage}/100`;
+                    let text = `${overallAverage}/100`;
                     if (trend === 'up') {
                         ctx.fillStyle = '#00FF00';
                         text += ' ⬆';
@@ -890,7 +901,7 @@
                     } else {
                         ctx.fillStyle = '#000000';
                     }
-                    ctx.fillText(text, boxX + boxWidth / 2, boxY + boxHeight / 2);
+                    ctx.fillText(text, centerX, centerY);
                 }
             };
 
@@ -920,16 +931,16 @@
                         },
                         x: { 
                             title: { display: true, text: 'Session' },
-                            ticks: { display: true } // Ensure labels are visible
+                            ticks: { display: true }
                         }
                     },
                     plugins: {
                         legend: { display: true, position: 'top' },
                         tooltip: { enabled: true },
-                        averageBox: true
+                        averageCircle: true
                     }
                 },
-                plugins: [averageBoxPlugin]
+                plugins: [averageCirclePlugin]
             });
         }
 
@@ -951,16 +962,14 @@
                 clubAverages[club] = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length) : 0;
             });
 
-            // Log club averages for debugging
             console.log('Club Averages:', clubAverages);
 
-            // Custom plugin to display data labels at the end of bars
             const dataLabelsPlugin = {
                 id: 'dataLabels',
                 afterDatasetsDraw(chart) {
                     const ctx = chart.ctx;
                     ctx.font = 'bold 12px Montserrat';
-                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillStyle = '#000000'; // Black for contrast
                     ctx.textAlign = 'left';
                     ctx.textBaseline = 'middle';
 
@@ -968,8 +977,8 @@
                         const meta = chart.getDatasetMeta(datasetIndex);
                         meta.data.forEach((bar, index) => {
                             const value = dataset.data[index];
-                            if (value > 0) { // Only display non-zero values
-                                const x = bar.x + 5; // Offset to the right
+                            if (value > 0) {
+                                const x = bar.x + 5;
                                 const y = bar.y;
                                 ctx.fillText(`${Math.round(value)}`, x, y);
                             }
@@ -981,7 +990,7 @@
             new Chart(canvas, {
                 type: 'bar',
                 data: {
-                    labels: bag.map(club => club.replace(/\s\(.*\)/, '').slice(0, 3)),
+                    labels: bag.map(club => club), // Full club names
                     datasets: [{
                         label: 'Average Distance (yards)',
                         data: bag.map(club => clubAverages[club]),
@@ -997,9 +1006,12 @@
                     scales: {
                         x: {
                             title: { display: true, text: 'Distance (yards)' },
-                            suggestedMax: Math.max(...bag.map(club => clubAverages[club]), 100) + 50 // Increased padding
+                            suggestedMax: Math.max(...bag.map(club => clubAverages[club]), 100) + 50
                         },
-                        y: { title: { display: true, text: 'Clubs' } }
+                        y: { 
+                            title: { display: true, text: 'Clubs' },
+                            ticks: { font: { size: 10 } } // Smaller font for many clubs
+                        }
                     },
                     plugins: {
                         legend: { display: true, position: 'top' },
