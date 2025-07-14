@@ -554,7 +554,6 @@
         function updateNavButtons(activePage) {
             document.querySelectorAll('.nav-bar button').forEach(button => {
                 button.classList.remove('active');
-                // Match button ID to pageId
                 if (button.id === (activePage === 'game-container' ? 'nav-game' : 'nav-user')) {
                     button.classList.add('active');
                 }
@@ -570,14 +569,12 @@
         }
 
         function showPage(pageId) {
-            // Hide all containers
             document.querySelectorAll('.container').forEach(container => {
                 container.classList.remove('active');
                 container.style.display = 'none';
                 container.style.opacity = '0';
                 container.style.transform = 'translateY(20px)';
             });
-            // Show the target container
             const targetContainer = document.getElementById(pageId);
             targetContainer.classList.add('active');
             targetContainer.style.display = 'block';
@@ -798,29 +795,51 @@
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Group history by date and get the most recent 5 sessions
-            const sessions = {};
+            // Log history for debugging
+            console.log('History Data:', history);
+
+            // Treat each shot as a session or group by close timestamps
+            const sessions = [];
+            let currentSession = [];
+            let lastTimestamp = null;
+            const timeThreshold = 60 * 1000; // 1 minute in milliseconds
+
+            // Sort history by timestamp
+            history.sort((a, b) => a.timestamp - b.timestamp);
+
             history.forEach(entry => {
-                const date = new Date(entry.timestamp).toLocaleDateString();
-                if (!sessions[date]) sessions[date] = [];
-                sessions[date].push(entry.score);
+                if (lastTimestamp && entry.timestamp - lastTimestamp > timeThreshold) {
+                    if (currentSession.length > 0) {
+                        sessions.push(currentSession);
+                        currentSession = [];
+                    }
+                }
+                currentSession.push(entry.score);
+                lastTimestamp = entry.timestamp;
+            });
+            if (currentSession.length > 0) {
+                sessions.push(currentSession);
+            }
+
+            // Take the most recent 5 sessions
+            const recentSessions = sessions.slice(-5);
+            const scores = recentSessions.map(session => {
+                return session.length > 0 ? Math.round(session.reduce((sum, score) => sum + score, 0) / session.length) : 0;
             });
 
             // Log sessions for debugging
-            console.log('History Sessions:', sessions);
+            console.log('Recent Sessions:', recentSessions);
+            console.log('Session Scores:', scores);
 
-            // Sort dates in descending order and take the most recent 5
-            const dates = Object.keys(sessions).sort((a, b) => new Date(b) - new Date(a)).slice(0, 5);
-            const scores = dates.map(date => {
-                const sessionScores = sessions[date];
-                return sessionScores.length > 0 ? Math.round(sessionScores.reduce((sum, score) => sum + score, 0) / sessionScores.length) : 0;
-            });
+            // Generate labels (Session 1, Session 2, etc.)
+            const labels = scores.map((_, index) => `Session ${index + 1}`);
 
             // Calculate the overall average across the displayed sessions
             const overallAverage = scores.length > 0 ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0;
 
             // Calculate trend using simple linear regression slope
             let trend = null;
+            let slope = 0;
             if (scores.length >= 2) {
                 const n = scores.length;
                 const x = Array.from({ length: n }, (_, i) => i);
@@ -832,8 +851,9 @@
                     num += (x[i] - xMean) * (y[i] - yMean);
                     den += (x[i] - xMean) ** 2;
                 }
-                const slope = den !== 0 ? num / den : 0;
-                trend = slope > 0.5 ? 'up' : slope < -0.5 ? 'down' : null;
+                slope = den !== 0 ? num / den : 0;
+                trend = slope > 0.2 ? 'up' : slope < -0.2 ? 'down' : null; // Lowered threshold for testing
+                console.log('Trend Slope:', slope, 'Trend:', trend);
             }
 
             // Custom plugin to draw the average box with trend arrow
@@ -842,7 +862,7 @@
                 afterDraw(chart) {
                     const ctx = chart.ctx;
                     const chartArea = chart.chartArea;
-                    const boxWidth = 100; // Increased to accommodate arrow
+                    const boxWidth = 120; // Increased for arrow
                     const boxHeight = 30;
                     const boxX = chartArea.right - boxWidth - 10;
                     const boxY = chartArea.top + 10;
@@ -858,7 +878,6 @@
 
                     // Draw text and arrow
                     ctx.font = 'bold 12px Montserrat';
-                    ctx.fillStyle = '#000000';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     let text = `Avg: ${overallAverage}/100`;
@@ -868,6 +887,8 @@
                     } else if (trend === 'down') {
                         ctx.fillStyle = '#FF0000';
                         text += ' ⬇';
+                    } else {
+                        ctx.fillStyle = '#000000';
                     }
                     ctx.fillText(text, boxX + boxWidth / 2, boxY + boxHeight / 2);
                 }
@@ -876,13 +897,10 @@
             new Chart(canvas, {
                 type: 'line',
                 data: {
-                    labels: dates.map(date => {
-                        const d = new Date(date);
-                        return d.getDate().toString().padStart(2, '0') + '/' + (d.getMonth() + 1).toString().padStart(2, '0');
-                    }).reverse(), // Reverse to show oldest to newest
+                    labels: labels,
                     datasets: [{
                         label: 'Average Score',
-                        data: scores.reverse(), // Reverse to match labels
+                        data: scores,
                         borderColor: '#2E7D32',
                         backgroundColor: 'rgba(46, 125, 50, 0.2)',
                         fill: true,
@@ -901,17 +919,17 @@
                             title: { display: true, text: 'Score' } 
                         },
                         x: { 
-                            title: { display: true, text: 'Date' },
-                            reverse: false // Ensure oldest to newest
+                            title: { display: true, text: 'Session' },
+                            ticks: { display: true } // Ensure labels are visible
                         }
                     },
                     plugins: {
                         legend: { display: true, position: 'top' },
                         tooltip: { enabled: true },
-                        averageBox: true // Enable the custom average box plugin
+                        averageBox: true
                     }
                 },
-                plugins: [averageBoxPlugin] // Register the custom plugin
+                plugins: [averageBoxPlugin]
             });
         }
 
@@ -922,13 +940,19 @@
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            if (bag.length === 0) return;
+            if (bag.length === 0) {
+                console.log('No bag data available');
+                return;
+            }
 
             const clubAverages = {};
             bag.forEach(club => {
                 const clubData = history.filter(entry => entry.club === club);
                 clubAverages[club] = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length) : 0;
             });
+
+            // Log club averages for debugging
+            console.log('Club Averages:', clubAverages);
 
             // Custom plugin to display data labels at the end of bars
             const dataLabelsPlugin = {
@@ -944,10 +968,10 @@
                         const meta = chart.getDatasetMeta(datasetIndex);
                         meta.data.forEach((bar, index) => {
                             const value = dataset.data[index];
-                            if (value !== 0) { // Only display non-zero values
-                                const x = bar.x + 5; // Offset to the right of the bar
+                            if (value > 0) { // Only display non-zero values
+                                const x = bar.x + 5; // Offset to the right
                                 const y = bar.y;
-                                ctx.fillText(`${value}`, x, y); // Show integer value only
+                                ctx.fillText(`${Math.round(value)}`, x, y);
                             }
                         });
                     });
@@ -973,17 +997,17 @@
                     scales: {
                         x: {
                             title: { display: true, text: 'Distance (yards)' },
-                            suggestedMax: Math.max(...bag.map(club => clubAverages[club]), 100) + 30 // Increased padding for labels
+                            suggestedMax: Math.max(...bag.map(club => clubAverages[club]), 100) + 50 // Increased padding
                         },
                         y: { title: { display: true, text: 'Clubs' } }
                     },
                     plugins: {
                         legend: { display: true, position: 'top' },
                         tooltip: { enabled: true },
-                        dataLabels: true // Enable the custom data labels plugin
+                        dataLabels: true
                     }
                 },
-                plugins: [dataLabelsPlugin] // Register the custom plugin
+                plugins: [dataLabelsPlugin]
             });
         }
 
