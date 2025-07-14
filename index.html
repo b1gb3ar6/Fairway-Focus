@@ -1,613 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Pin Seeker: Master your golf distance control with precision yardage challenges.">
-    <meta name="author" content="Your Name">
-    <title>Pin Seeker - Golf Distance Control</title>
-    <!-- Google Fonts: Montserrat -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="favicon.png">
-    <!-- Apple Touch Icon -->
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <style>
-        /* Reset and global styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            text-align: center;
-            padding: 15px;
-            background: linear-gradient(135deg, #1A3C34 0%, #2E7D32 100%);
-            color: #FFFFFF;
-            line-height: 1.6;
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Header */
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: rgba(26, 60, 52, 0.95);
-            padding: 10px 20px;
-            border-radius: 12px;
-            margin: 0 auto 10px;
-            max-width: 900px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        header img.logo {
-            height: 40px;
-            width: 40px;
-            object-fit: contain;
-            margin-right: 15px;
-        }
-
-        header span {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #D4A017;
-            margin-right: 15px;
-            display: none;
-        }
-
-        header h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #FFFFFF;
-            flex-grow: 1;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-
-        /* Navigation */
-        .nav-bar {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .nav-bar button {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #2E7D32, #1A3C34);
-            color: #FFFFFF;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .nav-bar button.active {
-            background: linear-gradient(135deg, #D4A017, #FFD700);
-            color: #1A3C34;
-        }
-
-        .nav-bar button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .nav-bar button:active {
-            transform: translateY(0);
-        }
-
-        /* Container */
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            display: none;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .container.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Homepage */
-        #homepage {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        #homepage h2 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            color: #D4A017;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        #homepage p {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            color: #1A3C34;
-        }
-
-        /* Game and User Containers */
-        #game-container, #user-container {
-            display: none;
-        }
-
-        #game-container.active, #user-container.active {
-            display: block;
-        }
-
-        /* User Tab */
-        #user-container {
-            text-align: center;
-            position: relative;
-        }
-
-        #user-container h2 {
-            font-size: 1.6rem;
-            margin-bottom: 15px;
-            color: #2E7D32;
-        }
-
-        #user-container button#toggle-bag {
-            margin: 0 auto 10px;
-            display: block;
-        }
-
-        #bag-section {
-            display: none;
-            margin-top: 0;
-            text-align: left;
-            position: absolute;
-            top: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 700px;
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            z-index: 10;
-            transition: opacity 0.3s ease;
-        }
-
-        #bag-section.active {
-            display: block;
-            opacity: 1;
-        }
-
-        .club-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-
-        .club-button {
-            margin: 5px 0;
-            padding: 8px 15px;
-            background: #FFFFFF;
-            border: 2px solid #D4A017;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #1A3C34;
-            transition: background 0.3s, transform 0.2s;
-        }
-
-        .club-button:hover {
-            transform: translateY(-2px);
-        }
-
-        .club-button.selected {
-            background: #2E7D32;
-            color: #FFFFFF;
-            border-color: #2E7D32;
-        }
-
-        #save-bag {
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        /* Input group */
-        .input-group {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin: 15px 0;
-        }
-
-        label {
-            font-weight: 600;
-            color: #1A3C34;
-            font-size: 0.9rem;
-        }
-
-        input {
-            padding: 8px;
-            border: 2px solid #D4A017;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            width: 80px;
-            text-align: center;
-            background: #FFFFFF;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #2E7D32;
-            box-shadow: 0 0 8px rgba(46, 125, 50, 0.3);
-        }
-
-        select {
-            padding: 8px;
-            border: 2px solid #D4A017;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            background: #FFFFFF;
-            color: #1A3C34;
-            transition: border-color 0.3s;
-        }
-
-        select:focus {
-            outline: none;
-            border-color: #2E7D32;
-            box-shadow: 0 0 8px rgba(46, 125, 50, 0.3);
-        }
-
-        button {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #2E7D32, #1A3C34);
-            color: #FFFFFF;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        button.reset {
-            background: linear-gradient(135deg, #D32F2F, #B71C1C);
-        }
-
-        /* Results and shot styling */
-        #results {
-            margin-top: 20px;
-        }
-
-        .shot {
-            margin: 15px 0;
-            padding: 15px;
-            background: #F8F9FA;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-        }
-
-        .shot:hover {
-            transform: translateY(-5px);
-        }
-
-        .shot .target-distance {
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: #1A3C34;
-            margin-bottom: 10px;
-        }
-
-        .shot p,
-        .shot label,
-        .shot input,
-        .shot select {
-            font-weight: 400;
-            font-size: 0.9rem;
-            color: #1A3C34;
-        }
-
-        .shot button {
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-
-        #overallScore {
-            margin-top: 20px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #D4A017;
-        }
-
-        #insights {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: #1A3C34;
-            text-align: left;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Graphs */
-        #history-graph, #club-distance-graph {
-            width: 100%;
-            max-width: 360px; /* Optimized for iPhone 16 width */
-            margin: 15px auto;
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        #history-graph {
-            height: 200px; /* Reduced for iPhone 16 */
-        }
-
-        #club-distance-graph {
-            height: 300px; /* Reduced for iPhone 16 */
-        }
-
-        /* Responsive design */
-        @media (max-width: 393px) {
-            header {
-                padding: 8px 15px;
-            }
-
-            header img.logo {
-                height: 30px;
-                width: 30px;
-                margin-right: 10px;
-            }
-
-            header h1 {
-                font-size: 1.5rem;
-            }
-
-            #homepage h2 {
-                font-size: 1.6rem;
-            }
-
-            #homepage p {
-                font-size: 1rem;
-            }
-
-            .nav-bar {
-                gap: 10px;
-            }
-
-            .nav-bar button {
-                padding: 8px 15px;
-                font-size: 0.9rem;
-            }
-
-            .input-group {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            input, select, .club-button {
-                width: 100%;
-                max-width: 180px;
-            }
-
-            button {
-                width: 100%;
-                margin: 5px 0;
-            }
-
-            .container {
-                padding: 10px;
-            }
-
-            #history-graph {
-                height: 180px;
-                max-width: 340px;
-            }
-
-            #club-distance-graph {
-                height: 280px;
-                max-width: 340px;
-            }
-
-            .shot .target-distance {
-                font-size: 1.1rem;
-            }
-
-            #insights {
-                font-size: 0.8rem;
-                padding: 8px;
-            }
-
-            .club-row input {
-                width: 60px;
-            }
-
-            #bag-section {
-                top: 60px;
-                width: 95%;
-            }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <img src="logo.png" alt="Pin Seeker Logo" class="logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-        <span>Pin Seeker</span>
-        <h1>Pin Seeker</h1>
-    </header>
-    <div class="nav-bar">
-        <button id="nav-game" onclick="showPage('game-container')" class="active">Game</button>
-        <button id="nav-user" onclick="showPage('user-container')">User</button>
-    </div>
-    <div id="homepage" class="container">
-        <h2>Welcome to Pin Seeker</h2>
-        <p>Practice with purpose and test your golf distance control!</p>
-    </div>
-    <div id="game-container" class="container active">
-        <div class="input-group">
-            <label>Min Distance (yards):</label>
-            <input type="number" id="minRange" value="50" min="0">
-            <label>Max Distance (yards):</label>
-            <input type="number" id="maxRange" value="200" max="300">
-            <label>Number of Shots:</label>
-            <input type="number" id="quantity" value="5" min="1" max="50">
-        </div>
-        <button onclick="generateShots()">Generate Shots</button>
-        <button onclick="resetAll()" class="reset">Reset All</button>
-        <div id="results"></div>
-        <div id="overallScore"></div>
-        <div id="insights"></div>
-    </div>
-    <div id="user-container" class="container">
-        <h2>Profile</h2>
-        <button id="toggle-bag">Manage Bag</button>
-        <div id="bag-section" class="container">
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Driver')">Driver</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '3 Wood')">3 Wood</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '5 Wood')">5 Wood</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '7 Wood')">7 Wood</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '9 Wood')">9 Wood</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Hybrid')">Hybrid</button><input type="number" id="hybrid-deg" placeholder="°" min="15" max="30" style="width: 60px;"></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '2 Iron')">2 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '3 Iron')">3 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '4 Iron')">4 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '5 Iron')">5 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '6 Iron')">6 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '7 Iron')">7 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '8 Iron')">8 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '9 Iron')">9 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Pitching Wedge')">Pitching Wedge</button><input type="number" id="pitching-wedge-deg" placeholder="°" min="40" max="50" style="width: 60px;"></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Gap Wedge')">Gap Wedge</button><input type="number" id="gap-wedge-deg" placeholder="°" min="45" max="55" style="width: 60px;"></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Sand Wedge')">Sand Wedge</button><input type="number" id="sand-wedge-deg" placeholder="°" min="50" max="58" style="width: 60px;"></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Lob Wedge')">Lob Wedge</button><input type="number" id="lob-wedge-deg" placeholder="°" min="50" max="64" style="width: 60px;"></div>
-            <button id="save-bag">Save Bag</button>
-        </div>
-        <div class="button-group">
-            <button onclick="exportData()">Export Data</button>
-            <button onclick="importData()">Import Data</button>
-            <input type="file" id="import-file" style="display: none;" accept=".json">
-        </div>
-        <!--- Changed from <canvas> to <div> to fix graph sizing issues -->
-        <div id="history-graph"></div>
-        <div id="club-distance-graph"></div>
-    </div>
-
-    <script>
-        let history = JSON.parse(localStorage.getItem('pinSeekerHistory')) || [];
-        let bag = JSON.parse(localStorage.getItem('pinSeekerBag')) || [];
-
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', () => {
-            showPage('game-container'); // Start on game page
-            // Load selected clubs
-            bag.forEach(club => {
-                const clubName = club.replace(/\s\(.*\)/, '');
-                const button = document.querySelector(`.club-button[onclick*="'${clubName}'"]`);
-                if (button) {
-                    button.classList.add('selected');
-                    const degMatch = club.match(/\((\d+)°\)/);
-                    if (degMatch) {
-                        const degInput = document.getElementById(`${clubName.toLowerCase().replace(/ /g, '-')}-deg`);
-                        if (degInput) degInput.value = degMatch[1];
-                    }
+<script>
+    let history = JSON.parse(localStorage.getItem('pinSeekerHistory')) || [];
+    let bag = JSON.parse(localStorage.getItem('pinSeekerBag')) || [];
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', () => {
+        showPage('game-container'); // Start on game page
+        // Load selected clubs
+        bag.forEach(club => {
+            const clubName = club.replace(/\s\(.*\)/, '');
+            const button = document.querySelector(`.club-button[onclick*="'${clubName}'"]`);
+            if (button) {
+                button.classList.add('selected');
+                const degMatch = club.match(/\((\d+)°\)/);
+                if (degMatch) {
+                    const degInput = document.getElementById(`${clubName.toLowerCase().replace(/ /g, '-')}-deg`);
+                    if (degInput) degInput.value = degMatch[1];
                 }
-            });
-            updateNavButtons('game-container');
+            }
         });
+        updateNavButtons('game-container');
+    });
 
-        // Toggle bag section visibility
-        document.getElementById('toggle-bag').addEventListener('click', function() {
-            const bagSection = document.getElementById('bag-section');
-            bagSection.classList.toggle('active');
+    // Toggle bag section visibility
+    document.getElementById('toggle-bag').addEventListener('click', function() {
+        const bagSection = document.getElementById('bag-section');
+        bagSection.classList.toggle('active');
+    });
+
+    function updateNavButtons(activePage) {
+        document.querySelectorAll('.nav-bar button').forEach(button => {
+            button.classList.remove('active');
+            // Match button ID to pageId
+            if (button.id === (activePage === 'game-container' ? 'nav-game' : 'nav-user')) {
+                button.classList.add('active');
+            }
         });
+    }
 
-        function updateNavButtons(activePage) {
-            document.querySelectorAll('.nav-bar button').forEach(button => {
-                button.classList.remove('active');
-                if (button.id === `nav-${activePage}`) {
-                    button.classList.add('active');
-                }
-            });
+    function toggleClub(button, club) {
+        button.classList.toggle('selected');
+        const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
+        if (degInput) {
+            degInput.value = degInput.value || (club === "Lob Wedge" ? "60" : club === "Sand Wedge" ? "56" : club === "Gap Wedge" ? "50" : club === "Pitching Wedge" ? "46" : club === "Hybrid" ? "20" : "");
         }
+    }
 
-        function toggleClub(button, club) {
-            button.classList.toggle('selected');
+    function showPage(pageId) {
+        // Hide all containers
+        document.querySelectorAll('.container').forEach(container => {
+            container.classList.remove('active');
+            container.style.display = 'none';
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(20px)';
+        });
+        // Show the target container
+        const targetContainer = document.getElementById(pageId);
+        targetContainer.classList.add('active');
+        targetContainer.style.display = 'block';
+        setTimeout(() => {
+            targetContainer.style.opacity = '1';
+            targetContainer.style.transform = 'translateY(0)';
+        }, 50);
+        updateNavButtons(pageId);
+        if (pageId === 'user-container') {
+            drawHistoryGraph();
+            drawClubDistanceGraph();
+        }
+    }
+
+    function saveBag() {
+        bag = [];
+        document.querySelectorAll('.club-button.selected').forEach(button => {
+            const club = button.textContent;
             const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
-            if (degInput) {
-                degInput.value = degInput.value || (club === "Lob Wedge" ? "60" : club === "Sand Wedge" ? "56" : club === "Gap Wedge" ? "50" : club === "Pitching Wedge" ? "46" : club === "Hybrid" ? "20" : "");
+            const degree = degInput ? parseInt(degInput.value) || null : null;
+            if (degree && degInput) {
+                bag.push(`${club} (${degree}°)`);
+            } else {
+                bag.push(club);
             }
-        }
+        });
+        localStorage.setItem('pinSeekerBag', JSON.stringify(bag));
+        alert('Bag saved successfully!');
+        showPage('game-container');
+    }
 
-        function showPage(pageId) {
-            document.querySelectorAll('.container').forEach(container => {
-                container.classList.remove('active');
-                container.style.opacity = '0';
-                container.style.transform = 'translateY(20px)';
-            });
-            const targetContainer = document.getElementById(pageId);
-            targetContainer.classList.add('active');
-            setTimeout(() => {
-                targetContainer.style.opacity = '1';
-                targetContainer.style.transform = 'translateY(0)';
-            }, 50);
-            updateNavButtons(pageId);
-            if (pageId === 'user-container') {
-                drawHistoryGraph();
-                drawClubDistanceGraph();
-            }
-        }
+    document.getElementById('save-bag').addEventListener('click', saveBag);
 
-        function saveBag() {
-            bag = [];
-            document.querySelectorAll('.club-button.selected').forEach(button => {
-                const club = button.textContent;
-                const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
-                const degree = degInput ? parseInt(degInput.value) || null : null;
-                if (degree && degInput) {
-                    bag.push(`${club} (${degree}°)`);
-                } else {
-                    bag.push(club);
-                }
-            });
-            localStorage.setItem('pinSeekerBag', JSON.stringify(bag));
-            alert('Bag saved successfully!');
-            showPage('game-container');
-        }
-
-        document.getElementById('save-bag').addEventListener('click', saveBag);
-
-        function generateShots() {
+    function generateShots() {
+        try {
             const min = parseInt(document.getElementById('minRange').value);
             const max = parseInt(document.getElementById('maxRange').value);
             const quantity = parseInt(document.getElementById('quantity').value);
@@ -622,7 +103,7 @@
             }
 
             if (bag.length === 0) {
-                resultsDiv.innerHTML = '<p style="color: #D32F2F;">Please set up your bag in the User tab first.</p>';
+                resultsDiv.innerHTML = '<p style="color: #D32F2F;">Please set up your bag in the Profile tab first.</p>';
                 return;
             }
 
@@ -657,274 +138,271 @@
             averageButton.innerHTML = 'Calculate Overall Average';
             averageButton.onclick = calculateOverallAverage;
             resultsDiv.appendChild(averageButton);
+        } catch (error) {
+            console.error('Error in generateShots:', error);
+            document.getElementById('results').innerHTML = '<p style="color: #D32F2F;">An error occurred while generating shots. Please try again.</p>';
+        }
+    }
+
+    function suggestClub(targetDistance, club) {
+        const clubData = history.filter(entry => entry.club === club);
+        if (clubData.length === 0) return false;
+        const avgDistance = clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length;
+        return Math.abs(avgDistance - targetDistance) < 10;
+    }
+
+    function calculateScore(shotIndex, targetDistance) {
+        const carryDistance = parseFloat(document.getElementById(`carryDistance${shotIndex}`).value);
+        const lateralDeviation = parseFloat(document.getElementById(`lateralDeviation${shotIndex}`).value);
+        const lateralDirection = parseInt(document.getElementById(`lateralDirection${shotIndex}`).value);
+        const club = document.getElementById(`club${shotIndex}`).value;
+        const scoreElement = document.getElementById(`score${shotIndex}`);
+
+        if (isNaN(carryDistance) || isNaN(lateralDeviation) || carryDistance < 0 || lateralDeviation < 0) {
+            scoreElement.innerHTML = '<span style="color: #D32F2F;">Please enter valid numbers for carry distance and lateral deviation (≥ 0).</span>';
+            return;
         }
 
-        function suggestClub(targetDistance, club) {
-            const clubData = history.filter(entry => entry.club === club);
-            if (clubData.length === 0) return false;
-            const avgDistance = clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length;
-            return Math.abs(avgDistance - targetDistance) < 10;
-        }
+        const distanceError = Math.abs(targetDistance - carryDistance);
+        const maxDistanceError = targetDistance * 0.2;
+        const distanceScore = Math.max(0, 50 * (1 - distanceError / maxDistanceError));
 
-        function calculateScore(shotIndex, targetDistance) {
-            const carryDistance = parseFloat(document.getElementById(`carryDistance${shotIndex}`).value);
-            const lateralDeviation = parseFloat(document.getElementById(`lateralDeviation${shotIndex}`).value);
-            const lateralDirection = parseInt(document.getElementById(`lateralDirection${shotIndex}`).value);
-            const club = document.getElementById(`club${shotIndex}`).value;
-            const scoreElement = document.getElementById(`score${shotIndex}`);
+        const maxLateralDeviation = 90;
+        const effectiveLateralDeviation = lateralDeviation * lateralDirection;
+        const lateralScore = Math.max(0, 50 * (1 - Math.abs(effectiveLateralDeviation) / maxLateralDeviation));
 
-            if (isNaN(carryDistance) || isNaN(lateralDeviation) || carryDistance < 0 || lateralDeviation < 0) {
-                scoreElement.innerHTML = '<span style="color: #D32F2F;">Please enter valid numbers for carry distance and lateral deviation (≥ 0).</span>';
-                return;
-            }
+        const totalScore = Math.round(distanceScore + lateralScore);
+        scoreElement.innerHTML = `Score: ${totalScore}/100`;
+        history.push({ score: totalScore, carryDistance, club, lateralDeviation: effectiveLateralDeviation, timestamp: new Date().getTime(), targetDistance });
+        localStorage.setItem('pinSeekerHistory', JSON.stringify(history));
+        drawHistoryGraph();
+        drawClubDistanceGraph();
+    }
 
-            const distanceError = Math.abs(targetDistance - carryDistance);
-            const maxDistanceError = targetDistance * 0.2;
-            const distanceScore = Math.max(0, 50 * (1 - distanceError / maxDistanceError));
+    function calculateOverallAverage() {
+        const quantity = parseInt(document.getElementById('quantity').value);
+        let totalScore = 0;
+        let scoredShots = 0;
+        const scores = [];
 
-            const maxLateralDeviation = 90;
-            const effectiveLateralDeviation = lateralDeviation * lateralDirection;
-            const lateralScore = Math.max(0, 50 * (1 - Math.abs(effectiveLateralDeviation) / maxLateralDeviation));
-
-            const totalScore = Math.round(distanceScore + lateralScore);
-            scoreElement.innerHTML = `Score: ${totalScore}/100`;
-            history.push({ score: totalScore, carryDistance, club, lateralDeviation: effectiveLateralDeviation, timestamp: new Date().getTime(), targetDistance });
-            localStorage.setItem('pinSeekerHistory', JSON.stringify(history));
-            drawHistoryGraph();
-            drawClubDistanceGraph();
-        }
-
-        function calculateOverallAverage() {
-            const quantity = parseInt(document.getElementById('quantity').value);
-            let totalScore = 0;
-            let scoredShots = 0;
-            const scores = [];
-
-            for (let i = 0; i < quantity; i++) {
-                const scoreElement = document.getElementById(`score${i}`);
-                const scoreText = scoreElement.innerHTML;
-                if (scoreText.startsWith('Score: ')) {
-                    const score = parseInt(scoreText.replace('Score: ', '').replace('/100', ''));
-                    if (!isNaN(score)) {
-                        totalScore += score;
-                        scoredShots++;
-                        scores.push({
-                            index: i,
-                            score: score,
-                            carryDistance: parseFloat(document.getElementById(`carryDistance${i}`).value),
-                            lateralDeviation: parseFloat(document.getElementById(`lateralDeviation${i}`).value) * parseInt(document.getElementById(`lateralDirection${i}`).value),
-                            club: document.getElementById(`club${i}`).value
-                        });
-                    }
+        for (let i = 0; i < quantity; i++) {
+            const scoreElement = document.getElementById(`score${i}`);
+            const scoreText = scoreElement.innerHTML;
+            if (scoreText.startsWith('Score: ')) {
+                const score = parseInt(scoreText.replace('Score: ', '').replace('/100', ''));
+                if (!isNaN(score)) {
+                    totalScore += score;
+                    scoredShots++;
+                    scores.push({
+                        index: i,
+                        score: score,
+                        carryDistance: parseFloat(document.getElementById(`carryDistance${i}`).value),
+                        lateralDeviation: parseFloat(document.getElementById(`lateralDeviation${i}`).value) * parseInt(document.getElementById(`lateralDirection${i}`).value),
+                        club: document.getElementById(`club${i}`).value
+                    });
                 }
             }
-
-            const overallScoreElement = document.getElementById('overallScore');
-            if (scoredShots === 0) {
-                overallScoreElement.innerHTML = '<span style="color: #D32F2F;">No scores entered yet. Score at least one shot first.</span>';
-                document.getElementById('insights').innerHTML = '';
-            } else {
-                const averageScore = Math.round(totalScore / scoredShots);
-                overallScoreElement.innerHTML = `Overall Average Score: ${averageScore}/100`;
-                generateInsights(scores, averageScore);
-            }
         }
 
-        function generateInsights(scores, overallAverage) {
-            const insightsDiv = document.getElementById('insights');
-            let insights = '<h3>Performance Insights</h3><ul>';
+        const overallScoreElement = document.getElementById('overallScore');
+        if (scoredShots === 0) {
+            overallScoreElement.innerHTML = '<span style="color: #D32F2F;">No scores entered yet. Score at least one shot first.</span>';
+            document.getElementById('insights').innerHTML = '';
+        } else {
+            const averageScore = Math.round(totalScore / scoredShots);
+            overallScoreElement.innerHTML = `Overall Average Score: ${averageScore}/100`;
+            generateInsights(scores, averageScore);
+        }
+    }
 
-            if (scores.length === 0) {
-                insights += '<li>No shots scored yet.</li>';
+    function generateInsights(scores, overallAverage) {
+        const insightsDiv = document.getElementById('insights');
+        let insights = '<h3>Session Insights</h3><ul>';
+
+        if (scores.length === 0) {
+            insights += '<li>No shots scored yet.</li>';
+        } else {
+            // General session summary
+            const avgLateral = scores.reduce((sum, s) => sum + Math.abs(s.lateralDeviation), 0) / scores.length;
+            insights += `<li>Session average score: ${overallAverage}/100, with ${avgLateral.toFixed(1)} feet average lateral deviation.</li>`;
+
+            // Identify key area for improvement
+            let keyIssue = '';
+            const rightMisses = scores.filter(s => s.lateralDeviation > 0).length;
+            if (rightMisses / scores.length > 0.6) {
+                keyIssue = 'You frequently miss right. Focus on adjusting your aim slightly left to compensate.';
+            } else if (rightMisses / scores.length < 0.4) {
+                keyIssue = 'You frequently miss left. Practice aligning your stance slightly right of the target.';
             } else {
-                const avgLateral = scores.reduce((sum, s) => sum + Math.abs(s.lateralDeviation), 0) / scores.length;
-                insights += `<li>Average lateral deviation: ${avgLateral.toFixed(1)} feet.</li>`;
-
-                const rightMisses = scores.filter(s => s.lateralDeviation > 0).length;
-                if (rightMisses / scores.length > 0.6) {
-                    insights += '<li>You tend to miss right. Consider adjusting your aim or swing path.</li>';
-                } else if (rightMisses / scores.length < 0.4) {
-                    insights += '<li>You tend to miss left. Check your alignment or grip.</li>';
-                }
-
-                const clubScores = {};
+                const clubVariances = {};
                 history.forEach(entry => {
-                    if (!clubScores[entry.club]) clubScores[entry.club] = [];
-                    clubScores[entry.club].push(entry.score);
+                    if (!clubVariances[entry.club]) clubVariances[entry.club] = [];
+                    clubVariances[entry.club].push(entry.carryDistance);
                 });
-                for (const club in clubScores) {
-                    const scores = clubScores[club];
-                    const avg = scores.reduce((sum, s) => sum + s, 0) / scores.length;
-                    const variance = scores.reduce((sum, s) => sum + Math.pow(s - avg, 2), 0) / scores.length;
-                    if (variance > 100) {
-                        insights += `<li>High variance with ${club}. Practice for more consistency.</li>';
+                let maxVarianceClub = '';
+                let maxVariance = 0;
+                for (const club in clubVariances) {
+                    const distances = clubVariances[club];
+                    if (distances.length > 1) {
+                        const avg = distances.reduce((sum, d) => sum + d, 0) / distances.length;
+                        const variance = distances.reduce((sum, d) => sum + Math.pow(d - avg, 2), 0) / distances.length;
+                        if (variance > maxVariance) {
+                            maxVariance = variance;
+                            maxVarianceClub = club;
+                        }
                     }
                 }
-
-                if (overallAverage > 80) {
-                    insights += '<li>Great job! Your distance control is excellent.</li>';
-                } else if (overallAverage > 60) {
-                    insights += '<li>Solid performance. Focus on reducing lateral errors.</li>';
+                if (maxVariance > 100) {
+                    keyIssue = `Inconsistent distances with ${maxVarianceClub}. Practice this club to improve consistency.`;
                 } else {
-                    insights += '<li>Keep practicing! Try shorter shots to build confidence.</li>';
-                }
-
-                const clubDistances = {};
-                history.forEach(entry => {
-                    if (!clubDistances[entry.club]) clubDistances[entry.club] = [];
-                    clubDistances[entry.club].push(entry.carryDistance);
-                });
-                for (const club in clubDistances) {
-                    const distances = clubDistances[club];
-                    const avgDistance = distances.reduce((sum, d) => sum + d, 0) / distances.length;
-                    insights += `<li>Average distance with ${club}: ${avgDistance.toFixed(1)} yards.</li>`;
+                    keyIssue = overallAverage > 60 ? 'Solid session. Refine your distance control with shorter clubs.' : 'Focus on hitting closer to target distances to boost your score.';
                 }
             }
-
-            insights += '</ul>';
-            insightsDiv.innerHTML = insights;
+            insights += `<li><strong>Key Action:</strong> ${keyIssue}</li>`;
         }
 
-        function drawHistoryGraph() {
-            const container = document.getElementById('history-graph');
-            container.innerHTML = '<canvas id="history-canvas"></canvas>';
-            const canvas = document.getElementById('history-canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        insights += '</ul>';
+        insightsDiv.innerHTML = insights;
+    }
 
-            const sessions = {};
-            history.forEach(entry => {
-                const date = new Date(entry.timestamp).toLocaleDateString();
-                if (!sessions[date]) sessions[date] = [];
-                sessions[date].push(entry.score);
-            });
+    function drawHistoryGraph() {
+        const container = document.getElementById('history-graph');
+        container.innerHTML = '<canvas id="history-canvas"></canvas>';
+        const canvas = document.getElementById('history-canvas');
+        const ctx = canvas.getElementById('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const dates = Object.keys(sessions).sort();
-            const scores = dates.map(date => {
-                const sessionScores = sessions[date];
-                return sessionScores.length > 0 ? Math.round(sessionScores.reduce((sum, score) => sum + score, 0) / sessionScores.length) : 0;
-            });
-
-            new Chart(canvas, {
-                type: 'line',
-                data: {
-                    labels: dates.map(d => d.split('/')[1] + '/' + d.split('/')[2]),
-                    datasets: [{
-                        label: 'Average Score',
-                        data: scores,
-                        borderColor: '#2E7D32',
-                        backgroundColor: 'rgba(46, 125, 50, 0.2)',
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 5,
-                        pointHoverRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { min: 0, max: 100, title: { display: true, text: 'Score' } },
-                        x: { title: { display: true, text: 'Date' } }
-                    },
-                    plugins: {
-                        legend: { display: true, position: 'top' },
-                        tooltip: { enabled: true }
-                    }
-                }
-            });
-        }
-
-        function drawClubDistanceGraph() {
-            const container = document.getElementById('club-distance-graph');
-            container.innerHTML = '<canvas id="club-distance-canvas"></canvas>';
-            const canvas = document.getElementById('club-distance-canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            if (bag.length === 0) return;
-
-            const clubAverages = {};
-            bag.forEach(club => {
-                const clubData = history.filter(entry => entry.club === club);
-                clubAverages[club] = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length) : 0;
-            });
-
-            new Chart(canvas, {
-                type: 'bar',
-                data: {
-                    labels: bag.map(club => club.replace(/\s\(.*\)/, '').slice(0, 3)),
-                    datasets: [{
-                        label: 'Average Distance (yards)',
-                        data: bag.map(club => clubAverages[club]),
-                        backgroundColor: 'rgba(46, 125, 50, 0.8)',
-                        borderColor: '#D4A017',
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: { title: { display: true, text: 'Distance (yards)' } },
-                        y: { title: { display: true, text: 'Clubs' } }
-                    },
-                    plugins: {
-                        legend: { display: true, position: 'top' },
-                        tooltip: { enabled: true }
-                    }
-                }
-            });
-        }
-
-        function exportData() {
-            const data = JSON.stringify({ history, bag });
-            const blob = new Blob([data], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'pin_seeker_data.json';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function importData() {
-            document.getElementById('import-file').click();
-        }
-
-        document.getElementById('import-file').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (data.history && data.bag) {
-                        history = data.history;
-                        bag = data.bag;
-                        localStorage.setItem('pinSeekerHistory', JSON.stringify(history));
-                        localStorage.setItem('pinSeekerBag', JSON.stringify(bag));
-                        alert('Data imported successfully!');
-                        showPage('user-container');
-                    } else {
-                        alert('Invalid file format.');
-                    }
-                } catch (err) {
-                    alert('Error importing data.');
-                }
-            };
-            reader.readAsText(file);
+        const sessions = {};
+        history.forEach(entry => {
+            const date = new Date(entry.timestamp).toLocaleDateString();
+            if (!sessions[date]) sessions[date] = [];
+            sessions[date].push(entry.score);
         });
 
-        function resetAll() {
-            document.getElementById('minRange').value = '50';
-            document.getElementById('maxRange').value = '200';
-            document.getElementById('quantity').value = '5';
-            document.getElementById('results').innerHTML = '';
-            document.getElementById('overallScore').innerHTML = '';
-            document.getElementById('insights').innerHTML = '';
-        }
-    </script>
-</body>
-</html>
+        const dates = Object.keys(sessions).sort();
+        const scores = dates.map(date => {
+            const sessionScores = sessions[date];
+            return sessionScores.length > 0 ? Math.round(sessionScores.reduce((sum, score) => sum + score, 0) / sessionScores.length) : 0;
+        });
+
+        new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels: dates.map(d => d.split('/')[1] + '/' + d.split('/')[2]),
+                datasets: [{
+                    label: 'Average Score',
+                    data: scores,
+                    borderColor: '#2E7D32',
+                    backgroundColor: 'rgba(46, 125, 50, 0.2)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { min: 0, max: 100, title: { display: true, text: 'Score' } },
+                    x: { title: { display: true, text: 'Date' } }
+                },
+                plugins: {
+                    legend: { display: true, position: 'top' },
+                    tooltip: { enabled: true }
+                }
+            }
+        });
+    }
+
+    function drawClubDistanceGraph() {
+        const container = document.getElementById('club-distance-graph');
+        container.innerHTML = '<canvas id="club-distance-canvas"></canvas>';
+        const canvas = document.getElementById('club-distance-canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (bag.length === 0) return;
+
+        const clubAverages = {};
+        bag.forEach(club => {
+            const clubData = history.filter(entry => entry.club === club);
+            clubAverages[club] = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length) : 0;
+        });
+
+        new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels: bag.map(club => club.replace(/\s\(.*\)/, '').slice(0, 3)),
+                datasets: [{
+                    label: 'Average Distance (yards)',
+                    data: bag.map(club => clubAverages[club]),
+                    backgroundColor: 'rgba(46, 125, 50, 0.8)',
+                    borderColor: '#D4A017',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Distance (yards)' } },
+                    y: { title: { display: true, text: 'Clubs' } }
+                },
+                plugins: {
+                    legend: { display: true, position: 'top' },
+                    tooltip: { enabled: true }
+                }
+            }
+        });
+    }
+
+    function exportData() {
+        const data = JSON.stringify({ history, bag });
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'pin_seeker_data.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function importData() {
+        document.getElementById('import-file').click();
+    }
+
+    document.getElementById('import-file').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                if (data.history && data.bag) {
+                    history = data.history;
+                    bag = data.bag;
+                    localStorage.setItem('pinSeekerHistory', JSON.stringify(history));
+                    localStorage.setItem('pinSeekerBag', JSON.stringify(bag));
+                    alert('Data imported successfully!');
+                    showPage('user-container');
+                } else {
+                    alert('Invalid file format.');
+                }
+            } catch (err) {
+                alert('Error importing data.');
+            }
+        };
+        reader.readAsText(file);
+    });
+
+    function resetAll() {
+        document.getElementById('minRange').value = '50';
+        document.getElementById('maxRange').value = '200';
+        document.getElementById('quantity').value = '5';
+        document.getElementById('results').innerHTML = '';
+        document.getElementById('overallScore').innerHTML = '';
+        document.getElementById('insights').innerHTML = '';
+    }
+</script>
