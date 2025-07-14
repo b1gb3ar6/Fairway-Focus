@@ -116,8 +116,8 @@
             margin-bottom: 20px;
         }
 
-        /* Profile Tab */
-        #profile-container {
+        /* Profile Tab (renamed to User) */
+        #user-container {
             display: none;
         }
 
@@ -275,12 +275,8 @@
             margin-top: 10px;
         }
 
-        /* History Tab */
-        #history-container {
-            display: none;
-        }
-
-        #history-container.active {
+        /* User Tab (includes History graph) */
+        #user-container.active {
             display: block;
         }
 
@@ -300,6 +296,17 @@
 
         /* Club Distance Graph */
         #club-distance-graph {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Score Graph */
+        #score-graph {
             width: 100%;
             max-width: 600px;
             height: 300px;
@@ -388,12 +395,24 @@
         <h2>Menu</h2>
         <div class="sub-tab-buttons">
             <button onclick="showSubPage('game-container')">Game</button>
-            <button onclick="showSubPage('profile-container')">Profile</button>
-            <button onclick="showSubPage('history-container')">History</button>
+            <button onclick="showSubPage('user-container')">User</button>
         </div>
-        <div id="game-container" class="container"></div>
-        <div id="profile-container" class="container">
-            <h2>Set Up Your Bag</h2>
+        <div id="game-container" class="container">
+            <div class="input-group">
+                <label>Min Distance (yards):</label>
+                <input type="number" id="minRange" value="50">
+                <label>Max Distance (yards):</label>
+                <input type="number" id="maxRange" value="200">
+                <label>Number of Shots:</label>
+                <input type="number" id="quantity" value="5">
+            </div>
+            <button onclick="generateShots()">Generate Shots</button>
+            <button onclick="resetAll()" class="reset">Reset All</button>
+            <div id="results"></div>
+            <div id="overallScore"></div>
+        </div>
+        <div id="user-container" class="container">
+            <h2>User Profile</h2>
             <div class="club-checkbox">
                 <input type="checkbox" id="driver" name="clubs" value="Driver">
                 <label for="driver">Driver</label>
@@ -471,8 +490,6 @@
                 <input type="number" id="lw-deg" placeholder="°" min="40" max="60" value="60">
             </div>
             <button id="save-bag">Save Bag</button>
-        </div>
-        <div id="history-container" class="container">
             <ul id="history-list"></ul>
             <canvas id="score-graph"></canvas>
             <canvas id="club-distance-graph"></canvas>
@@ -488,8 +505,9 @@
             document.getElementById(pageId).classList.add('active');
             if (pageId === 'menu-container') {
                 showSubPage('game-container'); // Default to Game sub-tab
-            } else if (pageId === 'history-container') {
+            } else if (pageId === 'user-container') {
                 updateHistory();
+                drawGraph();
                 drawClubDistanceGraph();
             }
         }
@@ -529,7 +547,7 @@
             }
 
             if (bag.length === 0) {
-                resultsDiv.innerHTML = 'Please set up your bag in the Profile tab first.';
+                resultsDiv.innerHTML = 'Please set up your bag in the User tab first.';
                 return;
             }
 
