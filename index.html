@@ -825,9 +825,10 @@
 
             console.log('History Data:', history);
 
-            // Group shots into sessions
+            // Group shots into sessions and store timestamps
             const sessions = [];
             let currentSession = [];
+            let currentSessionTimestamp = null;
             let lastTimestamp = null;
             const timeThreshold = 60 * 1000;
 
@@ -835,26 +836,35 @@
             history.forEach(entry => {
                 if (lastTimestamp && entry.timestamp - lastTimestamp > timeThreshold) {
                     if (currentSession.length > 0) {
-                        sessions.push(currentSession);
+                        sessions.push({ scores: currentSession, timestamp: currentSessionTimestamp });
                         currentSession = [];
                     }
                 }
                 currentSession.push(entry.score);
+                if (!currentSessionTimestamp) currentSessionTimestamp = entry.timestamp;
                 lastTimestamp = entry.timestamp;
             });
             if (currentSession.length > 0) {
-                sessions.push(currentSession);
+                sessions.push({ scores: currentSession, timestamp: currentSessionTimestamp });
             }
 
             const recentSessions = sessions.slice(-5);
             const scores = recentSessions.map(session => {
-                return session.length > 0 ? Math.round(session.reduce((sum, score) => sum + score, 0) / session.length) : 0;
+                return session.scores.length > 0 ? Math.round(session.scores.reduce((sum, score) => sum + score, 0) / session.scores.length) : 0;
+            });
+
+            // Format timestamps as DD/MM/YY
+            const labels = recentSessions.map(session => {
+                const date = new Date(session.timestamp);
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = String(date.getFullYear()).slice(-2);
+                return `${day}/${month}/${year}`;
             });
 
             console.log('Recent Sessions:', recentSessions);
             console.log('Session Scores:', scores);
-
-            const labels = scores.map((_, index) => `Session ${index + 1}`);
+            console.log('Session Labels:', labels);
 
             const overallAverage = scores.length > 0 ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0;
 
@@ -885,17 +895,20 @@
             if (trend === 'up') {
                 arrow = '⬆';
                 numberColor = '#008000'; // Darker green for number
-                arrowColor = '#00FF00'; // Bright green for arrow
+                arrowColor = '#00FF00'; // Bright green for up arrow
             } else if (trend === 'down') {
                 arrow = '⬇';
                 numberColor = '#FF0000'; // Red for number
-                arrowColor = '#FF0000'; // Red for arrow
+                arrowColor = '#FF0000'; // Red for down arrow
             }
+            // Center the number and arrow as a unit
+            const numberX = arrow ? 26 : 30; // Shift left if arrow is present
+            const arrowX = 38; // Position arrow to the right of number
             averageCircle.innerHTML = `
                 <svg width="60" height="60">
                     <circle cx="30" cy="30" r="28" fill="rgba(255, 255, 255, 0.9)" stroke="#2E7D32" stroke-width="2" />
-                    <text x="30" y="30" font-family="Montserrat" font-size="18" font-weight="bold" fill="${numberColor}" text-anchor="middle" dominant-baseline="central">${number}</text>
-                    ${arrow ? `<text x="48" y="30" font-family="Montserrat" font-size="12" font-weight="bold" fill="${arrowColor}" text-anchor="middle" dominant-baseline="central">${arrow}</text>` : ''}
+                    <text x="${numberX}" y="30" font-family="Montserrat" font-size="18" font-weight="bold" fill="${numberColor}" text-anchor="middle" dominant-baseline="central">${number}</text>
+                    ${arrow ? `<text x="${arrowX}" y="30" font-family="Montserrat" font-size="12" font-weight="bold" fill="${arrowColor}" text-anchor="middle" dominant-baseline="central">${arrow}</text>` : ''}
                 </svg>
             `;
 
