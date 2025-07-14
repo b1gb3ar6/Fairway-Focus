@@ -134,14 +134,16 @@
         }
 
         .club-checkbox {
-            margin: 10px 0;
+            margin: 5px 0; /* Reduced margin for mobile */
             color: #1A3C34;
             display: flex;
             align-items: center;
+            justify-content: flex-start; /* Align items to start */
+            padding-left: 5px; /* Minimal padding */
         }
 
         .club-checkbox input[type="checkbox"] {
-            margin-right: 10px;
+            margin-right: 5px; /* Reduced margin */
         }
 
         .club-checkbox input[type="number"] {
@@ -149,15 +151,15 @@
             border: 2px solid #D4A017;
             border-radius: 4px;
             font-size: 1rem;
-            width: 60px;
+            width: 50px; /* Slightly reduced width for mobile */
             text-align: center;
-            margin-left: 10px;
+            margin-left: 5px; /* Reduced margin */
             background: #FFFFFF;
             color: #1A3C34;
         }
 
         #save-bag {
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         /* Input group */
@@ -301,6 +303,11 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
+        #club-distance-graph {
+            width: 600px; /* Increased width */
+            height: 500px; /* Increased height for horizontal layout */
+        }
+
         /* Responsive design */
         @media (max-width: 600px) {
             header {
@@ -355,6 +362,11 @@
 
             #history-graph, #club-distance-graph {
                 height: 200px;
+                width: 100%; /* Adjusted for mobile */
+            }
+
+            #club-distance-graph {
+                height: 400px; /* Adjusted for mobile */
             }
 
             .shot .target-distance {
@@ -364,6 +376,21 @@
             #insights {
                 font-size: 1rem;
                 padding: 5px;
+            }
+
+            .club-checkbox {
+                margin: 3px 0; /* Further reduced margin for mobile */
+                padding-left: 2px; /* Minimal padding */
+                justify-content: flex-start; /* Keep items aligned */
+            }
+
+            .club-checkbox input[type="checkbox"] {
+                margin-right: 3px; /* Further reduced margin */
+            }
+
+            .club-checkbox input[type="number"] {
+                width: 40px; /* Further reduced width for mobile */
+                margin-left: 3px; /* Further reduced margin */
             }
         }
     </style>
@@ -556,8 +583,12 @@
                     <select id="club${i}">${clubOptions}</select>
                     <label>Carry Distance (yards):</label>
                     <input type="number" id="carryDistance${i}" placeholder="Enter carry distance">
-                    <label>Lateral Deviation (feet, left or right):</label>
+                    <label>Lateral Deviation (feet):</label>
                     <input type="number" id="lateralDeviation${i}" placeholder="Enter feet off target line">
+                    <select id="lateralDirection${i}">
+                        <option value="1">Right</option>
+                        <option value="-1">Left</option>
+                    </select>
                     <button onclick="calculateScore(${i}, ${distance})">Score Shot</button>
                     <p id="score${i}"></p>
                 `;
@@ -573,6 +604,7 @@
         function calculateScore(shotIndex, targetDistance) {
             const carryDistance = parseFloat(document.getElementById(`carryDistance${shotIndex}`).value);
             const lateralDeviation = parseFloat(document.getElementById(`lateralDeviation${shotIndex}`).value);
+            const lateralDirection = parseInt(document.getElementById(`lateralDirection${shotIndex}`).value);
             const club = document.getElementById(`club${shotIndex}`).value;
             const scoreElement = document.getElementById(`score${shotIndex}`);
 
@@ -586,11 +618,12 @@
             const distanceScore = Math.max(0, 50 * (1 - distanceError / maxDistanceError));
 
             const maxLateralDeviation = 90;
-            const lateralScore = Math.max(0, 50 * (1 - Math.abs(lateralDeviation) / maxLateralDeviation));
+            const effectiveLateralDeviation = lateralDeviation * lateralDirection; // Positive for right, negative for left
+            const lateralScore = Math.max(0, 50 * (1 - Math.abs(effectiveLateralDeviation) / maxLateralDeviation));
 
             const totalScore = Math.round(distanceScore + lateralScore);
             scoreElement.innerHTML = `Score: ${totalScore}/100`;
-            history.push({ score: totalScore, carryDistance, club, timestamp: new Date().getTime() });
+            history.push({ score: totalScore, carryDistance, club, lateralDeviation: effectiveLateralDeviation, timestamp: new Date().getTime() });
             localStorage.setItem('pinSeekerHistory', JSON.stringify(history));
             drawHistoryGraph();
             drawClubDistanceGraph();
@@ -610,7 +643,7 @@
                     if (!isNaN(score)) {
                         totalScore += score;
                         scoredShots++;
-                        scores.push({ index: i, score: score, carryDistance: parseFloat(document.getElementById(`carryDistance${i}`).value), lateralDeviation: parseFloat(document.getElementById(`lateralDeviation${i}`).value) });
+                        scores.push({ index: i, score: score, carryDistance: parseFloat(document.getElementById(`carryDistance${i}`).value), lateralDeviation: parseFloat(document.getElementById(`lateralDeviation${i}`).value) * parseInt(document.getElementById(`lateralDirection${i}`).value) });
                     }
                 }
             }
@@ -633,8 +666,10 @@
             // Calculate average distance error and lateral deviation
             const distanceErrors = scores.map(s => Math.abs(s.carryDistance - (Math.random() * 150 + 50))); // Simulated target distance
             const avgDistanceError = distanceErrors.reduce((sum, err) => sum + err, 0) / distanceErrors.length || 0;
-            const lateralDeviations = scores.map(s => Math.abs(s.lateralDeviation));
+            const lateralDeviations = scores.map(s => s.lateralDeviation);
             const avgLateralDeviation = lateralDeviations.reduce((sum, dev) => sum + dev, 0) / lateralDeviations.length || 0;
+            const leftDeviations = lateralDeviations.filter(dev => dev < 0).length;
+            const rightDeviations = lateralDeviations.filter(dev => dev > 0).length;
 
             // Compare with historical data if available
             const historicalSessions = {};
@@ -656,29 +691,36 @@
             }
 
             if (avgDistanceError > 20) {
-                insights += '<li>Work on distance control: Your average distance error is ${avgDistanceError.toFixed(1)} yards, which is relatively high.</li>';
+                insights += '<li>Work on distance control: Your average distance error is ' + avgDistanceError.toFixed(1) + ' yards, which is relatively high.</li>';
             } else if (avgDistanceError > 10) {
                 insights += '<li>Distance control is decent, but aim to reduce errors below 10 yards for better results.</li>';
             } else {
-                insights += '<li>Great distance control! Your average error is only ${avgDistanceError.toFixed(1)} yards.</li>';
+                insights += '<li>Great distance control! Your average error is only ' + avgDistanceError.toFixed(1) + ' yards.</li>';
             }
 
-            if (avgLateralDeviation > 30) {
-                insights += '<li>Improve lateral accuracy: Your average deviation is ${avgLateralDeviation.toFixed(1)} feet, suggesting inconsistency in alignment.</li>';
-            } else if (avgLateralDeviation > 15) {
+            if (Math.abs(avgLateralDeviation) > 30) {
+                insights += '<li>Improve lateral accuracy: Your average deviation is ' + Math.abs(avgLateralDeviation).toFixed(1) + ' feet, suggesting inconsistency.';
+                if (leftDeviations > rightDeviations) {
+                    insights += ' You tend to miss left more often (' + leftDeviations + ' vs ' + rightDeviations + ' right).</li>';
+                } else if (rightDeviations > leftDeviations) {
+                    insights += ' You tend to miss right more often (' + rightDeviations + ' vs ' + leftDeviations + ' left).</li>';
+                } else {
+                    insights += ' Your misses are balanced between left and right.</li>';
+                }
+            } else if (Math.abs(avgLateralDeviation) > 15) {
                 insights += '<li>Lateral accuracy is fair; try to keep deviations under 15 feet for precision.</li>';
             } else {
-                insights += '<li>Excellent lateral accuracy! Your average deviation is just ${avgLateralDeviation.toFixed(1)} feet.</li>';
+                insights += '<li>Excellent lateral accuracy! Your average deviation is just ' + Math.abs(avgLateralDeviation).toFixed(1) + ' feet.</li>';
             }
 
             if (prevAverage !== null) {
                 const improvement = overallAverage - prevAverage;
                 if (improvement > 5) {
-                    insights += '<li>Great progress! You’ve improved by ${improvement} points since your last session.</li>';
+                    insights += '<li>Great progress! You’ve improved by ' + improvement + ' points since your last session.</li>';
                 } else if (improvement > 0) {
-                    insights += '<li>Steady improvement! You’re up by ${improvement} points from your last session.</li>';
+                    insights += '<li>Steady improvement! You’re up by ' + improvement + ' points from your last session.</li>';
                 } else if (improvement < -5) {
-                    insights += '<li>Area to work on: Your score dropped by ${-improvement} points compared to your last session.</li>';
+                    insights += '<li>Area to work on: Your score dropped by ' + (-improvement) + ' points compared to your last session.</li>';
                 }
             }
 
@@ -707,7 +749,7 @@
 
             ctx.strokeStyle = '#D4A017';
             ctx.lineWidth = 2;
-            ctx.font = '14px Montserrat'; // Crisp text
+            ctx.font = '14px Montserrat';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
@@ -771,54 +813,61 @@
                 clubAverages[club] = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length) : 0;
             });
 
-            ctx.strokeStyle = '#D4A017';
+            ctx.strokeStyle = '#D4A017'; // Gold for axes
             ctx.lineWidth = 2;
-            ctx.font = '14px Montserrat'; // Crisp text
+            ctx.font = '14px Montserrat';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
             const maxDistance = Math.max(...Object.values(clubAverages), 300); // Cap at 300 for scale
             const numClubs = bag.length;
-            const barWidth = (canvas.width - 70) / (numClubs + 1);
+            const barHeight = (canvas.height - 50) / numClubs;
+            const clubAbbreviations = {
+                'Driver': 'Dr', '3 Wood': '3w', '5 Wood': '5w', '7 Wood': '7w', '9 Wood': '9w',
+                'Hybrid': 'Hy', '2 Iron': '2i', '3 Iron': '3i', '4 Iron': '4i', '5 Iron': '5i',
+                '6 Iron': '6i', '7 Iron': '7i', '8 Iron': '8i', '9 Iron': '9i',
+                'Pitching Wedge': 'PW', 'Gap Wedge': 'GW', 'Sand Wedge': 'SW', 'Lob Wedge': 'LW'
+            };
 
             // Draw axes
             ctx.beginPath();
             ctx.moveTo(50, canvas.height - 30);
-            ctx.lineTo(50, 20);
-            ctx.moveTo(50, canvas.height - 30);
             ctx.lineTo(canvas.width - 20, canvas.height - 30);
+            ctx.moveTo(50, 0);
+            ctx.lineTo(50, canvas.height - 30);
             ctx.stroke();
 
             // Draw distance markers
-            ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.strokeStyle = 'rgba(212, 160, 23, 0.5)'; // Lighter Gold
             for (let i = 0; i <= maxDistance; i += 50) {
                 ctx.beginPath();
                 ctx.moveTo(50 + (i / maxDistance) * (canvas.width - 70), canvas.height - 30);
-                ctx.lineTo(50 + (i / maxDistance) * (canvas.width - 70), 20);
+                ctx.lineTo(50 + (i / maxDistance) * (canvas.width - 70), canvas.height - 40);
                 ctx.stroke();
                 ctx.fillStyle = '#1A3C34';
                 ctx.fillText(i, 50 + (i / maxDistance) * (canvas.width - 70), canvas.height - 15);
             }
 
-            // Draw bars
+            // Draw horizontal bars
             bag.forEach((club, index) => {
-                const x = 50 + (index + 0.5) * barWidth;
+                const y = canvas.height - 30 - (index + 0.5) * barHeight;
                 const distance = clubAverages[club];
-                const barHeight = distance > 0 ? (distance / maxDistance) * (canvas.height - 50) : 0;
-                const grad = ctx.createLinearGradient(x - barWidth / 2, canvas.height - 30, x - barWidth / 2, canvas.height - 30 - barHeight);
-                const hue = (index * 30) % 360; // Different hue for each club
-                grad.addColorStop(0, `hsl(${hue}, 70%, 80%)`); // Light at bottom
-                grad.addColorStop(1, `hsl(${hue}, 70%, 40%)`); // Dark at top
+                const barLength = distance > 0 ? (distance / maxDistance) * (canvas.width - 70) : 0;
+                const grad = ctx.createLinearGradient(50, y, 50 + barLength, y);
+                grad.addColorStop(0, '#2E7D32'); // Light Green at start
+                grad.addColorStop(1, '#1A3C34'); // Forest Green at end
                 ctx.fillStyle = grad;
-                ctx.fillRect(x - barWidth / 2, canvas.height - 30 - barHeight, barWidth - 10, barHeight);
+                ctx.fillRect(50, y - barHeight / 2, barLength, barHeight - 2);
                 if (distance > 0) {
-                    ctx.fillStyle = '#FFFFFF'; // White text for visibility
-                    ctx.fillText(distance, x, canvas.height - 30 - barHeight / 2);
+                    ctx.fillStyle = '#D4A017'; // Gold text for visibility
+                    ctx.fillText(distance, 50 + barLength, y);
                 }
+                ctx.fillStyle = '#1A3C34';
+                ctx.fillText(clubAbbreviations[club.replace(/\s\(.*\)/, '')] || club, 40, y);
             });
 
             // Labels
-            ctx.fillStyle = '#FFFFFF';
+            ctx.fillStyle = '#D4A017';
             ctx.fillText('Distance (yards)', canvas.width / 2, canvas.height - 10);
             ctx.save();
             ctx.translate(25, canvas.height / 2);
