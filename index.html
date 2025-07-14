@@ -878,7 +878,7 @@
 
             // Update average circle in DOM
             const averageCircle = document.getElementById('average-circle');
-            let text = `${overallAverage}/100`;
+            let text = `${overallAverage}`;
             let color = '#000000';
             if (trend === 'up') {
                 text += ' ⬆';
@@ -992,11 +992,6 @@
             gradientFill.addColorStop(0, '#2E7D32');
             gradientFill.addColorStop(1, '#1A3C34');
 
-            // Create gradient for bar border
-            const gradientBorder = ctx.createLinearGradient(0, 0, canvas.width, 0);
-            gradientBorder.addColorStop(0, '#D4A017');
-            gradientBorder.addColorStop(1, '#FFD700');
-
             new Chart(canvas, {
                 type: 'bar',
                 data: {
@@ -1005,8 +1000,8 @@
                         label: 'Average Distance (yards)',
                         data: bag.map(club => clubAverages[club]),
                         backgroundColor: gradientFill,
-                        borderColor: gradientBorder,
-                        borderWidth: 2
+                        borderWidth: 0, // No border
+                        borderRadius: 10 // Rounded ends
                     }]
                 },
                 options: {
