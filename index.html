@@ -547,11 +547,11 @@
     <div id="game-container" class="container active">
         <div class="input-group">
             <label for="minRange">Min Distance (yards):</label>
-            <input type="number" id="minRange" value="50" min="0">
+            <input type="number" id="minRange" value="50" min="0" aria-label="Minimum distance in yards">
             <label for="maxRange">Max Distance (yards):</label>
-            <input type="number" id="maxRange" value="200" max="300">
+            <input type="number" id="maxRange" value="200" max="300" aria-label="Maximum distance in yards">
             <label for="quantity">Number of Shots:</label>
-            <input type="number" id="quantity" value="5" min="1" max="50">
+            <input type="number" id="quantity" value="5" min="1" max="50" aria-label="Number of shots">
         </div>
         <button id="generate-shots" aria-label="Generate shots">Generate Shots</button>
         <button id="reset-all" class="reset" aria-label="Reset all inputs">Reset All</button>
@@ -590,11 +590,13 @@
     </div>
 
     <script>
+        console.log('Script started loading');
         let history = JSON.parse(localStorage.getItem('pinSeekerHistory')) || [];
         let bag = JSON.parse(localStorage.getItem('pinSeekerBag')) || [];
 
         // Page navigation
         function showPage(pageId) {
+            console.log(`showPage called with pageId: ${pageId}`);
             const currentPage = document.querySelector('.container.active:not(#bag-section)');
             if (currentPage && currentPage.id === pageId) return;
 
@@ -622,6 +624,7 @@
         }
 
         function updateNavButtons(activePage) {
+            console.log(`updateNavButtons called with activePage: ${activePage}`);
             document.querySelectorAll('.nav-bar button').forEach(button => {
                 button.classList.remove('active');
                 if (button.id === (activePage === 'game-container' ? 'nav-game' : 'nav-user')) {
@@ -632,6 +635,7 @@
 
         // Bag management
         function toggleBagSection() {
+            console.log('toggleBagSection called');
             const bagSection = document.getElementById('bag-section');
             console.log('Toggle Bag clicked, current display:', bagSection.style.display, 'classes:', bagSection.classList);
             bagSection.classList.toggle('active');
@@ -653,6 +657,7 @@
         }
 
         function toggleClub(button, club) {
+            console.log(`toggleClub called for club: ${club}`);
             button.classList.toggle('selected');
             const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
             if (degInput && button.classList.contains('selected')) {
@@ -671,6 +676,7 @@
         }
 
         function saveBag() {
+            console.log('saveBag called');
             bag = [];
             document.querySelectorAll('.club-button.selected').forEach(button => {
                 const club = button.getAttribute('data-club');
@@ -705,6 +711,7 @@
 
         // Game logic
         function generateShots() {
+            console.log('generateShots called');
             try {
                 const min = parseInt(document.getElementById('minRange').value);
                 const max = parseInt(document.getElementById('maxRange').value);
@@ -768,6 +775,7 @@
         }
 
         function suggestClub(targetDistance, club) {
+            console.log(`suggestClub called for targetDistance: ${targetDistance}, club:`, club);
             const clubName = typeof club === 'string' ? club : `${club.name}${club.loft && ['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(club.name) ? ` (${club.loft}°)` : club.loft ? ` (${club.loft}°)` : ''}`;
             const clubData = history.filter(entry => entry.club === clubName);
             if (clubData.length === 0) return false;
@@ -776,6 +784,7 @@
         }
 
         function calculateScore(shotIndex, targetDistance) {
+            console.log(`calculateScore called for shotIndex: ${shotIndex}, targetDistance: ${targetDistance}`);
             const carryDistance = parseFloat(document.getElementById(`carryDistance${shotIndex}`).value);
             const lateralDeviation = parseFloat(document.getElementById(`lateralDeviation${shotIndex}`).value);
             const lateralDirection = parseInt(document.getElementById(`lateralDirection${shotIndex}`).value);
@@ -808,6 +817,7 @@
         }
 
         function calculateOverallAverage() {
+            console.log('calculateOverallAverage called');
             const quantity = parseInt(document.getElementById('quantity').value);
             let totalScore = 0;
             let scoredShots = 0;
@@ -846,6 +856,7 @@
         }
 
         function generateInsights(scores, overallAverage) {
+            console.log('generateInsights called');
             const insightsDiv = document.getElementById('insights');
             let insights = '<h3>Session Insights</h3><ul>';
 
@@ -894,6 +905,7 @@
         }
 
         function drawHistoryGraph() {
+            console.log('drawHistoryGraph called');
             const container = document.getElementById('history-graph');
             container.innerHTML = '<canvas id="history-canvas"></canvas>';
             const canvas = document.getElementById('history-canvas');
@@ -1026,6 +1038,7 @@
         }
 
         function drawClubDistanceGraph() {
+            console.log('drawClubDistanceGraph called');
             const container = document.getElementById('club-distance-graph');
             container.innerHTML = '<canvas id="club-distance-canvas"></canvas>';
             const canvas = document.getElementById('club-distance-canvas');
@@ -1123,8 +1136,8 @@
                 },
                 options: {
                     indexAxis: 'y',
-                    responsive: true;
-                    maintainAspectRatio: false;
+                    responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         x: {
                             title: { display: true, text: 'Distance (yards)' },
@@ -1149,6 +1162,7 @@
         }
 
         function resetAll() {
+            console.log('resetAll called');
             document.getElementById('minRange').value = '50';
             document.getElementById('maxRange').value = '200';
             document.getElementById('quantity').value = '5';
@@ -1159,8 +1173,11 @@
         }
 
         // Initialize event listeners
+        console.log('Attaching DOMContentLoaded listener');
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOMContentLoaded event fired');
             // Load saved bag
+            console.log('Loading saved bag');
             bag.forEach(club => {
                 const clubName = typeof club === 'string' ? club.replace(/\s\(.*\)/, '') : club.name;
                 const button = document.querySelector(`.club-button[data-club="${clubName}"]`);
@@ -1175,6 +1192,7 @@
                     }
                 }
             });
+            console.log('Saved bag loaded:', bag);
 
             // Navigation buttons
             const navGameButton = document.getElementById('nav-game');
@@ -1239,9 +1257,12 @@
             }
 
             // Initialize page
+            console.log('Initializing page to game-container');
             showPage('game-container');
             updateNavButtons('game-container');
+            console.log('Page initialization complete');
         });
+        console.log('Script loaded successfully');
     </script>
 </body>
 </html>
