@@ -315,12 +315,25 @@
             gap: 10px;
             flex-wrap: wrap;
             margin: 15px 0;
+            align-items: center; /* Added to vertically center-align items */
         }
 
-        label {
+        .input-group label {
             font-weight: 600;
             color: var(--text-dark);
             font-size: 0.9rem;
+            margin-right: 5px; /* Adjusted for better spacing */
+        }
+
+        .input-group input[type="number"] {
+            padding: 8px;
+            border: 2px solid var(--accent-gold);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: #FFFFFF;
+            color: var(--text-dark);
+            transition: var(--transition);
+            text-align: center; /* Centers the number input value */
         }
 
         input, select {
@@ -517,7 +530,7 @@
             border-radius: 6px;
             font-size: 0.8rem;
             white-space: nowrap;
-            z-index: 210;
+            z-index: 300; /* Increased to appear above header */
         }
 
         @media (max-width: 393px) {
@@ -1154,36 +1167,36 @@
             `;
 
             new Chart(canvas, {
-    type: 'line',
-    data: {
-        labels: labels,
-        datasets: [{
-            label: 'Average Score',
-            data: scores,
-            borderColor: '#2E7D32',
-            backgroundColor: 'rgba(46, 125, 50, 0.3)',
-            fill: true, // Added semicolon here
-            tension: 0.4,
-            pointRadius: 5,
-            pointHoverRadius: 8,
-            pointBackgroundColor: '#2E7D32',
-            pointBorderColor: '#FFFFFF',
-            pointBorderWidth: 2
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            y: { min: 0, max: 100, title: { display: true, text: 'Score' } },
-            x: { title: { display: true, text: 'Session' } }
-        },
-        plugins: {
-            legend: { display: false },
-            tooltip: { enabled: true }
-        }
-    }
-});
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Average Score',
+                        data: scores,
+                        borderColor: '#2E7D32',
+                        backgroundColor: 'rgba(46, 125, 50, 0.3)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: '#2E7D32',
+                        pointBorderColor: '#FFFFFF',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { min: 0, max: 100, title: { display: true, text: 'Score' } },
+                        x: { title: { display: true, text: 'Session' } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true }
+                    }
+                }
+            });
         }
 
         function drawClubDistanceGraph() {
