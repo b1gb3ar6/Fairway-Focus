@@ -61,6 +61,12 @@
             border-color: var(--accent-gold);
         }
 
+        body.dark-mode #user-container h2,
+        body.dark-mode #progress-dashboard h3,
+        body.dark-mode #goal-setting label {
+            color: var(--text-light);
+        }
+
         header {
             position: sticky;
             top: 0;
@@ -620,6 +626,31 @@
             button {
                 max-width: 160px;
             }
+
+            .shot {
+                display: grid;
+                grid-template-rows: auto auto auto auto auto;
+                gap: 10px;
+            }
+
+            .shot select[id^="club"],
+            .shot input[id^="carryDistance"],
+            .shot .dispersion-group {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .shot .dispersion-group {
+                flex-direction: row;
+                gap: 10px;
+                justify-content: center;
+            }
+
+            .shot input[id^="lateralDeviation"],
+            .shot select[id^="lateralDirection"] {
+                width: 80px;
+            }
         }
     </style>
 </head>
@@ -946,19 +977,26 @@
 
                 shotDiv.innerHTML = `
                     <p class="target-distance">Shot ${i + 1}: Hit to <strong>${distance}</strong> yards</p>
-                    <label for="club${i}" data-tooltip="Select club used">Club Used:</label>
-                    <select id="club${i}" aria-label="Select club for shot ${i + 1}">${clubOptions}</select>
-                    <label for="carryDistance${i}" data-tooltip="Enter actual distance hit">Carry Distance (yards):</label>
-                    <input type="number" id="carryDistance${i}" placeholder="Enter carry distance" min="0" max="400" aria-label="Carry distance for shot ${i + 1}">
-                    <label for="lateralDeviation${i}" data-tooltip="Enter feet off target line">Lateral Deviation (feet):</label>
-                    <input type="number" id="lateralDeviation${i}" placeholder="Enter feet off target line" min="0" max="200" aria-label="Lateral deviation for shot ${i + 1}">
-                    <label for="lateralDirection${i}" data-tooltip="Select miss direction">Direction:</label>
-                    <select id="lateralDirection${i}" aria-label="Lateral direction for shot ${i + 1}">
-                        <option value="1">Right</option>
-                        <option value="-1">Left</option>
-                    </select>
-                    <button class="score-shot" data-shot-index="${i}" data-distance="${distance}" aria-label="Score shot ${i + 1}" data-tooltip="Calculate shot score">Score Shot</button>
-                    <p id="score${i}" aria-live="polite"></p>
+                    <div class="shot-inputs">
+                        <div>
+                            <label for="club${i}" data-tooltip="Select club used">Club Used:</label>
+                            <select id="club${i}" aria-label="Select club for shot ${i + 1}">${clubOptions}</select>
+                        </div>
+                        <div>
+                            <label for="carryDistance${i}" data-tooltip="Enter actual distance hit">Carry Distance (yards):</label>
+                            <input type="number" id="carryDistance${i}" placeholder="Enter carry distance" min="0" max="400" aria-label="Carry distance for shot ${i + 1}">
+                        </div>
+                        <div class="dispersion-group">
+                            <label for="lateralDeviation${i}" data-tooltip="Enter feet off target line">Dispersion (ft):</label>
+                            <input type="number" id="lateralDeviation${i}" placeholder="Enter feet off line" min="0" max="200" aria-label="Dispersion for shot ${i + 1}">
+                            <select id="lateralDirection${i}" aria-label="Dispersion direction for shot ${i + 1}">
+                                <option value="1">Right</option>
+                                <option value="-1">Left</option>
+                            </select>
+                        </div>
+                        <button class="score-shot" data-shot-index="${i}" data-distance="${distance}" aria-label="Score shot ${i + 1}" data-tooltip="Calculate shot score">Score Shot</button>
+                        <p id="score${i}" aria-live="polite"></p>
+                    </div>
                 `;
                 resultsDiv.appendChild(shotDiv);
 
@@ -985,13 +1023,13 @@
 
         function calculateScore(shotIndex, targetDistance) {
             const carryDistance = parseFloat(document.getElementById(`carryDistance${shotIndex}`).value);
-            const lateralDeviation = parseFloat(document.getElementById(`lateralDeviation${shotIndex}`).value);
+            const lateralDeviation = parseFloat(document.getElementById(`lateralDeviation${i}`).value);
             const lateralDirection = parseInt(document.getElementById(`lateralDirection${shotIndex}`).value);
             const club = document.getElementById(`club${shotIndex}`).value.split('|')[0];
             const scoreElement = document.getElementById(`score${shotIndex}`);
 
             if (isNaN(carryDistance) || isNaN(lateralDeviation) || carryDistance < 0 || lateralDeviation < 0) {
-                scoreElement.innerHTML = '<span style="color: #D32F2F;">Please enter valid numbers for carry distance and lateral deviation (≥ 0).</span>';
+                scoreElement.innerHTML = '<span style="color: #D32F2F;">Please enter valid numbers for carry distance and dispersion (≥ 0).</span>';
                 return;
             }
 
@@ -1059,7 +1097,7 @@
                 insights += '<li>No shots scored yet.</li>';
             } else {
                 const avgLateral = scores.reduce((sum, s) => sum + Math.abs(s.lateralDeviation), 0) / scores.length;
-                insights += `<li>Session average score: ${overallAverage}/100, with ${avgLateral.toFixed(1)} feet average lateral deviation.</li>`;
+                insights += `<li>Session average score: ${overallAverage}/100, with ${avgLateral.toFixed(1)} ft average dispersion.</li>`;
                 const rightMisses = scores.filter(s => s.lateralDeviation > 0).length;
                 let keyIssue = '';
                 if (rightMisses / scores.length > 0.6) {
@@ -1244,7 +1282,7 @@
                 alert('No data to export.');
                 return;
             }
-            const csv = ['Timestamp,Club,Target Distance,Carry Distance,Lateral Deviation,Score,Note'];
+            const csv = ['Timestamp,Club,Target Distance,Carry Distance,Dispersion,Score,Note'];
             history.forEach(entry => {
                 const date = new Date(entry.timestamp).toISOString();
                 csv.push(`${date},"${entry.club}",${entry.targetDistance},${entry.carryDistance},${entry.lateralDeviation},${entry.score},"${entry.note || ''}"`);
