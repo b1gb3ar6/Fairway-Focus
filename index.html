@@ -28,6 +28,7 @@
             color: #FFFFFF;
             line-height: 1.5;
             min-height: 100vh;
+            position: relative;
         }
 
         /* Header with logo */
@@ -116,6 +117,7 @@
         /* User Tab */
         #user-container {
             text-align: center;
+            position: relative;
         }
 
         #user-container h2 {
@@ -125,14 +127,25 @@
         }
 
         #user-container button#toggle-bag {
-            margin: 0 auto 20px;
+            margin: 0 auto 10px;
             display: block;
         }
 
         #bag-section {
             display: none;
-            margin-top: 15px;
+            margin-top: 0;
             text-align: left;
+            position: absolute;
+            top: 70px; /* Above history-graph */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            padding: 10px;
+            z-index: 10;
         }
 
         #bag-section.active {
@@ -150,7 +163,7 @@
         }
 
         .club-checkbox input[type="checkbox"] {
-            margin-right: 5px;
+            margin-right: 2px; /* Minimal padding */
         }
 
         .club-checkbox input[type="number"] {
@@ -166,7 +179,7 @@
         }
 
         #save-bag {
-            margin-top: 15px;
+            margin-top: 10px;
         }
 
         /* Input group */
@@ -309,6 +322,7 @@
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
+            position: relative;
         }
 
         #history-graph {
@@ -397,7 +411,7 @@
             }
 
             .club-checkbox input[type="checkbox"] {
-                margin-right: 3px;
+                margin-right: 2px;
             }
 
             .club-checkbox input[type="number"] {
@@ -407,7 +421,12 @@
 
             .club-checkbox label {
                 white-space: nowrap;
-                margin-right: 10px;
+                margin-right: 5px;
+            }
+
+            #bag-section {
+                top: 60px; /* Adjusted for mobile */
+                width: 95%;
             }
         }
     </style>
@@ -444,8 +463,6 @@
     <div id="user-container" class="container">
         <h2>Profile</h2>
         <button id="toggle-bag">Bag</button>
-        <canvas id="history-graph"></canvas>
-        <canvas id="club-distance-graph"></canvas>
         <div id="bag-section" class="container">
             <div class="club-checkbox">
                 <input type="checkbox" id="driver" name="clubs" value="Driver">
@@ -525,6 +542,8 @@
             </div>
             <button id="save-bag">Save Bag</button>
         </div>
+        <canvas id="history-graph"></canvas>
+        <canvas id="club-distance-graph"></canvas>
     </div>
 
     <script>
@@ -702,7 +721,7 @@
             ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
             // Draw axes without labels
-            const margin = 20; // Reduced margin since no labels
+            const margin = 20;
             ctx.beginPath();
             ctx.moveTo(margin, canvas.height - margin);
             ctx.lineTo(canvas.width - margin, canvas.height - margin);
@@ -710,7 +729,7 @@
             ctx.lineTo(margin, margin);
             ctx.stroke();
 
-            // Draw data points and line (no grid or labels)
+            // Draw data points and line
             if (dates.length > 0) {
                 const stepX = (canvas.width - 2 * margin) / (dates.length - 1 || 1);
                 const stepY = (canvas.height - 2 * margin) / 100;
@@ -728,7 +747,67 @@
                     ctx.stroke();
                 }
                 ctx.stroke();
+
+                // Add date labels on X-axis
+                for (let i = 0; i < dates.length; i++) {
+                    const x = margin + i * stepX;
+                    ctx.fillStyle = '#1A3C34';
+                    ctx.fillText(dates[i].split('/')[1] + '/' + dates[i].split('/')[2], x, canvas.height - margin + 15); // MM/YY
+                }
             }
+
+            // Add hover effect for score
+            canvas.addEventListener('mousemove', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Redraw to clear previous tooltip
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.strokeRect(0, 0, canvas.width, canvas.height);
+                ctx.beginPath();
+                ctx.moveTo(margin, canvas.height - margin);
+                ctx.lineTo(canvas.width - margin, canvas.height - margin);
+                ctx.moveTo(margin, canvas.height - margin);
+                ctx.lineTo(margin, margin);
+                ctx.stroke();
+
+                if (dates.length > 0) {
+                    const stepX = (canvas.width - 2 * margin) / (dates.length - 1 || 1);
+                    const stepY = (canvas.height - 2 * margin) / 100;
+                    ctx.beginPath();
+                    ctx.moveTo(margin, canvas.height - margin - (scores[0] * stepY));
+                    ctx.strokeStyle = '#2E7D32';
+                    for (let i = 0; i < scores.length; i++) {
+                        const plotX = margin + i * stepX;
+                        const plotY = canvas.height - margin - (scores[i] * stepY);
+                        ctx.lineTo(plotX, plotY);
+                        ctx.beginPath();
+                        ctx.arc(plotX, plotY, 4, 0, Math.PI * 2);
+                        ctx.fillStyle = '#1A3C34';
+                        ctx.fill();
+                        ctx.stroke();
+
+                        // Check if mouse is near a point
+                        if (Math.abs(x - plotX) < 10 && Math.abs(y - plotY) < 10) {
+                            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                            ctx.fillRect(plotX + 5, plotY - 20, 40, 20);
+                            ctx.fillStyle = '#FFFFFF';
+                            ctx.fillText(scores[i], plotX + 25, plotY - 10);
+                            ctx.fillStyle = '#1A3C34';
+                            ctx.fillText(dates[i].split('/')[1] + '/' + dates[i].split('/')[2], plotX + 25, plotY + 5);
+                        }
+                    }
+                    ctx.stroke();
+                }
+
+                // Redraw date labels
+                for (let i = 0; i < dates.length; i++) {
+                    const x = margin + i * stepX;
+                    ctx.fillStyle = '#1A3C34';
+                    ctx.fillText(dates[i].split('/')[1] + '/' + dates[i].split('/')[2], x, canvas.height - margin + 15);
+                }
+            });
         }
 
         function drawClubDistanceGraph() {
@@ -777,8 +856,8 @@
                 ctx.fillText(i, x, canvas.height - margin + 15);
             }
 
-            // Draw horizontal bars (Driver top to Lob Wedge bottom)
-            const barHeight = (canvas.height - 2 * margin) / bag.length; // Equal spacing
+            // Draw horizontal bars with increased padding
+            const barHeight = (canvas.height - 2 * margin) / (bag.length + 2); // Extra spacing
             bag.forEach((club, index) => {
                 const y = margin + index * barHeight;
                 const distance = clubAverages[club];
