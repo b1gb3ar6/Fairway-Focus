@@ -197,6 +197,7 @@
             visibility: hidden;
             transition: opacity 0.3s ease, transform 0.3s ease;
             position: relative;
+            border: 3px solid #2E7D32; /* Added border for visibility */
         }
 
         #user-container #bag-section.active {
@@ -212,8 +213,8 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            background: #D32F2F;
-            color: #FFFFFF;
+            background: #D3D3D3; /* Light grey background */
+            color: #333333; /* Dark grey X */
             border: none;
             border-radius: 50%;
             width: 30px;
@@ -228,7 +229,7 @@
         }
 
         #close-bag:hover {
-            background: #B71C1C;
+            background: #B0B0B0; /* Slightly darker grey on hover */
             transform: scale(1.1);
         }
 
@@ -514,6 +515,7 @@
                 max-height: calc(100vh - 80px);
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
+                border: 3px solid #2E7D32; /* Added border for mobile */
             }
 
             #average-circle {
@@ -750,7 +752,6 @@
                     }).join('');
 
                     console.log(`Building shot ${i + 1} HTML`);
-                    // Simplified template literal
                     shotDiv.innerHTML = `
                         <p class="target-distance">Shot ${i + 1}: Hit to <strong>${distance}</strong> yards</p>
                         <label for="club${i}">Club Used:</label>
