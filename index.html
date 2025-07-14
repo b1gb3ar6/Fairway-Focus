@@ -136,7 +136,7 @@
             margin-top: 0;
             text-align: left;
             position: absolute;
-            top: 70px; /* Above history-graph */
+            top: 70px;
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
@@ -152,30 +152,21 @@
             display: block;
         }
 
-        .club-checkbox {
-            margin: 5px 0;
-            color: #1A3C34;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            max-width: 100%;
-            padding-left: 5px;
-        }
-
-        .club-checkbox input[type="checkbox"] {
-            margin-right: 2px; /* Minimal padding */
-        }
-
-        .club-checkbox input[type="number"] {
-            padding: 4px;
+        .club-button {
+            margin: 5px 5px 5px 0;
+            padding: 5px 10px;
+            background: #FFFFFF;
             border: 2px solid #D4A017;
             border-radius: 4px;
+            cursor: pointer;
             font-size: 0.9rem;
-            width: 40px;
-            text-align: center;
-            margin-left: 5px;
-            background: #FFFFFF;
             color: #1A3C34;
+            transition: background 0.3s;
+        }
+
+        .club-button.selected {
+            background: #2E7D32;
+            color: #FFFFFF;
         }
 
         #save-bag {
@@ -369,7 +360,7 @@
                 align-items: center;
             }
 
-            input, select, .club-checkbox input[type="number"] {
+            input, select, .club-button {
                 width: 100%;
                 max-width: 150px;
             }
@@ -402,30 +393,13 @@
                 padding: 5px;
             }
 
-            .club-checkbox {
-                margin: 3px 0;
-                padding-left: 2px;
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                max-width: 100%;
-            }
-
-            .club-checkbox input[type="checkbox"] {
-                margin-right: 2px;
-            }
-
-            .club-checkbox input[type="number"] {
-                width: 35px;
-                margin-left: 3px;
-            }
-
-            .club-checkbox label {
-                white-space: nowrap;
-                margin-right: 5px;
+            .club-button {
+                margin: 3px 3px 3px 0;
+                padding: 4px 8px;
             }
 
             #bag-section {
-                top: 60px; /* Adjusted for mobile */
+                top: 60px;
                 width: 95%;
             }
         }
@@ -464,82 +438,24 @@
         <h2>Profile</h2>
         <button id="toggle-bag">Bag</button>
         <div id="bag-section" class="container">
-            <div class="club-checkbox">
-                <input type="checkbox" id="driver" name="clubs" value="Driver">
-                <label for="driver">Driver</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="3-wood" name="clubs" value="3 Wood">
-                <label for="3-wood">3 Wood</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="5-wood" name="clubs" value="5 Wood">
-                <label for="5-wood">5 Wood</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="7-wood" name="clubs" value="7 Wood">
-                <label for="7-wood">7 Wood</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="9-wood" name="clubs" value="9 Wood">
-                <label for="9-wood">9 Wood</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="hybrid" name="clubs" value="Hybrid">
-                <label for="hybrid">Hybrid</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="2-iron" name="clubs" value="2 Iron">
-                <label for="2-iron">2 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="3-iron" name="clubs" value="3 Iron">
-                <label for="3-iron">3 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="4-iron" name="clubs" value="4 Iron">
-                <label for="4-iron">4 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="5-iron" name="clubs" value="5 Iron">
-                <label for="5-iron">5 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="6-iron" name="clubs" value="6 Iron">
-                <label for="6-iron">6 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="7-iron" name="clubs" value="7 Iron">
-                <label for="7-iron">7 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="8-iron" name="clubs" value="8 Iron">
-                <label for="8-iron">8 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="9-iron" name="clubs" value="9 Iron">
-                <label for="9-iron">9 Iron</label>
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="pw" name="clubs" value="Pitching Wedge">
-                <label for="pw">Pitching Wedge</label>
-                <input type="number" id="pw-deg" placeholder="°" min="40" max="60">
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="gw" name="clubs" value="Gap Wedge">
-                <label for="gw">Gap Wedge</label>
-                <input type="number" id="gw-deg" placeholder="°" min="40" max="60">
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="sw" name="clubs" value="Sand Wedge">
-                <label for="sw">Sand Wedge</label>
-                <input type="number" id="sw-deg" placeholder="°" min="40" max="60">
-            </div>
-            <div class="club-checkbox">
-                <input type="checkbox" id="lw" name="clubs" value="Lob Wedge">
-                <label for="lw">Lob Wedge</label>
-                <input type="number" id="lw-deg" placeholder="°" min="40" max="60" value="60">
-            </div>
+            <button class="club-button" onclick="toggleClub(this, 'Driver')">Driver</button>
+            <button class="club-button" onclick="toggleClub(this, '3 Wood')">3 Wood</button>
+            <button class="club-button" onclick="toggleClub(this, '5 Wood')">5 Wood</button>
+            <button class="club-button" onclick="toggleClub(this, '7 Wood')">7 Wood</button>
+            <button class="club-button" onclick="toggleClub(this, '9 Wood')">9 Wood</button>
+            <button class="club-button" onclick="toggleClub(this, 'Hybrid')">Hybrid</button>
+            <button class="club-button" onclick="toggleClub(this, '2 Iron')">2 Iron</button>
+            <button class="club-button" onclick="toggleClub(this, '3 Iron')">3 Iron</button>
+            <button class="club-button" onclick="toggleClub(this, '4 Iron')">4 Iron</button>
+            <button class="club-button" onclick="toggleClub(this, '5 Iron')">5 Iron</button>
+            <button class="club-button" onclick="toggleClub(this, '6 Iron')">6 Iron</button>
+            <button class="club-button" onclick="toggleClub(this, '7 Iron')">7 Iron</button>
+            <button class="club-button" onclick="toggleClub(this, '8 Iron')">8 Iron</button>
+            <button class="club-button" onclick="toggleClub(this, '9 Iron')">9 Iron</button>
+            <button class="club-button" onclick="toggleClub(this, 'Pitching Wedge')">Pitching Wedge</button>
+            <button class="club-button" onclick="toggleClub(this, 'Gap Wedge')">Gap Wedge</button>
+            <button class="club-button" onclick="toggleClub(this, 'Sand Wedge')">Sand Wedge</button>
+            <button class="club-button" onclick="toggleClub(this, 'Lob Wedge')">Lob Wedge</button>
             <button id="save-bag">Save Bag</button>
         </div>
         <canvas id="history-graph"></canvas>
@@ -556,6 +472,14 @@
             bagSection.classList.toggle('active');
         });
 
+        function toggleClub(button, club) {
+            button.classList.toggle('selected');
+            const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
+            if (degInput) {
+                degInput.value = degInput.value || (club === "Lob Wedge" ? "60" : "");
+            }
+        }
+
         function showPage(pageId) {
             document.querySelectorAll('.container').forEach(container => container.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
@@ -567,9 +491,9 @@
 
         function saveBag() {
             bag = [];
-            document.querySelectorAll('.club-checkbox input[type="checkbox"]:checked').forEach(checkbox => {
-                const club = checkbox.value;
-                const degInput = document.getElementById(`${checkbox.id}-deg`);
+            document.querySelectorAll('.club-button.selected').forEach(button => {
+                const club = button.textContent;
+                const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
                 const degree = degInput ? parseInt(degInput.value) || (club === "Lob Wedge" ? 60 : null) : null;
                 bag.push(degree ? `${club} (${degree}°)` : club);
             });
@@ -720,8 +644,8 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-            // Draw axes without labels
-            const margin = 20;
+            // Draw axes with labels
+            const margin = 40;
             ctx.beginPath();
             ctx.moveTo(margin, canvas.height - margin);
             ctx.lineTo(canvas.width - margin, canvas.height - margin);
@@ -729,13 +653,35 @@
             ctx.lineTo(margin, margin);
             ctx.stroke();
 
+            // Draw grid lines and score markers (0 to 100)
+            ctx.strokeStyle = 'rgba(212, 160, 23, 0.2)';
+            for (let i = 0; i <= 100; i += 20) {
+                const y = canvas.height - margin - (i / 100) * (canvas.height - 2 * margin);
+                ctx.beginPath();
+                ctx.moveTo(margin, y);
+                ctx.lineTo(canvas.width - margin, y);
+                ctx.stroke();
+                ctx.fillStyle = '#1A3C34';
+                ctx.fillText(i, margin - 20, y + 5);
+            }
+
+            // Draw date markers on X-axis
+            if (dates.length > 0) {
+                const stepX = (canvas.width - 2 * margin) / (dates.length - 1 || 1);
+                for (let i = 0; i < dates.length; i++) {
+                    const x = margin + i * stepX;
+                    ctx.fillStyle = '#1A3C34';
+                    ctx.fillText(dates[i].split('/')[1] + '/' + dates[i].split('/')[2], x, canvas.height - margin + 15);
+                }
+            }
+
             // Draw data points and line
             if (dates.length > 0) {
                 const stepX = (canvas.width - 2 * margin) / (dates.length - 1 || 1);
                 const stepY = (canvas.height - 2 * margin) / 100;
                 ctx.beginPath();
                 ctx.moveTo(margin, canvas.height - margin - (scores[0] * stepY));
-                ctx.strokeStyle = '#2E7D32'; // Light Green
+                ctx.strokeStyle = '#2E7D32';
                 for (let i = 0; i < scores.length; i++) {
                     const x = margin + i * stepX;
                     const y = canvas.height - margin - (scores[i] * stepY);
@@ -747,21 +693,23 @@
                     ctx.stroke();
                 }
                 ctx.stroke();
-
-                // Add date labels on X-axis
-                for (let i = 0; i < dates.length; i++) {
-                    const x = margin + i * stepX;
-                    ctx.fillStyle = '#1A3C34';
-                    ctx.fillText(dates[i].split('/')[1] + '/' + dates[i].split('/')[2], x, canvas.height - margin + 15); // MM/YY
-                }
             }
+
+            // Add axis labels
+            ctx.fillStyle = '#D4A017';
+            ctx.save();
+            ctx.translate(margin / 2, canvas.height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Score', 0, 0);
+            ctx.restore();
+            ctx.fillText('Date', canvas.width / 2, canvas.height - margin / 2);
 
             // Add hover effect for score
             canvas.addEventListener('mousemove', function(e) {
                 const rect = canvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-                ctx.clearRect(0, 0, canvas.width, canvas.height); // Redraw to clear previous tooltip
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.strokeRect(0, 0, canvas.width, canvas.height);
@@ -771,6 +719,17 @@
                 ctx.moveTo(margin, canvas.height - margin);
                 ctx.lineTo(margin, margin);
                 ctx.stroke();
+
+                ctx.strokeStyle = 'rgba(212, 160, 23, 0.2)';
+                for (let i = 0; i <= 100; i += 20) {
+                    const y = canvas.height - margin - (i / 100) * (canvas.height - 2 * margin);
+                    ctx.beginPath();
+                    ctx.moveTo(margin, y);
+                    ctx.lineTo(canvas.width - margin, y);
+                    ctx.stroke();
+                    ctx.fillStyle = '#1A3C34';
+                    ctx.fillText(i, margin - 20, y + 5);
+                }
 
                 if (dates.length > 0) {
                     const stepX = (canvas.width - 2 * margin) / (dates.length - 1 || 1);
@@ -788,25 +747,30 @@
                         ctx.fill();
                         ctx.stroke();
 
-                        // Check if mouse is near a point
                         if (Math.abs(x - plotX) < 10 && Math.abs(y - plotY) < 10) {
                             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-                            ctx.fillRect(plotX + 5, plotY - 20, 40, 20);
+                            ctx.fillRect(plotX + 5, plotY - 20, 50, 20);
                             ctx.fillStyle = '#FFFFFF';
-                            ctx.fillText(scores[i], plotX + 25, plotY - 10);
-                            ctx.fillStyle = '#1A3C34';
-                            ctx.fillText(dates[i].split('/')[1] + '/' + dates[i].split('/')[2], plotX + 25, plotY + 5);
+                            ctx.fillText(`Score: ${scores[i]}`, plotX + 25, plotY - 10);
+                            ctx.fillText(`Date: ${dates[i].split('/')[1]}/${dates[i].split('/')[2]}`, plotX + 25, plotY + 5);
                         }
                     }
                     ctx.stroke();
                 }
 
-                // Redraw date labels
                 for (let i = 0; i < dates.length; i++) {
                     const x = margin + i * stepX;
                     ctx.fillStyle = '#1A3C34';
                     ctx.fillText(dates[i].split('/')[1] + '/' + dates[i].split('/')[2], x, canvas.height - margin + 15);
                 }
+
+                ctx.fillStyle = '#D4A017';
+                ctx.save();
+                ctx.translate(margin / 2, canvas.height / 2);
+                ctx.rotate(-Math.PI / 2);
+                ctx.fillText('Score', 0, 0);
+                ctx.restore();
+                ctx.fillText('Date', canvas.width / 2, canvas.height - margin / 2);
             });
         }
 
@@ -818,9 +782,12 @@
             if (bag.length === 0) return;
 
             const clubAverages = {};
+            let maxDistance = 0;
             bag.forEach(club => {
                 const clubData = history.filter(entry => entry.club === club);
-                clubAverages[club] = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length) : 0;
+                const avg = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length) : 0;
+                clubAverages[club] = avg;
+                maxDistance = Math.max(maxDistance, avg);
             });
 
             ctx.strokeStyle = '#D4A017'; // Gold
@@ -831,58 +798,51 @@
 
             // Draw background and border
             ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, canvas.height, canvas.width); // Adjusted for vertical layout
+            ctx.strokeRect(0, 0, canvas.height, canvas.width);
 
-            // Draw axes
-            const margin = 50;
+            // Define column widths
+            const margin = 20;
+            const col1Width = 40; // Narrow column for club shorthand
+            const col2Width = canvas.width - col1Width - 40 - 2 * margin; // Middle column for bars
+            const col3Width = 40; // Narrow column for yards
+            const barHeight = (canvas.height - 2 * margin) / bag.length;
+
+            // Draw axes and labels
             ctx.beginPath();
+            ctx.moveTo(margin + col1Width, margin);
+            ctx.lineTo(margin + col1Width, canvas.height - margin);
+            ctx.moveTo(margin + col1Width + col2Width, margin);
+            ctx.lineTo(margin + col1Width + col2Width, canvas.height - margin);
             ctx.moveTo(margin, canvas.height - margin);
-            ctx.lineTo(canvas.width - 20, canvas.height - margin);
-            ctx.moveTo(margin, 0);
-            ctx.lineTo(margin, canvas.height - margin);
+            ctx.lineTo(canvas.width - margin, canvas.height - margin);
             ctx.stroke();
 
-            // Draw grid lines and distance markers (0 to 300)
-            const maxDistance = 300;
-            ctx.strokeStyle = 'rgba(212, 160, 23, 0.2)'; // Light Gold
-            for (let i = 0; i <= maxDistance; i += 50) {
-                const x = margin + (i / maxDistance) * (canvas.width - margin - 20);
-                ctx.beginPath();
-                ctx.moveTo(x, margin);
-                ctx.lineTo(x, canvas.height - margin);
-                ctx.stroke();
-                ctx.fillStyle = '#1A3C34';
-                ctx.fillText(i, x, canvas.height - margin + 15);
-            }
-
-            // Draw horizontal bars with increased padding
-            const barHeight = (canvas.height - 2 * margin) / (bag.length + 2); // Extra spacing
-            bag.forEach((club, index) => {
-                const y = margin + index * barHeight;
-                const distance = clubAverages[club];
-                const barLength = distance > 0 ? (distance / maxDistance) * (canvas.width - margin - 20) : 0;
-                const grad = ctx.createLinearGradient(margin, y, margin + barLength, y);
-                grad.addColorStop(0, '#2E7D32');
-                grad.addColorStop(1, '#1A3C34');
-                ctx.fillStyle = grad;
-                ctx.fillRect(margin, y - barHeight / 2, barLength, barHeight - 2);
-                if (distance > 0) {
-                    ctx.fillStyle = '#D4A017';
-                    ctx.fillText(distance, margin + barLength, y);
-                }
-                ctx.fillStyle = '#1A3C34';
-                ctx.fillText(club.replace(/\s\(.*\)/, '').slice(0, 3), margin - 20, y);
-            });
-
-            // Labels
             ctx.fillStyle = '#D4A017';
-            ctx.fillText('Distance (yards)', canvas.width / 2, canvas.height - margin / 2);
             ctx.save();
-            ctx.translate(margin - 20, canvas.height / 2);
+            ctx.translate(margin + col1Width / 2, canvas.height / 2);
             ctx.rotate(-Math.PI / 2);
             ctx.fillText('Clubs', 0, 0);
             ctx.restore();
+            ctx.fillText('Distance (yards)', margin + col1Width + col2Width / 2, canvas.height - margin / 2);
+
+            // Draw bars and data
+            bag.forEach((club, index) => {
+                const y = margin + index * barHeight;
+                const distance = clubAverages[club];
+                const barLength = distance > 0 ? (distance / maxDistance) * col2Width : 0;
+                const grad = ctx.createLinearGradient(margin + col1Width, y, margin + col1Width + barLength, y);
+                grad.addColorStop(0, '#2E7D32');
+                grad.addColorStop(1, '#1A3C34');
+                ctx.fillStyle = grad;
+                ctx.fillRect(margin + col1Width, y - barHeight / 2, barLength, barHeight - 2);
+                ctx.fillStyle = '#1A3C34';
+                ctx.fillText(club.replace(/\s\(.*\)/, '').slice(0, 3), margin + col1Width / 2, y);
+                if (distance > 0) {
+                    ctx.fillStyle = '#D4A017';
+                    ctx.fillText(distance.toString().padStart(3, '0'), margin + col1Width + col2Width + col3Width / 2, y);
+                }
+            });
         }
 
         function resetAll() {
