@@ -652,7 +652,6 @@
             setTimeout(() => {
                 const computedStyle = window.getComputedStyle(bagSection);
                 console.log('After toggle, display:', computedStyle.display, 'visibility:', computedStyle.visibility, 'opacity:', computedStyle.opacity);
-                console.log('Parent (#user-container) overflow:', window.getComputedStyle(document.getElementById('user-container')).overflow);
             }, 300);
         }
 
@@ -731,18 +730,27 @@
                     return;
                 }
 
+                console.log('Building club options');
                 for (let i = 0; i < quantity; i++) {
                     const distance = Math.floor(Math.random() * (max - min + 1)) + min;
                     const shotDiv = document.createElement('div');
                     shotDiv.className = 'shot';
+
+                    // Build club options
                     const clubOptions = bag.map(club => {
                         const clubName = typeof club === 'string' ? club : club.name;
-                        const clubLoft = typeof club === 'string' ? club.match(/\((\d+)°\)/) : club.loft;
-                        const displayName = clubLoft && ['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName) ? `${clubLoft[1] || club.loft}°` : 
-                            clubLoft && ['Hybrid', 'Pitching Wedge'].includes(clubName) ? `${clubName} (${clubLoft[1] || club.loft}°)` : clubName;
+                        const clubLoft = typeof club === 'string' ? (club.match(/\((\d+)°\)/) || [])[1] : club.loft;
+                        const displayName = clubLoft && ['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName)
+                            ? `${clubLoft}°`
+                            : clubLoft && ['Hybrid', 'Pitching Wedge'].includes(clubName)
+                            ? `${clubName} (${clubLoft}°)`
+                            : clubName;
                         const suggestion = suggestClub(distance, club);
-                        return `<option value="${clubName}|${clubLoft ? (clubLoft[1] || club.loft) : ''}" ${suggestion ? 'selected' : ''}>${displayName}${suggestion ? ' (Recommended)' : ''}</option>`;
+                        return `<option value="${clubName}|${clubLoft || ''}" ${suggestion ? 'selected' : ''}>${displayName}${suggestion ? ' (Recommended)' : ''}</option>`;
                     }).join('');
+
+                    console.log(`Building shot ${i + 1} HTML`);
+                    // Simplified template literal
                     shotDiv.innerHTML = `
                         <p class="target-distance">Shot ${i + 1}: Hit to <strong>${distance}</strong> yards</p>
                         <label for="club${i}">Club Used:</label>
@@ -756,22 +764,40 @@
                             <option value="1">Right</option>
                             <option value="-1">Left</option>
                         </select>
-                        <button onclick="calculateScore(${i}, ${distance})" aria-label="Score shot ${i + 1}">Score Shot</button>
+                        <button class="score-shot" data-shot-index="${i}" data-distance="${distance}" aria-label="Score shot ${i + 1}">Score Shot</button>
                         <p id="score${i}"></p>
                     `;
                     resultsDiv.appendChild(shotDiv);
+
+                    // Attach event listener to Score Shot button
+                    const scoreButton = shotDiv.querySelector(`.score-shot[data-shot-index="${i}"]`);
+                    if (scoreButton) {
+                        scoreButton.addEventListener('click', () => {
+                            console.log(`Score Shot button clicked for shot ${i + 1}`);
+                            calculateScore(i, distance);
+                        });
+                        console.log(`Score Shot button listener attached for shot ${i + 1}`);
+                    } else {
+                        console.error(`Score Shot button not found for shot ${i + 1}`);
+                    }
                 }
+
+                console.log('Adding Calculate Overall Average button');
                 const averageButton = document.createElement('button');
                 averageButton.className = 'average-button';
                 averageButton.innerHTML = 'Calculate Overall Average';
                 averageButton.setAttribute('aria-label', 'Calculate overall average score');
-                averageButton.onclick = calculateOverallAverage;
+                averageButton.addEventListener('click', () => {
+                    console.log('Calculate Overall Average button clicked');
+                    calculateOverallAverage();
+                });
                 resultsDiv.appendChild(averageButton);
                 console.log(`Generated ${quantity} shots`);
             } catch (error) {
                 console.error('Error in generateShots:', error);
                 document.getElementById('results').innerHTML = '<p style="color: #D32F2F;">An error occurred while generating shots. Please try again.</p>';
             }
+            console.log('generateShots completed');
         }
 
         function suggestClub(targetDistance, club) {
@@ -780,6 +806,7 @@
             const clubData = history.filter(entry => entry.club === clubName);
             if (clubData.length === 0) return false;
             const avgDistance = clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length;
+            console.log(`suggestClub result for ${clubName}: avgDistance=${avgDistance}, selected=${Math.abs(avgDistance - targetDistance) < 10}`);
             return Math.abs(avgDistance - targetDistance) < 10;
         }
 
@@ -902,6 +929,7 @@
 
             insights += '</ul>';
             insightsDiv.innerHTML = insights;
+            console.log('Insights generated');
         }
 
         function drawHistoryGraph() {
@@ -1016,8 +1044,8 @@
                     }]
                 },
                 options: {
-                    responsive: true;
-                    maintainAspectRatio: false;
+                    responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         y: { 
                             min: 0, 
@@ -1035,6 +1063,7 @@
                     }
                 }
             });
+            console.log('drawHistoryGraph completed');
         }
 
         function drawClubDistanceGraph() {
@@ -1159,6 +1188,7 @@
                 },
                 plugins: [dataLabelsPlugin]
             });
+            console.log('drawClubDistanceGraph completed');
         }
 
         function resetAll() {
