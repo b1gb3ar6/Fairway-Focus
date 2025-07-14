@@ -6,11 +6,13 @@
     <meta name="description" content="Pin Seeker: Master your golf distance control with precision yardage challenges.">
     <meta name="author" content="Your Name">
     <title>Pin Seeker - Golf Distance Control</title>
-    <!-- Google Fonts: Montserrat for a premium look -->
+    <!-- Google Fonts: Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png">
-    <!-- Apple Touch Icon for iOS homescreen -->
+    <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <style>
         /* Reset and global styles */
@@ -31,7 +33,7 @@
             position: relative;
         }
 
-        /* Header with logo */
+        /* Header */
         header {
             display: flex;
             align-items: center;
@@ -66,7 +68,7 @@
             text-align: center;
         }
 
-        /* Container for content */
+        /* Container */
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -150,6 +152,13 @@
 
         #bag-section.active {
             display: block;
+        }
+
+        .club-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
         }
 
         .club-button {
@@ -398,6 +407,10 @@
                 padding: 4px 8px;
             }
 
+            .club-row input {
+                width: 60px;
+            }
+
             #bag-section {
                 top: 60px;
                 width: 95%;
@@ -422,11 +435,11 @@
     <div id="game-container" class="container">
         <div class="input-group">
             <label>Min Distance (yards):</label>
-            <input type="number" id="minRange" value="50">
+            <input type="number" id="minRange" value="50" min="0">
             <label>Max Distance (yards):</label>
-            <input type="number" id="maxRange" value="200">
+            <input type="number" id="maxRange" value="200" max="300">
             <label>Number of Shots:</label>
-            <input type="number" id="quantity" value="5">
+            <input type="number" id="quantity" value="5" min="1" max="50">
         </div>
         <button onclick="generateShots()">Generate Shots</button>
         <button onclick="resetAll()" class="reset">Reset All</button>
@@ -438,25 +451,30 @@
         <h2>Profile</h2>
         <button id="toggle-bag">Bag</button>
         <div id="bag-section" class="container">
-            <button class="club-button" onclick="toggleClub(this, 'Driver')">Driver</button>
-            <button class="club-button" onclick="toggleClub(this, '3 Wood')">3 Wood</button>
-            <button class="club-button" onclick="toggleClub(this, '5 Wood')">5 Wood</button>
-            <button class="club-button" onclick="toggleClub(this, '7 Wood')">7 Wood</button>
-            <button class="club-button" onclick="toggleClub(this, '9 Wood')">9 Wood</button>
-            <button class="club-button" onclick="toggleClub(this, 'Hybrid')">Hybrid</button>
-            <button class="club-button" onclick="toggleClub(this, '2 Iron')">2 Iron</button>
-            <button class="club-button" onclick="toggleClub(this, '3 Iron')">3 Iron</button>
-            <button class="club-button" onclick="toggleClub(this, '4 Iron')">4 Iron</button>
-            <button class="club-button" onclick="toggleClub(this, '5 Iron')">5 Iron</button>
-            <button class="club-button" onclick="toggleClub(this, '6 Iron')">6 Iron</button>
-            <button class="club-button" onclick="toggleClub(this, '7 Iron')">7 Iron</button>
-            <button class="club-button" onclick="toggleClub(this, '8 Iron')">8 Iron</button>
-            <button class="club-button" onclick="toggleClub(this, '9 Iron')">9 Iron</button>
-            <button class="club-button" onclick="toggleClub(this, 'Pitching Wedge')">Pitching Wedge</button>
-            <button class="club-button" onclick="toggleClub(this, 'Gap Wedge')">Gap Wedge</button>
-            <button class="club-button" onclick="toggleClub(this, 'Sand Wedge')">Sand Wedge</button>
-            <button class="club-button" onclick="toggleClub(this, 'Lob Wedge')">Lob Wedge</button>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Driver')">Driver</button></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '3 Wood')">3 Wood</button></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '5 Wood')">5 Wood</button></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '7 Wood')">7 Wood</button></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '9 Wood')">9 Wood</button></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Hybrid')">Hybrid</button><input type="number" id="hybrid-deg" placeholder="°" min="15" max="30" style="width: 60px;"></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '2 Iron')">2 Iron</button></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '3 Iron')">3 Iron</button></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '4 Iron')">4 Iron</button></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '5 Iron')">5 Iron</button></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '6 Iron')">6 Iron</button></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '7 Iron')">7 Iron</button></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '8 Iron')">8 Iron</button></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '9 Iron')">9 Iron</button></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Pitching Wedge')">Pitching Wedge</button><input type="number" id="pitching-wedge-deg" placeholder="°" min="40" max="50" style="width: 60px;"></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Gap Wedge')">Gap Wedge</button><input type="number" id="gap-wedge-deg" placeholder="°" min="45" max="55" style="width: 60px;"></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Sand Wedge')">Sand Wedge</button><input type="number" id="sand-wedge-deg" placeholder="°" min="50" max="58" style="width: 60px;"></div>
+            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Lob Wedge')">Lob Wedge</button><input type="number" id="lob-wedge-deg" placeholder="°" min="50" max="64" style="width: 60px;"></div>
             <button id="save-bag">Save Bag</button>
+        </div>
+        <div class="button-group">
+            <button onclick="exportData()">Export Data</button>
+            <button onclick="importData()">Import Data</button>
+            <input type="file" id="import-file" style="display: none;" accept=".json">
         </div>
         <canvas id="history-graph"></canvas>
         <canvas id="club-distance-graph"></canvas>
@@ -476,7 +494,7 @@
             button.classList.toggle('selected');
             const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
             if (degInput) {
-                degInput.value = degInput.value || (club === "Lob Wedge" ? "60" : "");
+                degInput.value = degInput.value || (club === "Lob Wedge" ? "60" : club === "Sand Wedge" ? "56" : club === "Gap Wedge" ? "50" : club === "Pitching Wedge" ? "46" : club === "Hybrid" ? "20" : "");
             }
         }
 
@@ -494,8 +512,12 @@
             document.querySelectorAll('.club-button.selected').forEach(button => {
                 const club = button.textContent;
                 const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
-                const degree = degInput ? parseInt(degInput.value) || (club === "Lob Wedge" ? 60 : null) : null;
-                bag.push(degree ? `${club} (${degree}°)` : club);
+                const degree = degInput ? parseInt(degInput.value) || null : null;
+                if (degree && degInput) {
+                    bag.push(`${club} (${degree}°)`);
+                } else {
+                    bag.push(club);
+                }
             });
             localStorage.setItem('pinSeekerBag', JSON.stringify(bag));
             alert('Bag saved successfully!');
@@ -513,8 +535,8 @@
             document.getElementById('overallScore').innerHTML = '';
             document.getElementById('insights').innerHTML = '';
 
-            if (isNaN(min) || isNaN(max) || isNaN(quantity) || min >= max || quantity < 1) {
-                resultsDiv.innerHTML = 'Please enter valid numbers (min < max, quantity ≥ 1).';
+            if (isNaN(min) || isNaN(max) || isNaN(quantity) || min < 0 || max > 300 || min >= max || quantity < 1 || quantity > 50) {
+                resultsDiv.innerHTML = 'Please enter valid numbers: min ≥ 0, max ≤ 300, min < max, 1 ≤ shots ≤ 50.';
                 return;
             }
 
@@ -529,13 +551,13 @@
                 shotDiv.className = 'shot';
                 const clubOptions = bag.map(club => `<option value="${club}">${club}</option>`).join('');
                 shotDiv.innerHTML = `
-                    <p class="target-distance">Shot ${i + 1}: Hit to <strong>${distance}</strong> yards</p>
+                    <p class="target-distance">ShotJud ${i + 1}: Hit to <strong>${distance}</strong> yards</p>
                     <label>Club Used:</label>
                     <select id="club${i}">${clubOptions}</select>
                     <label>Carry Distance (yards):</label>
-                    <input type="number" id="carryDistance${i}" placeholder="Enter carry distance">
+                    <input type="number" id="carryDistance${i}" placeholder="Enter carry distance" min="0" max="400">
                     <label>Lateral Deviation (feet):</label>
-                    <input type="number" id="lateralDeviation${i}" placeholder="Enter feet off target line">
+                    <input type="number" id="lateralDeviation${i}" placeholder="Enter feet off target line" min="0" max="200">
                     <select id="lateralDirection${i}">
                         <option value="1">Right</option>
                         <option value="-1">Left</option>
@@ -547,6 +569,7 @@
             }
             const averageButton = document.createElement('button');
             averageButton.className = 'average-button';
+.average-button';
             averageButton.innerHTML = 'Calculate Overall Average';
             averageButton.onclick = calculateOverallAverage;
             resultsDiv.appendChild(averageButton);
@@ -559,8 +582,8 @@
             const club = document.getElementById(`club${shotIndex}`).value;
             const scoreElement = document.getElementById(`score${shotIndex}`);
 
-            if (isNaN(carryDistance) || isNaN(lateralDeviation)) {
-                scoreElement.innerHTML = 'Please enter valid numbers for carry distance and lateral deviation.';
+            if (isNaN(carryDistance) || isNaN(lateralDeviation) || carryDistance < 0 || lateralDeviation < 0) {
+                scoreElement.innerHTML = 'Please enter valid numbers for carry distance and lateral deviation (≥ 0).';
                 return;
             }
 
@@ -594,7 +617,12 @@
                     if (!isNaN(score)) {
                         totalScore += score;
                         scoredShots++;
-                        scores.push({ index: i, score: score, carryDistance: parseFloat(document.getElementById(`carryDistance${i}`).value), lateralDeviation: parseFloat(document.getElementById(`lateralDeviation${i}`).value) * parseInt(document.getElementById(`lateralDirection${i}`).value) });
+                        scores.push({
+                            index: i,
+                            score: score,
+                            carryDistance: parseFloat(document.getElementById(`carryDistance${i}`).value),
+                            lateralDeviation: parseFloat(document.getElementById(`lateralDeviation${i}`).value) * parseInt(document.getElementById(`lateralDirection${i}`).value)
+                        });
                     }
                 }
             }
@@ -613,7 +641,48 @@
         function generateInsights(scores, overallAverage) {
             const insightsDiv = document.getElementById('insights');
             let insights = '<h3>Performance Insights</h3><ul>';
-            // ... (insights logic remains unchanged) ...
+
+            if (scores.length === 0) {
+                insights += '<li>No shots scored yet.</li>';
+            } else {
+                // Average lateral deviation
+                const avgLateral = scores.reduce((sum, s) => sum + Math.abs(s.lateralDeviation), 0) / scores.length;
+                insights += `<li>Average lateral deviation: ${avgLateral.toFixed(1)} feet.</li>`;
+
+                // Check for consistent misses
+                const rightMisses = scores.filter(s => s.lateralDeviation > 0).length;
+                if (rightMisses / scores.length > 0.6) {
+                    insights += '<li>You tend to miss right. Consider adjusting your aim or swing path.</li>';
+                } else if (rightMisses / scores.length < 0.4) {
+                    insights += '<li>You tend to miss left. Check your alignment or grip.</li>';
+                }
+
+                // Club consistency
+                const clubScores = {};
+                history.forEach(entry => {
+                    if (!clubScores[entry.club]) clubScores[entry.club] = [];
+                    clubScores[entry.club].push(entry.score);
+                });
+                for (const club in clubScores) {
+                    const scores = clubScores[club];
+                    const avg = scores.reduce((sum, s) => sum + s, 0) / scores.length;
+                    const variance = scores.reduce((sum, s) => sum + Math.pow(s - avg, 2), 0) / scores.length;
+                    if (variance > 100) {
+                        insights += `<li>High variance with ${club}. Practice for more consistency.</li>`;
+                    }
+                }
+
+                // Performance tier
+                if (overallAverage > 80) {
+                    insights += '<li>Great job! Your distance control is excellent.</li>';
+                } else if (overallAverage > 60) {
+                    insights += '<li>Solid performance. Focus on reducing lateral errors.</li>';
+                } else {
+                    insights += '<li>Keep practicing! Try shorter shots to build confidence.</li>';
+                }
+            }
+
+            insights += '</ul>';
             insightsDiv.innerHTML = insights;
         }
 
@@ -635,142 +704,27 @@
                 return sessionScores.length > 0 ? Math.round(sessionScores.reduce((sum, score) => sum + score, 0) / sessionScores.length) : 0;
             });
 
-            ctx.strokeStyle = '#D4A017'; // Gold
-            ctx.lineWidth = 2;
-            ctx.font = '12px Montserrat';
-
-            // Draw background and border
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
-            // Draw axes with labels
-            const margin = 40;
-            ctx.beginPath();
-            ctx.moveTo(margin, canvas.height - margin);
-            ctx.lineTo(canvas.width - margin, canvas.height - margin);
-            ctx.moveTo(margin, canvas.height - margin);
-            ctx.lineTo(margin, margin);
-            ctx.stroke();
-
-            // Draw grid lines and score markers (0 to 100)
-            ctx.strokeStyle = 'rgba(212, 160, 23, 0.2)';
-            for (let i = 0; i <= 100; i += 20) {
-                const y = canvas.height - margin - (i / 100) * (canvas.height - 2 * margin);
-                ctx.beginPath();
-                ctx.moveTo(margin, y);
-                ctx.lineTo(canvas.width - margin, y);
-                ctx.stroke();
-                ctx.fillStyle = '#1A3C34';
-                ctx.fillText(i, margin - 20, y + 5);
-            }
-
-            // Draw date markers on X-axis
-            if (dates.length > 0) {
-                const stepX = (canvas.width - 2 * margin) / (dates.length - 1 || 1);
-                for (let i = 0; i < dates.length; i++) {
-                    const x = margin + i * stepX;
-                    ctx.fillStyle = '#1A3C34';
-                    ctx.fillText(dates[i].split('/')[1] + '/' + dates[i].split('/')[2], x, canvas.height - margin + 15);
-                }
-            }
-
-            // Draw data points and line
-            if (dates.length > 0) {
-                const stepX = (canvas.width - 2 * margin) / (dates.length - 1 || 1);
-                const stepY = (canvas.height - 2 * margin) / 100;
-                ctx.beginPath();
-                ctx.moveTo(margin, canvas.height - margin - (scores[0] * stepY));
-                ctx.strokeStyle = '#2E7D32';
-                for (let i = 0; i < scores.length; i++) {
-                    const x = margin + i * stepX;
-                    const y = canvas.height - margin - (scores[i] * stepY);
-                    ctx.lineTo(x, y);
-                    ctx.beginPath();
-                    ctx.arc(x, y, 4, 0, Math.PI * 2);
-                    ctx.fillStyle = '#1A3C34';
-                    ctx.fill();
-                    ctx.stroke();
-                }
-                ctx.stroke();
-            }
-
-            // Add axis labels
-            ctx.fillStyle = '#D4A017';
-            ctx.save();
-            ctx.translate(margin / 2, canvas.height / 2);
-            ctx.rotate(-Math.PI / 2);
-            ctx.fillText('Score', 0, 0);
-            ctx.restore();
-            ctx.fillText('Date', canvas.width / 2, canvas.height - margin / 2);
-
-            // Add hover effect for score
-            canvas.addEventListener('mousemove', function(e) {
-                const rect = canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.strokeRect(0, 0, canvas.width, canvas.height);
-                ctx.beginPath();
-                ctx.moveTo(margin, canvas.height - margin);
-                ctx.lineTo(canvas.width - margin, canvas.height - margin);
-                ctx.moveTo(margin, canvas.height - margin);
-                ctx.lineTo(margin, margin);
-                ctx.stroke();
-
-                ctx.strokeStyle = 'rgba(212, 160, 23, 0.2)';
-                for (let i = 0; i <= 100; i += 20) {
-                    const y = canvas.height - margin - (i / 100) * (canvas.height - 2 * margin);
-                    ctx.beginPath();
-                    ctx.moveTo(margin, y);
-                    ctx.lineTo(canvas.width - margin, y);
-                    ctx.stroke();
-                    ctx.fillStyle = '#1A3C34';
-                    ctx.fillText(i, margin - 20, y + 5);
-                }
-
-                if (dates.length > 0) {
-                    const stepX = (canvas.width - 2 * margin) / (dates.length - 1 || 1);
-                    const stepY = (canvas.height - 2 * margin) / 100;
-                    ctx.beginPath();
-                    ctx.moveTo(margin, canvas.height - margin - (scores[0] * stepY));
-                    ctx.strokeStyle = '#2E7D32';
-                    for (let i = 0; i < scores.length; i++) {
-                        const plotX = margin + i * stepX;
-                        const plotY = canvas.height - margin - (scores[i] * stepY);
-                        ctx.lineTo(plotX, plotY);
-                        ctx.beginPath();
-                        ctx.arc(plotX, plotY, 4, 0, Math.PI * 2);
-                        ctx.fillStyle = '#1A3C34';
-                        ctx.fill();
-                        ctx.stroke();
-
-                        if (Math.abs(x - plotX) < 10 && Math.abs(y - plotY) < 10) {
-                            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-                            ctx.fillRect(plotX + 5, plotY - 20, 50, 20);
-                            ctx.fillStyle = '#FFFFFF';
-                            ctx.fillText(`Score: ${scores[i]}`, plotX + 25, plotY - 10);
-                            ctx.fillText(`Date: ${dates[i].split('/')[1]}/${dates[i].split('/')[2]}`, plotX + 25, plotY + 5);
-                        }
+            new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: dates.map(d => d.split('/')[1] + '/' + d.split('/')[2]),
+                    datasets: [{
+                        label: 'Average Score',
+                        data: scores,
+                        borderColor: '#2E7D32',
+                        backgroundColor: 'rgba(46, 125, 50, 0.2)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { min: 0, max: 100, title: { display: true, text: 'Score' } },
+                        x: { title: { display: true, text: 'Date' } }
                     }
-                    ctx.stroke();
                 }
-
-                for (let i = 0; i < dates.length; i++) {
-                    const x = margin + i * stepX;
-                    ctx.fillStyle = '#1A3C34';
-                    ctx.fillText(dates[i].split('/')[1] + '/' + dates[i].split('/')[2], x, canvas.height - margin + 15);
-                }
-
-                ctx.fillStyle = '#D4A017';
-                ctx.save();
-                ctx.translate(margin / 2, canvas.height / 2);
-                ctx.rotate(-Math.PI / 2);
-                ctx.fillText('Score', 0, 0);
-                ctx.restore();
-                ctx.fillText('Date', canvas.width / 2, canvas.height - margin / 2);
             });
         }
 
@@ -782,68 +736,73 @@
             if (bag.length === 0) return;
 
             const clubAverages = {};
-            let maxDistance = 0;
             bag.forEach(club => {
                 const clubData = history.filter(entry => entry.club === club);
-                const avg = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length) : 0;
-                clubAverages[club] = avg;
-                maxDistance = Math.max(maxDistance, avg);
+                clubAverages[club] = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length) : 0;
             });
 
-            ctx.strokeStyle = '#D4A017'; // Gold
-            ctx.lineWidth = 2;
-            ctx.font = '12px Montserrat';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-
-            // Draw background and border
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-            ctx.fillRect(0, 0, canvas.height, canvas.width); // Adjusted for vertical layout
-            ctx.strokeRect(0, 0, canvas.height, canvas.width);
-
-            // Define column widths
-            const margin = 20;
-            const col1Width = 40; // Narrow column for club shorthand
-            const col2Width = canvas.width - col1Width - 40 - 2 * margin; // Middle column for bars
-            const col3Width = 40; // Narrow column for yards
-            const barHeight = (canvas.height - 2 * margin) / bag.length;
-
-            // Draw axes and labels
-            ctx.beginPath();
-            ctx.moveTo(margin + col1Width, margin);
-            ctx.lineTo(margin + col1Width, canvas.height - margin);
-            ctx.moveTo(margin + col1Width + col2Width, margin);
-            ctx.lineTo(margin + col1Width + col2Width, canvas.height - margin);
-            ctx.moveTo(margin, canvas.height - margin);
-            ctx.lineTo(canvas.width - margin, canvas.height - margin);
-            ctx.stroke();
-
-            ctx.fillStyle = '#D4A017';
-            ctx.save();
-            ctx.translate(margin + col1Width / 2, canvas.height / 2);
-            ctx.rotate(-Math.PI / 2);
-            ctx.fillText('Clubs', 0, 0);
-            ctx.restore();
-            ctx.fillText('Distance (yards)', margin + col1Width + col2Width / 2, canvas.height - margin / 2);
-
-            // Draw bars and data
-            bag.forEach((club, index) => {
-                const y = margin + index * barHeight;
-                const distance = clubAverages[club];
-                const barLength = distance > 0 ? (distance / maxDistance) * col2Width : 0;
-                const grad = ctx.createLinearGradient(margin + col1Width, y, margin + col1Width + barLength, y);
-                grad.addColorStop(0, '#2E7D32');
-                grad.addColorStop(1, '#1A3C34');
-                ctx.fillStyle = grad;
-                ctx.fillRect(margin + col1Width, y - barHeight / 2, barLength, barHeight - 2);
-                ctx.fillStyle = '#1A3C34';
-                ctx.fillText(club.replace(/\s\(.*\)/, '').slice(0, 3), margin + col1Width / 2, y);
-                if (distance > 0) {
-                    ctx.fillStyle = '#D4A017';
-                    ctx.fillText(distance.toString().padStart(3, '0'), margin + col1Width + col2Width + col3Width / 2, y);
+            new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels: bag.map(club => club.replace(/\s\(.*\)/, '').slice(0, 3)),
+                    datasets: [{
+                        label: 'Average Distance (yards)',
+                        data: bag.map(club => clubAverages[club]),
+                        backgroundColor: 'rgba(46, 125, 50, 0.8)',
+                        borderColor: '#D4A017',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Distance (yards)' } },
+                        y: { title: { display: true, text: 'Clubs' } }
+                    }
                 }
             });
         }
+
+        function exportData() {
+            const data = JSON.stringify({ history, bag });
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'pin_seeker_data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData() {
+            document.getElementById('import-file').click();
+        }
+
+        document.getElementById('import-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.history && data.bag) {
+                        history = data.history;
+                        bag = data.bag;
+                        localStorage.setItem('pinSeekerHistory', JSON.stringify(history));
+                        localStorage.setItem('pinSeekerBag', JSON.stringify(bag));
+                        alert('Data imported successfully!');
+                        showPage('user-container');
+                    } else {
+                        alert('Invalid file format.');
+                    }
+                } catch (err) {
+                    alert('Error importing data.');
+                }
+            };
+            reader.readAsText(file);
+        });
 
         function resetAll() {
             document.getElementById('minRange').value = '50';
