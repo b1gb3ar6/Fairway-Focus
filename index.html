@@ -41,36 +41,6 @@
             transition: var(--transition);
         }
 
-        body.dark-mode {
-            background: linear-gradient(135deg, #0A1A17, #1B3C34);
-            color: var(--fairway-beige);
-        }
-
-        body.dark-mode .container,
-        body.dark-mode #bag-section,
-        body.dark-mode #reset-confirm {
-            background: rgba(30, 30, 30, 0.95);
-            color: var(--fairway-beige);
-        }
-
-        body.dark-mode input,
-        body.dark-mode select,
-        body.dark-mode .club-button {
-            background: #333;
-            color: var(--fairway-beige);
-            border-color: var(--accent-gold);
-        }
-
-        body.dark-mode [style*="color: var(--secondary-green)"] {
-            color: var(--text-light) !important;
-        }
-
-        body.dark-mode .club-button.selected {
-            background: var(--accent-gold);
-            color: var(--text-dark);
-            border-color: var(--accent-gold);
-        }
-
         header {
             position: sticky;
             top: 0;
@@ -100,21 +70,6 @@
             flex-grow: 1;
             text-align: center;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        #dark-mode-toggle {
-            background: var(--grey-gradient);
-            color: var(--text-dark);
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        #dark-mode-toggle:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
         }
 
         .nav-bar {
@@ -249,6 +204,20 @@
 
         #goal-score {
             width: 80px;
+        }
+
+        #toggle-bag {
+            margin-bottom: 20px;
+        }
+
+        #average-circle {
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        #history-graph {
+            margin-top: 20px;
         }
 
         #bag-section {
@@ -446,7 +415,7 @@
 
         #history-graph, #club-distance-graph {
             max-width: 360px;
-            margin: 15px auto;
+            margin: 20px auto;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
             box-shadow: var(--shadow);
@@ -539,7 +508,7 @@
         [data-tooltip]:hover::after {
             content: attr(data-tooltip);
             position: absolute;
-            bottom: 100%;
+            bottom: calc(100% + 5px);
             left: 50%;
             transform: translateX(-50%);
             background: var(--primary-green);
@@ -548,7 +517,7 @@
             border-radius: 6px;
             font-size: 0.8rem;
             white-space: nowrap;
-            z-index: 10;
+            z-index: 210;
         }
 
         @media (max-width: 393px) {
@@ -662,7 +631,6 @@
     <header>
         <img src="logo.png" alt="Fairway Focus Logo" class="logo" onerror="this.style.display='none';">
         <h1>Fairway Focus</h1>
-        <button id="dark-mode-toggle" aria-label="Toggle dark mode">Dark Mode</button>
     </header>
     <div class="nav-bar">
         <button id="nav-game" class="active" aria-label="Go to Practice page" data-tooltip="Start a practice session">Practice</button>
@@ -1194,7 +1162,7 @@
                         data: scores,
                         borderColor: '#2E7D32',
                         backgroundColor: 'rgba(46, 125, 50, 0.3)',
-                        fill: true,
+                        fill: true;
                         tension: 0.4,
                         pointRadius: 5,
                         pointHoverRadius: 8,
@@ -1342,11 +1310,6 @@
             document.querySelectorAll('.club-button').forEach(button => {
                 const club = button.getAttribute('data-club');
                 button.addEventListener('click', () => toggleClub(button, club));
-            });
-
-            document.getElementById('dark-mode-toggle').addEventListener('click', () => {
-                document.body.classList.toggle('dark-mode');
-                document.getElementById('dark-mode-toggle').innerHTML = document.body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
             });
 
             // Keyboard accessibility for popups
