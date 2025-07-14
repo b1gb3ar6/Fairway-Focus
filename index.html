@@ -537,8 +537,8 @@
         <h1>Pin Seeker</h1>
     </header>
     <div class="nav-bar">
-        <button id="nav-game" class="active">Game</button>
-        <button id="nav-user">Profile</button>
+        <button id="nav-game" class="active" aria-label="Go to Game page">Game</button>
+        <button id="nav-user" aria-label="Go to Profile page">Profile</button>
     </div>
     <div id="homepage" class="container">
         <h2>Welcome to Pin Seeker</h2>
@@ -546,44 +546,44 @@
     </div>
     <div id="game-container" class="container active">
         <div class="input-group">
-            <label>Min Distance (yards):</label>
+            <label for="minRange">Min Distance (yards):</label>
             <input type="number" id="minRange" value="50" min="0">
-            <label>Max Distance (yards):</label>
+            <label for="maxRange">Max Distance (yards):</label>
             <input type="number" id="maxRange" value="200" max="300">
-            <label>Number of Shots:</label>
+            <label for="quantity">Number of Shots:</label>
             <input type="number" id="quantity" value="5" min="1" max="50">
         </div>
-        <button id="generate-shots">Generate Shots</button>
-        <button id="reset-all" class="reset">Reset All</button>
+        <button id="generate-shots" aria-label="Generate shots">Generate Shots</button>
+        <button id="reset-all" class="reset" aria-label="Reset all inputs">Reset All</button>
         <div id="results"></div>
         <div id="overallScore"></div>
         <div id="insights"></div>
     </div>
     <div id="user-container" class="container">
         <h2>Profile</h2>
-        <button id="toggle-bag">Manage Bag</button>
+        <button id="toggle-bag" aria-label="Manage golf bag">Manage Bag</button>
         <div id="average-circle"></div>
         <div id="bag-section" class="container">
-            <button id="close-bag">X</button>
-            <div class="club-row"><button class="club-button" data-club="Driver">Driver</button></div>
-            <div class="club-row"><button class="club-button" data-club="3 Wood">3 Wood</button></div>
-            <div class="club-row"><button class="club-button" data-club="5 Wood">5 Wood</button></div>
-            <div class="club-row"><button class="club-button" data-club="7 Wood">7 Wood</button></div>
-            <div class="club-row"><button class="club-button" data-club="9 Wood">9 Wood</button></div>
-            <div class="club-row"><button class="club-button" data-club="Hybrid">Hybrid</button><input type="number" id="hybrid-deg" placeholder="°" min="15" max="30" style="width: 60px;"></div>
-            <div class="club-row"><button class="club-button" data-club="2 Iron">2 Iron</button></div>
-            <div class="club-row"><button class="club-button" data-club="3 Iron">3 Iron</button></div>
-            <div class="club-row"><button class="club-button" data-club="4 Iron">4 Iron</button></div>
-            <div class="club-row"><button class="club-button" data-club="5 Iron">5 Iron</button></div>
-            <div class="club-row"><button class="club-button" data-club="6 Iron">6 Iron</button></div>
-            <div class="club-row"><button class="club-button" data-club="7 Iron">7 Iron</button></div>
-            <div class="club-row"><button class="club-button" data-club="8 Iron">8 Iron</button></div>
-            <div class="club-row"><button class="club-button" data-club="9 Iron">9 Iron</button></div>
-            <div class="club-row"><button class="club-button" data-club="Pitching Wedge">Pitching Wedge</button><input type="number" id="pitching-wedge-deg" placeholder="°" min="40" max="50" style="width: 60px;"></div>
-            <div class="club-row"><button class="club-button" data-club="Gap Wedge">Gap Wedge</button><input type="number" id="gap-wedge-deg" placeholder="°" min="48" max="54" style="width: 60px;"></div>
-            <div class="club-row"><button class="club-button" data-club="Sand Wedge">Sand Wedge</button><input type="number" id="sand-wedge-deg" placeholder="°" min="52" max="58" style="width: 60px;"></div>
-            <div class="club-row"><button class="club-button" data-club="Lob Wedge">Lob Wedge</button><input type="number" id="lob-wedge-deg" placeholder="°" min="58" max="64" style="width: 60px;"></div>
-            <button id="save-bag">Save Bag</button>
+            <button id="close-bag" aria-label="Close bag selection">X</button>
+            <div class="club-row"><button class="club-button" data-club="Driver" aria-label="Select Driver">Driver</button></div>
+            <div class="club-row"><button class="club-button" data-club="3 Wood" aria-label="Select 3 Wood">3 Wood</button></div>
+            <div class="club-row"><button class="club-button" data-club="5 Wood" aria-label="Select 5 Wood">5 Wood</button></div>
+            <div class="club-row"><button class="club-button" data-club="7 Wood" aria-label="Select 7 Wood">7 Wood</button></div>
+            <div class="club-row"><button class="club-button" data-club="9 Wood" aria-label="Select 9 Wood">9 Wood</button></div>
+            <div class="club-row"><button class="club-button" data-club="Hybrid" aria-label="Select Hybrid">Hybrid</button><input type="number" id="hybrid-deg" placeholder="°" min="15" max="30" style="width: 60px;" aria-label="Hybrid loft in degrees"></div>
+            <div class="club-row"><button class="club-button" data-club="2 Iron" aria-label="Select 2 Iron">2 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="3 Iron" aria-label="Select 3 Iron">3 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="4 Iron" aria-label="Select 4 Iron">4 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="5 Iron" aria-label="Select 5 Iron">5 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="6 Iron" aria-label="Select 6 Iron">6 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="7 Iron" aria-label="Select 7 Iron">7 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="8 Iron" aria-label="Select 8 Iron">8 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="9 Iron" aria-label="Select 9 Iron">9 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="Pitching Wedge" aria-label="Select Pitching Wedge">Pitching Wedge</button><input type="number" id="pitching-wedge-deg" placeholder="°" min="40" max="50" style="width: 60px;" aria-label="Pitching Wedge loft in degrees"></div>
+            <div class="club-row"><button class="club-button" data-club="Gap Wedge" aria-label="Select Gap Wedge">Gap Wedge</button><input type="number" id="gap-wedge-deg" placeholder="°" min="48" max="54" style="width: 60px;" aria-label="Gap Wedge loft in degrees"></div>
+            <div class="club-row"><button class="club-button" data-club="Sand Wedge" aria-label="Select Sand Wedge">Sand Wedge</button><input type="number" id="sand-wedge-deg" placeholder="°" min="52" max="58" style="width: 60px;" aria-label="Sand Wedge loft in degrees"></div>
+            <div class="club-row"><button class="club-button" data-club="Lob Wedge" aria-label="Select Lob Wedge">Lob Wedge</button><input type="number" id="lob-wedge-deg" placeholder="°" min="58" max="64" style="width: 60px;" aria-label="Lob Wedge loft in degrees"></div>
+            <button id="save-bag" aria-label="Save bag selection">Save Bag</button>
         </div>
         <div id="history-graph"></div>
         <div id="club-distance-graph"></div>
@@ -618,6 +618,7 @@
                 drawHistoryGraph();
                 drawClubDistanceGraph();
             }
+            console.log(`Navigated to page: ${pageId}`);
         }
 
         function updateNavButtons(activePage) {
@@ -666,6 +667,7 @@
             } else if (degInput) {
                 degInput.value = '';
             }
+            console.log(`Toggled club: ${club}, selected: ${button.classList.contains('selected')}`);
         }
 
         function saveBag() {
@@ -698,6 +700,7 @@
             document.getElementById('bag-section').style.visibility = 'hidden';
             showPage('user-container');
             drawClubDistanceGraph();
+            console.log('Bag saved:', bag);
         }
 
         // Game logic
@@ -735,17 +738,18 @@
                     }).join('');
                     shotDiv.innerHTML = `
                         <p class="target-distance">Shot ${i + 1}: Hit to <strong>${distance}</strong> yards</p>
-                        <label>Club Used:</label>
-                        <select id="club${i}">${clubOptions}</select>
-                        <label>Carry Distance (yards):</label>
-                        <input type="number" id="carryDistance${i}" placeholder="Enter carry distance" min="0" max="400">
-                        <label>Lateral Deviation (feet):</label>
-                        <input type="number" id="lateralDeviation${i}" placeholder="Enter feet off target line" min="0" max="200">
-                        <select id="lateralDirection${i}">
+                        <label for="club${i}">Club Used:</label>
+                        <select id="club${i}" aria-label="Select club for shot ${i + 1}">${clubOptions}</select>
+                        <label for="carryDistance${i}">Carry Distance (yards):</label>
+                        <input type="number" id="carryDistance${i}" placeholder="Enter carry distance" min="0" max="400" aria-label="Carry distance for shot ${i + 1}">
+                        <label for="lateralDeviation${i}">Lateral Deviation (feet):</label>
+                        <input type="number" id="lateralDeviation${i}" placeholder="Enter feet off target line" min="0" max="200" aria-label="Lateral deviation for shot ${i + 1}">
+                        <label for="lateralDirection${i}">Direction:</label>
+                        <select id="lateralDirection${i}" aria-label="Lateral direction for shot ${i + 1}">
                             <option value="1">Right</option>
                             <option value="-1">Left</option>
                         </select>
-                        <button onclick="calculateScore(${i}, ${distance})">Score Shot</button>
+                        <button onclick="calculateScore(${i}, ${distance})" aria-label="Score shot ${i + 1}">Score Shot</button>
                         <p id="score${i}"></p>
                     `;
                     resultsDiv.appendChild(shotDiv);
@@ -753,8 +757,10 @@
                 const averageButton = document.createElement('button');
                 averageButton.className = 'average-button';
                 averageButton.innerHTML = 'Calculate Overall Average';
+                averageButton.setAttribute('aria-label', 'Calculate overall average score');
                 averageButton.onclick = calculateOverallAverage;
                 resultsDiv.appendChild(averageButton);
+                console.log(`Generated ${quantity} shots`);
             } catch (error) {
                 console.error('Error in generateShots:', error);
                 document.getElementById('results').innerHTML = '<p style="color: #D32F2F;">An error occurred while generating shots. Please try again.</p>';
@@ -798,6 +804,7 @@
             localStorage.setItem('pinSeekerHistory', JSON.stringify(history));
             drawHistoryGraph();
             drawClubDistanceGraph();
+            console.log(`Scored shot ${shotIndex + 1}: ${totalScore}/100`);
         }
 
         function calculateOverallAverage() {
@@ -835,6 +842,7 @@
                 overallScoreElement.innerHTML = `Overall Average Score: ${averageScore}/100`;
                 generateInsights(scores, averageScore);
             }
+            console.log(`Calculated overall average: ${scoredShots > 0 ? Math.round(totalScore / scoredShots) : 'No scores'}`);
         }
 
         function generateInsights(scores, overallAverage) {
@@ -1115,8 +1123,8 @@
                 },
                 options: {
                     indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true;
+                    maintainAspectRatio: false;
                     scales: {
                         x: {
                             title: { display: true, text: 'Distance (yards)' },
@@ -1147,6 +1155,7 @@
             document.getElementById('results').innerHTML = '';
             document.getElementById('overallScore').innerHTML = '';
             document.getElementById('insights').innerHTML = '';
+            console.log('Reset all inputs');
         }
 
         // Initialize event listeners
@@ -1172,11 +1181,13 @@
             const navUserButton = document.getElementById('nav-user');
             if (navGameButton) {
                 navGameButton.addEventListener('click', () => showPage('game-container'));
+                console.log('Nav Game button listener attached');
             } else {
                 console.error('Nav Game button not found');
             }
             if (navUserButton) {
                 navUserButton.addEventListener('click', () => showPage('user-container'));
+                console.log('Nav User button listener attached');
             } else {
                 console.error('Nav User button not found');
             }
@@ -1187,16 +1198,19 @@
             const saveBagButton = document.getElementById('save-bag');
             if (toggleBagButton) {
                 toggleBagButton.addEventListener('click', toggleBagSection);
+                console.log('Toggle Bag button listener attached');
             } else {
                 console.error('Toggle Bag button not found');
             }
             if (closeBagButton) {
                 closeBagButton.addEventListener('click', toggleBagSection);
+                console.log('Close Bag button listener attached');
             } else {
                 console.error('Close Bag button not found');
             }
             if (saveBagButton) {
                 saveBagButton.addEventListener('click', saveBag);
+                console.log('Save Bag button listener attached');
             } else {
                 console.error('Save Bag button not found');
             }
@@ -1205,6 +1219,7 @@
             document.querySelectorAll('.club-button').forEach(button => {
                 const club = button.getAttribute('data-club');
                 button.addEventListener('click', () => toggleClub(button, club));
+                console.log(`Club button listener attached for ${club}`);
             });
 
             // Game buttons
@@ -1212,11 +1227,13 @@
             const resetAllButton = document.getElementById('reset-all');
             if (generateShotsButton) {
                 generateShotsButton.addEventListener('click', generateShots);
+                console.log('Generate Shots button listener attached');
             } else {
                 console.error('Generate Shots button not found');
             }
             if (resetAllButton) {
                 resetAllButton.addEventListener('click', resetAll);
+                console.log('Reset All button listener attached');
             } else {
                 console.error('Reset All button not found');
             }
