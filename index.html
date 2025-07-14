@@ -6,13 +6,9 @@
     <meta name="description" content="Pin Seeker: Master your golf distance control with precision yardage challenges.">
     <meta name="author" content="Your Name">
     <title>Pin Seeker - Golf Distance Control</title>
-    <!-- Google Fonts: Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png">
-    <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <style>
         /* Reset and global styles */
@@ -34,7 +30,6 @@
             overflow-x: hidden;
         }
 
-        /* Header */
         header {
             display: flex;
             align-items: center;
@@ -72,7 +67,6 @@
             letter-spacing: 1px;
         }
 
-        /* Navigation */
         .nav-bar {
             display: flex;
             justify-content: center;
@@ -110,7 +104,6 @@
             transform: translateY(0);
         }
 
-        /* Container */
         .container {
             max-width: 100%;
             width: calc(100% - 30px);
@@ -131,7 +124,6 @@
             transform: translateY(0);
         }
 
-        /* Homepage */
         #homepage {
             display: block;
             opacity: 1;
@@ -151,7 +143,6 @@
             color: #1A3C34;
         }
 
-        /* Game and User Containers */
         #game-container, #user-container {
             display: none;
         }
@@ -160,7 +151,6 @@
             display: block;
         }
 
-        /* User Tab */
         #user-container {
             text-align: center;
             position: relative;
@@ -177,11 +167,10 @@
             display: block;
         }
 
-        /* Average Circle Container */
         #average-circle {
             text-align: center;
             margin: 8px auto;
-            width: 160px; /* Increased to fit text and circle */
+            width: 180px; /* Increased to fit text, gap, and circle */
             height: 60px;
             position: relative;
         }
@@ -246,7 +235,6 @@
             width: 100%;
         }
 
-        /* Input group */
         .input-group {
             display: flex;
             justify-content: center;
@@ -322,7 +310,6 @@
             background: linear-gradient(135deg, #D32F2F, #B71C1C);
         }
 
-        /* Results and shot styling */
         #results {
             margin-top: 20px;
             width: 100%;
@@ -383,7 +370,6 @@
             width: 100%;
         }
 
-        /* Graphs */
         #history-graph, #club-distance-graph {
             width: 100%;
             max-width: 360px;
@@ -402,7 +388,6 @@
             height: 400px;
         }
 
-        /* Responsive design */
         @media (max-width: 393px) {
             body {
                 padding: 10px;
@@ -492,7 +477,7 @@
 
             #average-circle {
                 margin: 8px auto;
-                width: 160px;
+                width: 180px;
             }
         }
     </style>
@@ -559,7 +544,6 @@
         let history = JSON.parse(localStorage.getItem('pinSeekerHistory')) || [];
         let bag = JSON.parse(localStorage.getItem('pinSeekerBag')) || [];
 
-        // Initialize the page
         document.addEventListener('DOMContentLoaded', () => {
             showPage('game-container');
             bag.forEach(club => {
@@ -577,7 +561,6 @@
             updateNavButtons('game-container');
         });
 
-        // Toggle bag section visibility
         document.getElementById('toggle-bag').addEventListener('click', function() {
             const bagSection = document.getElementById('bag-section');
             bagSection.classList.toggle('active');
@@ -900,11 +883,11 @@
                 ringColor = '#FF0000'; // Red for down trend
             }
             averageCircle.innerHTML = `
-                <svg width="160" height="60">
+                <svg width="180" height="60">
                     <text x="0" y="30" font-family="Montserrat" font-size="12" font-weight="bold" fill="#000000" text-anchor="start" dominant-baseline="central">5 Session Avg.</text>
-                    <circle cx="100" cy="30" r="28" fill="none" stroke="${ringColor}" stroke-width="4" />
-                    <circle cx="100" cy="30" r="28" fill="rgba(255, 255, 255, 0.9)" stroke="#2E7D32" stroke-width="2" />
-                    <text x="100" y="30" font-family="Montserrat" font-size="24" font-weight="bold" fill="${numberColor}" text-anchor="middle" dominant-baseline="central">${number}</text>
+                    <circle cx="120" cy="30" r="28" fill="none" stroke="${ringColor}" stroke-width="4" />
+                    <circle cx="120" cy="30" r="28" fill="rgba(255, 255, 255, 0.9)" stroke="#2E7D32" stroke-width="2" />
+                    <text x="120" y="30" font-family="Montserrat" font-size="24" font-weight="bold" fill="${numberColor}" text-anchor="middle" dominant-baseline="central">${number}</text>
                 </svg>
             `;
 
@@ -1001,7 +984,6 @@
                 }
             };
 
-            // Create gradient for bar fill
             const gradientFill = ctx.createLinearGradient(0, 0, canvas.width, 0);
             gradientFill.addColorStop(0, '#2E7D32');
             gradientFill.addColorStop(1, '#1A3C34');
@@ -1014,8 +996,8 @@
                         label: 'Average Distance (yards)',
                         data: bag.map(club => clubAverages[club]),
                         backgroundColor: gradientFill,
-                        borderWidth: 0, // No border
-                        borderRadius: 10 // Rounded ends
+                        borderWidth: 0,
+                        borderRadius: 10
                     }]
                 },
                 options: {
@@ -1047,7 +1029,7 @@
             document.getElementById('maxRange').value = '200';
             document.getElementById('quantity').value = '5';
             document.getElementById('results').innerHTML = '';
-            document.getElementByCol('overallScore').innerHTML = '';
+            document.getElementById('overallScore').innerHTML = '';
             document.getElementById('insights').innerHTML = '';
         }
     </script>
