@@ -196,7 +196,7 @@
             z-index: 100;
             visibility: hidden;
             transition: opacity 0.3s ease, transform 0.3s ease;
-            position: relative; /* Added for close button positioning */
+            position: relative;
         }
 
         #user-container #bag-section.active {
@@ -537,8 +537,8 @@
         <h1>Pin Seeker</h1>
     </header>
     <div class="nav-bar">
-        <button id="nav-game" onclick="showPage('game-container')" class="active">Game</button>
-        <button id="nav-user" onclick="showPage('user-container')">Profile</button>
+        <button id="nav-game" class="active">Game</button>
+        <button id="nav-user">Profile</button>
     </div>
     <div id="homepage" class="container">
         <h2>Welcome to Pin Seeker</h2>
@@ -553,8 +553,8 @@
             <label>Number of Shots:</label>
             <input type="number" id="quantity" value="5" min="1" max="50">
         </div>
-        <button onclick="generateShots()">Generate Shots</button>
-        <button onclick="resetAll()" class="reset">Reset All</button>
+        <button id="generate-shots">Generate Shots</button>
+        <button id="reset-all" class="reset">Reset All</button>
         <div id="results"></div>
         <div id="overallScore"></div>
         <div id="insights"></div>
@@ -565,24 +565,24 @@
         <div id="average-circle"></div>
         <div id="bag-section" class="container">
             <button id="close-bag">X</button>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Driver')">Driver</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '3 Wood')">3 Wood</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '5 Wood')">5 Wood</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '7 Wood')">7 Wood</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '9 Wood')">9 Wood</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Hybrid')">Hybrid</button><input type="number" id="hybrid-deg" placeholder="°" min="15" max="30" style="width: 60px;"></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '2 Iron')">2 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '3 Iron')">3 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '4 Iron')">4 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '5 Iron')">5 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '6 Iron')">6 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '7 Iron')">7 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '8 Iron')">8 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, '9 Iron')">9 Iron</button></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Pitching Wedge')">Pitching Wedge</button><input type="number" id="pitching-wedge-deg" placeholder="°" min="40" max="50" style="width: 60px;"></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Gap Wedge')">Gap Wedge</button><input type="number" id="gap-wedge-deg" placeholder="°" min="48" max="54" style="width: 60px;"></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Sand Wedge')">Sand Wedge</button><input type="number" id="sand-wedge-deg" placeholder="°" min="52" max="58" style="width: 60px;"></div>
-            <div class="club-row"><button class="club-button" onclick="toggleClub(this, 'Lob Wedge')">Lob Wedge</button><input type="number" id="lob-wedge-deg" placeholder="°" min="58" max="64" style="width: 60px;"></div>
+            <div class="club-row"><button class="club-button" data-club="Driver">Driver</button></div>
+            <div class="club-row"><button class="club-button" data-club="3 Wood">3 Wood</button></div>
+            <div class="club-row"><button class="club-button" data-club="5 Wood">5 Wood</button></div>
+            <div class="club-row"><button class="club-button" data-club="7 Wood">7 Wood</button></div>
+            <div class="club-row"><button class="club-button" data-club="9 Wood">9 Wood</button></div>
+            <div class="club-row"><button class="club-button" data-club="Hybrid">Hybrid</button><input type="number" id="hybrid-deg" placeholder="°" min="15" max="30" style="width: 60px;"></div>
+            <div class="club-row"><button class="club-button" data-club="2 Iron">2 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="3 Iron">3 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="4 Iron">4 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="5 Iron">5 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="6 Iron">6 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="7 Iron">7 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="8 Iron">8 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="9 Iron">9 Iron</button></div>
+            <div class="club-row"><button class="club-button" data-club="Pitching Wedge">Pitching Wedge</button><input type="number" id="pitching-wedge-deg" placeholder="°" min="40" max="50" style="width: 60px;"></div>
+            <div class="club-row"><button class="club-button" data-club="Gap Wedge">Gap Wedge</button><input type="number" id="gap-wedge-deg" placeholder="°" min="48" max="54" style="width: 60px;"></div>
+            <div class="club-row"><button class="club-button" data-club="Sand Wedge">Sand Wedge</button><input type="number" id="sand-wedge-deg" placeholder="°" min="52" max="58" style="width: 60px;"></div>
+            <div class="club-row"><button class="club-button" data-club="Lob Wedge">Lob Wedge</button><input type="number" id="lob-wedge-deg" placeholder="°" min="58" max="64" style="width: 60px;"></div>
             <button id="save-bag">Save Bag</button>
         </div>
         <div id="history-graph"></div>
@@ -593,91 +593,7 @@
         let history = JSON.parse(localStorage.getItem('pinSeekerHistory')) || [];
         let bag = JSON.parse(localStorage.getItem('pinSeekerBag')) || [];
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Load saved bag
-            bag.forEach(club => {
-                const clubName = typeof club === 'string' ? club.replace(/\s\(.*\)/, '') : club.name;
-                const button = document.querySelector(`.club-button[onclick*="'${clubName}'"]`);
-                if (button) {
-                    button.classList.add('selected');
-                    const degMatch = typeof club === 'string' ? club.match(/\((\d+)°\)/) : club.loft;
-                    if (degMatch || (club.loft && club.loft > 0)) {
-                        const degInput = document.getElementById(`${clubName.toLowerCase().replace(/ /g, '-')}-deg`);
-                        if (degInput) {
-                            degInput.value = typeof club === 'string' ? degMatch[1] : club.loft;
-                        }
-                    }
-                }
-            });
-            showPage('game-container');
-            updateNavButtons('game-container');
-        });
-
-        // Toggle bag event listener
-        const toggleBagButton = document.getElementById('toggle-bag');
-        const closeBagButton = document.getElementById('close-bag');
-
-        function toggleBagSection() {
-            const bagSection = document.getElementById('bag-section');
-            console.log('Toggle Bag clicked, current display:', bagSection.style.display, 'classes:', bagSection.classList);
-            bagSection.classList.toggle('active');
-            // Force style update
-            if (bagSection.classList.contains('active')) {
-                bagSection.style.display = 'block';
-                bagSection.style.opacity = '1';
-                bagSection.style.visibility = 'visible';
-                bagSection.style.transform = 'translateX(-50%) translateY(0)';
-            } else {
-                bagSection.style.display = 'none';
-                bagSection.style.opacity = '0';
-                bagSection.style.visibility = 'hidden';
-            }
-            // Log computed styles after transition
-            setTimeout(() => {
-                const computedStyle = window.getComputedStyle(bagSection);
-                console.log('After toggle, display:', computedStyle.display, 'visibility:', computedStyle.visibility, 'opacity:', computedStyle.opacity);
-                console.log('Parent (#user-container) overflow:', window.getComputedStyle(document.getElementById('user-container')).overflow);
-            }, 300);
-        }
-
-        if (toggleBagButton) {
-            toggleBagButton.addEventListener('click', toggleBagSection);
-        } else {
-            console.error('Toggle Bag button not found');
-        }
-
-        if (closeBagButton) {
-            closeBagButton.addEventListener('click', toggleBagSection);
-        } else {
-            console.error('Close Bag button not found');
-        }
-
-        function updateNavButtons(activePage) {
-            document.querySelectorAll('.nav-bar button').forEach(button => {
-                button.classList.remove('active');
-                if (button.id === (activePage === 'game-container' ? 'nav-game' : 'nav-user')) {
-                    button.classList.add('active');
-                }
-            });
-        }
-
-        function toggleClub(button, club) {
-            button.classList.toggle('selected');
-            const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
-            if (degInput && button.classList.contains('selected')) {
-                const defaultLofts = {
-                    'Hybrid': 20,
-                    'Pitching Wedge': 46,
-                    'Gap Wedge': 50,
-                    'Sand Wedge': 56,
-                    'Lob Wedge': 60
-                };
-                degInput.value = degInput.value || defaultLofts[club] || '';
-            } else if (degInput) {
-                degInput.value = '';
-            }
-        }
-
+        // Page navigation
         function showPage(pageId) {
             const currentPage = document.querySelector('.container.active:not(#bag-section)');
             if (currentPage && currentPage.id === pageId) return;
@@ -704,10 +620,58 @@
             }
         }
 
+        function updateNavButtons(activePage) {
+            document.querySelectorAll('.nav-bar button').forEach(button => {
+                button.classList.remove('active');
+                if (button.id === (activePage === 'game-container' ? 'nav-game' : 'nav-user')) {
+                    button.classList.add('active');
+                }
+            });
+        }
+
+        // Bag management
+        function toggleBagSection() {
+            const bagSection = document.getElementById('bag-section');
+            console.log('Toggle Bag clicked, current display:', bagSection.style.display, 'classes:', bagSection.classList);
+            bagSection.classList.toggle('active');
+            if (bagSection.classList.contains('active')) {
+                bagSection.style.display = 'block';
+                bagSection.style.opacity = '1';
+                bagSection.style.visibility = 'visible';
+                bagSection.style.transform = 'translateX(-50%) translateY(0)';
+            } else {
+                bagSection.style.display = 'none';
+                bagSection.style.opacity = '0';
+                bagSection.style.visibility = 'hidden';
+            }
+            setTimeout(() => {
+                const computedStyle = window.getComputedStyle(bagSection);
+                console.log('After toggle, display:', computedStyle.display, 'visibility:', computedStyle.visibility, 'opacity:', computedStyle.opacity);
+                console.log('Parent (#user-container) overflow:', window.getComputedStyle(document.getElementById('user-container')).overflow);
+            }, 300);
+        }
+
+        function toggleClub(button, club) {
+            button.classList.toggle('selected');
+            const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
+            if (degInput && button.classList.contains('selected')) {
+                const defaultLofts = {
+                    'Hybrid': 20,
+                    'Pitching Wedge': 46,
+                    'Gap Wedge': 50,
+                    'Sand Wedge': 56,
+                    'Lob Wedge': 60
+                };
+                degInput.value = degInput.value || defaultLofts[club] || '';
+            } else if (degInput) {
+                degInput.value = '';
+            }
+        }
+
         function saveBag() {
             bag = [];
             document.querySelectorAll('.club-button.selected').forEach(button => {
-                const club = button.textContent;
+                const club = button.getAttribute('data-club');
                 const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
                 const degree = degInput ? parseInt(degInput.value) : null;
                 const loftRanges = {
@@ -736,8 +700,7 @@
             drawClubDistanceGraph();
         }
 
-        document.getElementById('save-bag').addEventListener('click', saveBag);
-
+        // Game logic
         function generateShots() {
             try {
                 const min = parseInt(document.getElementById('minRange').value);
@@ -1185,6 +1148,83 @@
             document.getElementById('overallScore').innerHTML = '';
             document.getElementById('insights').innerHTML = '';
         }
+
+        // Initialize event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load saved bag
+            bag.forEach(club => {
+                const clubName = typeof club === 'string' ? club.replace(/\s\(.*\)/, '') : club.name;
+                const button = document.querySelector(`.club-button[data-club="${clubName}"]`);
+                if (button) {
+                    button.classList.add('selected');
+                    const degMatch = typeof club === 'string' ? club.match(/\((\d+)°\)/) : club.loft;
+                    if (degMatch || (club.loft && club.loft > 0)) {
+                        const degInput = document.getElementById(`${clubName.toLowerCase().replace(/ /g, '-')}-deg`);
+                        if (degInput) {
+                            degInput.value = typeof club === 'string' ? degMatch[1] : club.loft;
+                        }
+                    }
+                }
+            });
+
+            // Navigation buttons
+            const navGameButton = document.getElementById('nav-game');
+            const navUserButton = document.getElementById('nav-user');
+            if (navGameButton) {
+                navGameButton.addEventListener('click', () => showPage('game-container'));
+            } else {
+                console.error('Nav Game button not found');
+            }
+            if (navUserButton) {
+                navUserButton.addEventListener('click', () => showPage('user-container'));
+            } else {
+                console.error('Nav User button not found');
+            }
+
+            // Bag management buttons
+            const toggleBagButton = document.getElementById('toggle-bag');
+            const closeBagButton = document.getElementById('close-bag');
+            const saveBagButton = document.getElementById('save-bag');
+            if (toggleBagButton) {
+                toggleBagButton.addEventListener('click', toggleBagSection);
+            } else {
+                console.error('Toggle Bag button not found');
+            }
+            if (closeBagButton) {
+                closeBagButton.addEventListener('click', toggleBagSection);
+            } else {
+                console.error('Close Bag button not found');
+            }
+            if (saveBagButton) {
+                saveBagButton.addEventListener('click', saveBag);
+            } else {
+                console.error('Save Bag button not found');
+            }
+
+            // Club selection buttons
+            document.querySelectorAll('.club-button').forEach(button => {
+                const club = button.getAttribute('data-club');
+                button.addEventListener('click', () => toggleClub(button, club));
+            });
+
+            // Game buttons
+            const generateShotsButton = document.getElementById('generate-shots');
+            const resetAllButton = document.getElementById('reset-all');
+            if (generateShotsButton) {
+                generateShotsButton.addEventListener('click', generateShots);
+            } else {
+                console.error('Generate Shots button not found');
+            }
+            if (resetAllButton) {
+                resetAllButton.addEventListener('click', resetAll);
+            } else {
+                console.error('Reset All button not found');
+            }
+
+            // Initialize page
+            showPage('game-container');
+            updateNavButtons('game-container');
+        });
     </script>
 </body>
 </html>
