@@ -7,8 +7,9 @@
     <meta name="author" content="Your Name">
     <title>Fairway Focus - Golf Precision Training</title>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.2.1/dist/chartjs-plugin-annotation.min.js"></script>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <style>
@@ -37,9 +38,9 @@
             color: var(--text-light);
             line-height: 1.6;
             min-height: 100vh;
-            padding: 10px;
-            overflow-x: hidden;
-            transition: var(--transition);
+            padding: 0.5rem 0;
+            display: flex;
+            flex-direction: column;
         }
 
         header {
@@ -47,10 +48,10 @@
             top: 0;
             z-index: 200;
             background: rgba(26, 60, 52, 0.95);
-            padding: 12px 20px;
-            border-radius: 12px;
-            margin: 0 auto 15px;
-            max-width: 100%;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem;
+            margin: 0 auto 0.75rem;
+            width: min(95%, 1200px);
             box-shadow: var(--shadow);
             display: flex;
             align-items: center;
@@ -59,13 +60,14 @@
         }
 
         header img.logo {
-            height: 36px;
-            width: 36px;
-            margin-right: 15px;
+            height: 2.25rem;
+            width: 2.25rem;
+            margin-right: 0.75rem;
+            max-width: 100%;
         }
 
         header h1 {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--text-light);
             flex-grow: 1;
@@ -76,23 +78,26 @@
         .nav-bar {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 15px;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
             flex-wrap: wrap;
+            width: min(95%, 1200px);
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .nav-bar button {
-            padding: 10px 20px;
+            padding: 0.625rem 1.25rem;
             background: linear-gradient(135deg, var(--secondary-green), var(--primary-green));
             color: var(--text-light);
             border: none;
-            border-radius: 8px;
+            border-radius: 0.5rem;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
             transition: var(--transition);
             flex: 1;
-            max-width: 140px;
+            max-width: 8rem;
         }
 
         .nav-bar button.active {
@@ -101,47 +106,29 @@
         }
 
         .nav-bar button:hover {
-            transform: translateY(-3px);
+            transform: translateY(-0.1875rem);
             box-shadow: var(--shadow);
         }
 
         .container {
-            max-width: 100%;
-            width: calc(100% - 20px);
+            width: min(95%, 1200px);
             margin: 0 auto;
-            padding: 20px;
+            padding: 1rem;
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
+            border-radius: 0.75rem;
             box-shadow: var(--shadow);
             display: none;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(1.25rem);
             transition: var(--transition);
+            min-height: 0;
+            color: var(--text-dark);
         }
 
         .container.active {
             display: block;
             opacity: 1;
             transform: translateY(0);
-        }
-
-        #homepage {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        #homepage h2 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            color: var(--accent-gold);
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        #homepage p {
-            font-size: 1.1rem;
-            color: var(--text-dark);
-            margin-bottom: 20px;
         }
 
         #game-container, #user-container {
@@ -159,24 +146,24 @@
         }
 
         #user-container h2 {
-            font-size: 1.6rem;
-            margin-bottom: 15px;
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
             color: var(--secondary-green);
         }
 
         #progress-dashboard {
             background: var(--fairway-beige);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
             text-align: left;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             color: var(--text-dark);
         }
 
         #progress-dashboard h3 {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
             color: var(--secondary-green);
         }
 
@@ -186,53 +173,110 @@
         }
 
         #progress-dashboard li {
-            margin-bottom: 8px;
+            margin-bottom: 0.5rem;
         }
 
         #goal-setting {
-            margin: 15px 0;
-            padding: 15px;
+            margin: 0.75rem 0;
+            padding: 0.75rem;
             background: rgba(255, 255, 255, 0.9);
-            border-radius: 12px;
+            border-radius: 0.75rem;
             text-align: left;
         }
 
         #goal-setting label {
             font-weight: 600;
             color: var(--text-dark);
-            margin-right: 10px;
+            margin-right: 0.5rem;
         }
 
         #goal-score {
-            width: 80px;
+            width: 5rem;
         }
 
         #average-circle {
-            margin: 20px auto;
+            margin: 1rem auto;
             display: flex;
             justify-content: center;
         }
 
+        #average-circle svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        #history-graph, #club-distance-graph, #club-data-graph {
+            margin: 1rem auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 0.75rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            width: 100%;
+            max-width: min(90%, 500px);
+        }
+
+        #history-graph canvas, #club-distance-graph canvas, #club-data-graph canvas {
+            width: 100% !important;
+            height: auto !important;
+        }
+
         #history-graph {
-            margin-top: 20px;
+            height: 12rem;
+        }
+
+        #club-distance-graph {
+            height: 24rem;
+        }
+
+        #club-data-graph {
+            height: 24rem;
+        }
+
+        #club-data-section {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        #club-data-section select {
+            margin-right: 0.5rem;
+        }
+
+        #club-insights {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-dark);
+            padding: 0.75rem;
+            background: var(--fairway-beige);
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        #club-insights table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #club-insights th, #club-insights td {
+            padding: 0.5rem;
+            border: 1px solid var(--accent-gold);
+            text-align: left;
         }
 
         #bag-section {
             display: none;
             position: fixed;
-            top: 80px;
+            top: 5rem;
             left: 50%;
             transform: translateX(-50%);
-            width: calc(100% - 30px);
-            max-width: 360px;
-            max-height: calc(100vh - 100px);
+            width: min(90%, 400px);
+            max-height: calc(100vh - 6rem);
             overflow-y: auto;
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
+            border-radius: 0.75rem;
             box-shadow: var(--shadow);
-            padding: 20px;
+            padding: 1rem;
             z-index: 100;
-            border: 3px solid var(--secondary-green);
+            border: 0.1875rem solid var(--secondary-green);
             visibility: hidden;
             transition: var(--transition);
         }
@@ -247,15 +291,15 @@
 
         #close-bag {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 0.5rem;
+            right: 0.5rem;
             background: transparent;
             color: var(--text-dark);
-            border: 2px solid #D3D3D3;
+            border: 0.125rem solid #D3D3D3;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            font-size: 1.2rem;
+            width: 1.875rem;
+            height: 1.875rem;
+            font-size: 1rem;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -273,22 +317,22 @@
         .club-row {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
             flex-wrap: wrap;
         }
 
         .club-button {
-            padding: 8px 15px;
+            padding: 0.5rem 0.75rem;
             background: #FFFFFF;
-            border: 2px solid var(--accent-gold);
-            border-radius: 6px;
+            border: 0.125rem solid var(--accent-gold);
+            border-radius: 0.375rem;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             color: var(--text-dark);
             transition: var(--transition);
             flex: 1;
-            min-width: 100px;
+            min-width: 6rem;
         }
 
         .club-button.selected {
@@ -298,73 +342,77 @@
         }
 
         .club-button:hover {
-            transform: translateY(-2px);
+            transform: translateY(-0.125rem);
         }
 
         #save-bag {
-            margin-top: 15px;
+            margin-top: 0.75rem;
             width: 100%;
+            max-width: 12rem;
         }
 
         .input-group {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 0.5rem;
             flex-wrap: wrap;
-            margin: 15px 0;
+            margin: 0.75rem 0;
             align-items: center;
+            color: var(--text-dark);
         }
 
         .input-group label {
             font-weight: 600;
             color: var(--text-dark);
-            font-size: 0.9rem;
-            margin-right: 5px;
+            font-size: 0.875rem;
+            margin-right: 0.25rem;
         }
 
         .input-group input[type="number"] {
-            padding: 8px;
-            border: 2px solid var(--accent-gold);
-            border-radius: 8px;
-            font-size: 0.9rem;
+            padding: 0.5rem;
+            border: 0.125rem solid var(--accent-gold);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
             background: #FFFFFF;
             color: var(--text-dark);
             transition: var(--transition);
             text-align: center;
+            width: 5rem;
         }
 
         input, select {
-            padding: 8px;
-            border: 2px solid var(--accent-gold);
-            border-radius: 8px;
-            font-size: 0.9rem;
+            padding: 0.5rem;
+            border: 0.125rem solid var(--accent-gold);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
             background: #FFFFFF;
             color: var(--text-dark);
             transition: var(--transition);
+            max-width: 10rem;
         }
 
         input:focus, select:focus {
             outline: none;
             border-color: var(--secondary-green);
-            box-shadow: 0 0 8px rgba(46, 125, 50, 0.3);
+            box-shadow: 0 0 0.5rem rgba(46, 125, 50, 0.3);
         }
 
         button {
-            padding: 10px 20px;
+            padding: 0.625rem 1.25rem;
             background: linear-gradient(135deg, var(--secondary-green), var(--primary-green));
             color: var(--text-light);
             border: none;
-            border-radius: 8px;
+            border-radius: 0.5rem;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             font-weight: 600;
             transition: var(--transition);
-            max-width: 200px;
+            max-width: 12rem;
             width: 100%;
         }
 
         button:hover {
-            transform: translateY(-3px);
+            transform: translateY(-0.1875rem);
             box-shadow: var(--shadow);
         }
 
@@ -373,67 +421,67 @@
         }
 
         #reset-all-data {
-            margin: 20px auto 15px;
+            margin: 1rem auto 0.75rem;
             display: block;
         }
 
         .btn-container {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin: 15px 0;
+            gap: 0.5rem;
+            margin: 0.75rem 0;
             flex-wrap: wrap;
         }
 
         .btn-container button {
-            max-width: 160px;
-            min-height: 40px;
+            max-width: 10rem;
+            min-height: 2.5rem;
             line-height: 1.2;
         }
 
         .shot {
-            margin: 15px 0;
-            padding: 15px;
+            margin: 0.75rem 0;
+            padding: 0.75rem;
             background: var(--fairway-beige);
-            border-radius: 12px;
+            border-radius: 0.75rem;
             box-shadow: var(--shadow);
             transition: var(--transition);
         }
 
         .shot:hover {
-            transform: translateY(-5px);
+            transform: translateY(-0.3125rem);
         }
 
         .shot .target-distance {
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--text-dark);
-            margin-bottom: 10px;
+            margin-bottom: 0.5rem;
         }
 
         .shot .shot-inputs {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 0.5rem;
         }
 
         .shot-input-group {
             display: flex;
             align-items: center;
-            gap: 10px;
-            flex-wrap: nowrap;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .shot-input-group label {
             font-weight: 600;
             color: var(--text-dark);
-            font-size: 0.9rem;
-            margin-left: 10px;
+            font-size: 0.875rem;
+            margin-left: 0.5rem;
             flex: 1;
         }
 
         .shot-input-group input, .shot-input-group select {
-            width: 100px;
+            width: 6rem;
         }
 
         .shot p[id^="score"] {
@@ -442,54 +490,37 @@
         }
 
         #overallScore {
-            margin-top: 20px;
-            font-size: 1.1rem;
+            margin-top: 1rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--accent-gold);
             display: inline-block;
-            margin-left: 10px;
+            margin-left: 0.5rem;
         }
 
         #insights {
-            margin-top: 15px;
-            font-size: 0.9rem;
+            margin-top: 0.75rem;
+            font-size: 0.875rem;
             color: var(--text-dark);
-            padding: 15px;
+            padding: 0.75rem;
             background: var(--fairway-beige);
-            border-radius: 8px;
+            border-radius: 0.5rem;
             box-shadow: var(--shadow);
             overflow: hidden;
         }
 
         #insights ul {
             list-style: disc;
-            padding-left: 20px;
+            padding-left: 1.25rem;
             margin: 0;
         }
 
         #insights li {
-            margin-bottom: 8px;
+            margin-bottom: 0.5rem;
         }
 
         #insights h3 {
-            margin-bottom: 10px;
-        }
-
-        #history-graph, #club-distance-graph {
-            max-width: 360px;
-            margin: 20px auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-
-        #history-graph {
-            height: 200px;
-        }
-
-        #club-distance-graph {
-            height: 400px;
+            margin-bottom: 0.5rem;
         }
 
         #reset-confirm {
@@ -498,14 +529,13 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: calc(100% - 30px);
-            max-width: 300px;
+            width: min(90%, 320px);
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
+            border-radius: 0.75rem;
             box-shadow: var(--shadow);
-            padding: 15px;
+            padding: 1rem;
             z-index: 120;
-            border: 3px solid var(--secondary-green);
+            border: 0.1875rem solid var(--secondary-green);
             text-align: center;
             transition: var(--transition);
             opacity: 0;
@@ -521,20 +551,20 @@
         }
 
         #reset-confirm p {
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: var(--text-dark);
-            margin-bottom: 15px;
+            margin-bottom: 0.75rem;
         }
 
         #reset-confirm .confirm-buttons {
             display: flex;
-            gap: 10px;
+            gap: 0.5rem;
             justify-content: center;
         }
 
         #reset-confirm button {
             flex: 1;
-            max-width: 100px;
+            max-width: 6rem;
         }
 
         #confirm-no {
@@ -543,23 +573,23 @@
         }
 
         #session-notes {
-            margin: 15px 0;
-            padding: 15px;
+            margin: 0.75rem 0;
+            padding: 0.75rem;
             background: var(--fairway-beige);
-            border-radius: 12px;
+            border-radius: 0.75rem;
         }
 
         #session-notes textarea {
             width: 100%;
-            padding: 8px;
-            border: 2px solid var(--accent-gold);
-            border-radius: 8px;
+            padding: 0.5rem;
+            border: 0.125rem solid var(--accent-gold);
+            border-radius: 0.5rem;
             resize: vertical;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
         }
 
         #export-data {
-            margin: 15px auto;
+            margin: 0.75rem auto;
             display: block;
         }
 
@@ -570,83 +600,86 @@
         [data-tooltip]:hover::after {
             content: attr(data-tooltip);
             position: absolute;
-            bottom: calc(100% + 5px);
+            bottom: calc(100% + 0.3125rem);
             left: 50%;
             transform: translateX(-50%);
             background: var(--primary-green);
             color: var(--text-light);
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 0.8rem;
+            padding: 0.3125rem 0.625rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
             white-space: nowrap;
             z-index: 300;
         }
 
+        /* Media Query for Small Screens (e.g., iPhone SE: ~375px) */
         @media (max-width: 393px) {
             body {
-                padding: 8px;
+                padding: 0.5rem 0;
             }
 
             header {
-                padding: 10px 15px;
+                padding: 0.5rem 0.75rem;
+                width: min(95%, 360px);
             }
 
             header img.logo {
-                height: 30px;
-                width: 30px;
+                height: 1.875rem;
+                width: 1.875rem;
             }
 
             header h1 {
-                font-size: 1.4rem;
+                font-size: 1.25rem;
             }
 
             .nav-bar {
-                gap: 8px;
+                gap: 0.5rem;
+                width: min(95%, 360px);
             }
 
             .nav-bar button {
-                padding: 8px 15px;
-                font-size: 0.9rem;
-                max-width: 120px;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+                max-width: 7rem;
             }
 
             .container {
-                padding: 15px;
-                width: 100%;
+                padding: 0.75rem;
+                width: min(95%, 360px);
+                margin: 0 auto;
             }
 
             #bag-section {
-                top: 70px;
-                max-width: 340px;
-                max-height: calc(100vh - 80px);
+                top: 4rem;
+                width: min(95%, 360px);
+                max-height: calc(100vh - 5rem);
             }
 
             #close-bag {
-                width: 24px;
-                height: 24px;
-                font-size: 1rem;
+                width: 1.5rem;
+                height: 1.5rem;
+                font-size: 0.875rem;
             }
 
             #reset-confirm {
-                width: calc(100% - 20px);
-                max-width: 280px;
-                padding: 10px;
+                width: min(95%, 280px);
+                padding: 0.625rem;
             }
 
             #reset-confirm p {
-                font-size: 0.9rem;
+                font-size: 0.875rem;
             }
 
             #reset-confirm button {
-                max-width: 90px;
+                max-width: 5.5rem;
             }
 
             #history-graph {
-                height: 180px;
+                height: 10rem;
             }
 
             #club-distance-graph {
-                height: 380px;
+                height: 20rem;
             }
 
             .input-group {
@@ -655,22 +688,22 @@
             }
 
             input, select, .club-button {
-                max-width: 160px;
+                max-width: 10rem;
             }
 
             button {
-                max-width: 160px;
+                max-width: 10rem;
             }
 
             .btn-container button {
-                max-width: 140px;
-                min-height: 36px;
+                max-width: 8.5rem;
+                min-height: 2rem;
             }
 
             .shot {
                 display: grid;
                 grid-template-rows: auto auto auto auto auto;
-                gap: 10px;
+                gap: 0.5rem;
             }
 
             .shot select[id^="club"],
@@ -683,25 +716,163 @@
 
             .shot .dispersion-group {
                 flex-direction: row;
-                gap: 10px;
+                gap: 0.5rem;
                 justify-content: center;
             }
 
             .shot input[id^="lateralDeviation"],
             .shot select[id^="lateralDirection"] {
-                width: 80px;
+                width: 5rem;
             }
 
             .shot-input-group input, .shot-input-group select {
-                width: 80px;
+                width: 5rem;
             }
 
             #insights {
-                padding: 10px;
+                padding: 0.625rem;
             }
 
             #insights ul {
-                padding-left: 15px;
+                padding-left: 0.75rem;
+            }
+        }
+
+        /* Media Query for Medium Screens (e.g., iPhone 14, iPhone 16 Pro Max: 394px–768px) */
+        @media (min-width: 394px) and (max-width: 768px) {
+            body {
+                padding: 0.75rem 0;
+            }
+
+            header {
+                padding: 0.625rem 1rem;
+                width: min(95%, 600px);
+            }
+
+            header h1 {
+                font-size: 1.375rem;
+            }
+
+            .nav-bar {
+                gap: 0.625rem;
+                width: min(95%, 600px);
+            }
+
+            .nav-bar button {
+                max-width: 8rem;
+                font-size: 0.875rem;
+            }
+
+            .container {
+                padding: 0.875rem;
+                width: min(95%, 600px);
+                margin: 0 auto;
+            }
+
+            #bag-section {
+                width: min(90%, 380px);
+                top: 4.5rem;
+            }
+
+            #reset-confirm {
+                width: min(90%, 300px);
+            }
+
+            #history-graph {
+                height: 11rem;
+            }
+
+            #club-distance-graph {
+                height: 22rem;
+            }
+
+            .input-group {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .shot {
+                padding: 0.875rem;
+            }
+
+            .shot-input-group {
+                flex-wrap: nowrap;
+            }
+        }
+
+        /* Media Query for Larger Screens (e.g., Tablets: 769px+) */
+        @media (min-width: 769px) {
+            body {
+                padding: 1rem 0;
+            }
+
+            header {
+                padding: 1rem 1.5rem;
+                width: min(90%, 1000px);
+            }
+
+            header h1 {
+                font-size: 1.75rem;
+            }
+
+            .nav-bar {
+                gap: 1rem;
+                flex-wrap: nowrap;
+                width: min(90%, 1000px);
+            }
+
+            .nav-bar button {
+                max-width: 10rem;
+                font-size: 1rem;
+            }
+
+            .container {
+                padding: 1.25rem;
+                width: min(90%, 1000px);
+                margin: 0 auto;
+            }
+
+            #bag-section {
+                width: min(80%, 500px);
+                top: 6rem;
+            }
+
+            #reset-confirm {
+                width: min(80%, 400px);
+            }
+
+            #history-graph {
+                height: 14rem;
+            }
+
+            #club-distance-graph {
+                height: 28rem;
+            }
+
+            .input-group {
+                flex-wrap: nowrap;
+            }
+
+            .shot {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .shot-inputs {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+                gap: 0.75rem;
+            }
+
+            .club-row {
+                flex-wrap: nowrap;
+                gap: 0.75rem;
+            }
+
+            .btn-container {
+                flex-wrap: nowrap;
             }
         }
     </style>
@@ -714,10 +885,6 @@
     <div class="nav-bar">
         <button id="nav-game" class="active" aria-label="Go to Practice page" data-tooltip="Start a practice session">Practice</button>
         <button id="nav-user" aria-label="Go to Profile page" data-tooltip="View your progress and manage clubs">Profile</button>
-    </div>
-    <div id="homepage" class="container">
-        <h2>Welcome to Fairway Focus</h2>
-        <p>Master your distance control and track your golf progress with precision challenges.</p>
     </div>
     <div id="game-container" class="container active">
         <div class="input-group">
@@ -763,6 +930,13 @@
         <div id="history-graph"></div>
         <div id="club-distance-graph"></div>
         <button id="export-data" aria-label="Export shot history" data-tooltip="Download your shot history as CSV">Export Data</button>
+        <button id="club-data" aria-label="View club data" data-tooltip="View detailed club data">Club Data</button>
+        <div id="club-data-section" style="display: none;">
+            <select id="club-select"></select>
+            <button id="show-club-data" aria-label="Show club data" data-tooltip="View selected club data">View</button>
+            <div id="club-data-graph"></div>
+            <div id="club-insights"></div>
+        </div>
         <button id="reset-all-data" class="reset-all-data" aria-label="Reset all profile data" data-tooltip="Clear all progress data">Reset All Data</button>
         <div id="bag-section" class="container">
             <button id="close-bag" aria-label="Close bag selection">X</button>
@@ -784,9 +958,9 @@
             <div class="club-row"><button class="club-button" data-club="8 Iron" aria-label="Select 8 Iron">8 Iron</button></div>
             <div class="club-row"><button class="club-button" data-club="9 Iron" aria-label="Select 9 Iron">9 Iron</button></div>
             <div class="club-row"><button class="club-button" data-club="Pitching Wedge" aria-label="Select Pitching Wedge">Pitching Wedge</button></div>
-            <div class="club-row"><button class="club-button" data-club="Gap Wedge" aria-label="Select Gap Wedge">Gap Wedge</button><input type="number" id="gap-wedge-deg" placeholder="°" min="48" max="54" style="width: 60px;" aria-label="Gap Wedge loft in degrees"></div>
-            <div class="club-row"><button class="club-button" data-club="Sand Wedge" aria-label="Select Sand Wedge">Sand Wedge</button><input type="number" id="sand-wedge-deg" placeholder="°" min="52" max="58" style="width: 60px;" aria-label="Sand Wedge loft in degrees"></div>
-            <div class="club-row"><button class="club-button" data-club="Lob Wedge" aria-label="Select Lob Wedge">Lob Wedge</button><input type="number" id="lob-wedge-deg" placeholder="°" min="58" max="64" style="width: 60px;" aria-label="Lob Wedge loft in degrees"></div>
+            <div class="club-row"><button class="club-button" data-club="Gap Wedge" aria-label="Select Gap Wedge">Gap Wedge</button><input type="number" id="gap-wedge-deg" placeholder="°" min="48" max="54" style="width: 3.75rem;" aria-label="Gap Wedge loft in degrees"></div>
+            <div class="club-row"><button class="club-button" data-club="Sand Wedge" aria-label="Select Sand Wedge">Sand Wedge</button><input type="number" id="sand-wedge-deg" placeholder="°" min="52" max="58" style="width: 3.75rem;" aria-label="Sand Wedge loft in degrees"></div>
+            <div class="club-row"><button class="club-button" data-club="Lob Wedge" aria-label="Select Lob Wedge">Lob Wedge</button><input type="number" id="lob-wedge-deg" placeholder="°" min="58" max="64" style="width: 3.75rem;" aria-label="Lob Wedge loft in degrees"></div>
             <button id="save-bag" aria-label="Save bag selection" data-tooltip="Save selected clubs">Save Bag</button>
         </div>
         <div id="reset-confirm" class="container">
@@ -799,679 +973,974 @@
     </div>
 
     <script>
-        // Ensure Chart.js and ChartDataLabels are loaded before registering
+        // Ensure Chart.js and plugins are loaded
         document.addEventListener('DOMContentLoaded', () => {
-            // Register ChartDataLabels plugin
-            if (typeof ChartDataLabels !== 'undefined') {
-                Chart.register(ChartDataLabels);
-            } else {
-                console.warn('ChartDataLabels plugin not loaded. Data labels will be disabled.');
-            }
+            try {
+                // Register ChartDataLabels plugin
+                if (typeof ChartDataLabels !== 'undefined') {
+                    Chart.register(ChartDataLabels);
+                    console.log('ChartDataLabels plugin registered successfully.');
+                } else {
+                    console.warn('ChartDataLabels plugin not loaded. Data labels will be disabled.');
+                }
 
-            let history = JSON.parse(localStorage.getItem('fairwayFocusHistory') || localStorage.getItem('pinSeekerHistory')) || [];
-            let bag = JSON.parse(localStorage.getItem('fairwayFocusBag') || localStorage.getItem('pinSeekerBag')) || [];
-            let goal = JSON.parse(localStorage.getItem('fairwayFocusGoal')) || null;
-            let sessions = JSON.parse(localStorage.getItem('fairwayFocusSessions')) || [];
-            let currentSession = [];
+                // Register Chart.js annotation plugin
+                if (typeof ChartAnnotation !== 'undefined') {
+                    Chart.register(ChartAnnotation);
+                    console.log('ChartAnnotation plugin registered successfully.');
+                } else {
+                    console.warn('ChartAnnotation plugin not loaded. Annotations will be disabled.');
+                }
 
-            function showPage(pageId) {
-                console.log(`showPage called with pageId: ${pageId}`);
-                const currentPage = document.querySelector('.container.active:not(#bag-section):not(#reset-confirm)');
-                if (currentPage && currentPage.id === pageId) return;
+                let history = JSON.parse(localStorage.getItem('fairwayFocusHistory') || '[]') || [];
+                let bag = JSON.parse(localStorage.getItem('fairwayFocusBag') || '[]') || [];
+                let goal = JSON.parse(localStorage.getItem('fairwayFocusGoal') || 'null') || null;
+                let sessions = JSON.parse(localStorage.getItem('fairwayFocusSessions') || '[]') || [];
+                let currentSession = [];
 
-                document.querySelectorAll('.container').forEach(container => {
-                    if (container.id !== 'bag-section' && container.id !== 'reset-confirm') {
-                        container.classList.remove('active');
-                        container.style.display = 'none';
-                        container.style.opacity = '0';
-                        container.style.transform = 'translateY(20px)';
+                function showPage(pageId) {
+                    console.log(`showPage called with pageId: ${pageId}`);
+                    const currentPage = document.querySelector('.container.active:not(#bag-section):not(#reset-confirm)');
+                    if (currentPage && currentPage.id === pageId) return;
+
+                    document.querySelectorAll('.container').forEach(container => {
+                        if (container.id !== 'bag-section' && container.id !== 'reset-confirm') {
+                            container.classList.remove('active');
+                            container.style.display = 'none';
+                            container.style.opacity = '0';
+                            container.style.transform = 'translateY(20px)';
+                        }
+                    });
+                    const targetContainer = document.getElementById(pageId);
+                    if (targetContainer) {
+                        targetContainer.classList.add('active');
+                        targetContainer.style.display = 'block';
+                        setTimeout(() => {
+                            targetContainer.style.opacity = '1';
+                            targetContainer.style.transform = 'translateY(0)';
+                        }, 50);
+                        updateNavButtons(pageId);
+                        if (pageId === 'user-container') {
+                            updateProgressDashboard();
+                            drawHistoryGraph();
+                            drawClubDistanceGraph();
+                            populateClubSelect();
+                        }
+                    } else {
+                        console.error(`Container with ID ${pageId} not found.`);
                     }
-                });
-                const targetContainer = document.getElementById(pageId);
-                targetContainer.classList.add('active');
-                targetContainer.style.display = 'block';
-                setTimeout(() => {
-                    targetContainer.style.opacity = '1';
-                    targetContainer.style.transform = 'translateY(0)';
-                }, 50);
-                updateNavButtons(pageId);
-                if (pageId === 'user-container') {
-                    updateProgressDashboard();
-                    drawHistoryGraph();
+                }
+
+                function updateNavButtons(activePage) {
+                    document.querySelectorAll('.nav-bar button').forEach(button => {
+                        button.classList.remove('active');
+                        if (button.id === (activePage === 'game-container' ? 'nav-game' : 'nav-user')) {
+                            button.classList.add('active');
+                        }
+                    });
+                }
+
+                function toggleBagSection() {
+                    console.log('toggleBagSection called');
+                    const bagSection = document.getElementById('bag-section');
+                    bagSection.classList.toggle('active');
+                    if (bagSection.classList.contains('active')) {
+                        bagSection.style.display = 'block';
+                        bagSection.style.opacity = '1';
+                        bagSection.style.visibility = 'visible';
+                        bagSection.style.transform = 'translateX(-50%) translateY(0)';
+                    } else {
+                        bagSection.style.display = 'none';
+                        bagSection.style.opacity = '0';
+                        bagSection.style.visibility = 'hidden';
+                    }
+                }
+
+                function toggleClub(button, club) {
+                    console.log(`toggleClub called for club: ${club}`);
+                    button.classList.toggle('selected');
+                    const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
+                    if (degInput && button.classList.contains('selected')) {
+                        const defaultLofts = {
+                            'Gap Wedge': 50,
+                            'Sand Wedge': 56,
+                            'Lob Wedge': 60
+                        };
+                        degInput.value = degInput.value || defaultLofts[club] || '';
+                    } else if (degInput) {
+                        degInput.value = '';
+                    }
+                }
+
+                function saveBag() {
+                    console.log('saveBag called');
+                    bag = [];
+                    document.querySelectorAll('.club-button.selected').forEach(button => {
+                        const club = button.getAttribute('data-club');
+                        const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
+                        const degree = degInput ? parseInt(degInput.value) : null;
+                        const loftRanges = {
+                            'Gap Wedge': { min: 48, max: 54 },
+                            'Sand Wedge': { min: 52, max: 58 },
+                            'Lob Wedge': { min: 58, max: 64 }
+                        };
+                        if (degree && degInput && loftRanges[club]) {
+                            if (degree < loftRanges[club].min || degree > loftRanges[club].max) {
+                                alert(`Invalid loft for ${club}. Must be between ${loftRanges[club].min}° and ${loftRanges[club].max}°.`);
+                                return;
+                            }
+                            bag.push({ name: club, loft: degree });
+                        } else {
+                            bag.push({ name: club, loft: null });
+                        }
+                    });
+                    localStorage.setItem('fairwayFocusBag', JSON.stringify(bag));
+                    alert('Bag saved successfully!');
+                    toggleBagSection();
                     drawClubDistanceGraph();
                 }
-            }
 
-            function updateNavButtons(activePage) {
-                document.querySelectorAll('.nav-bar button').forEach(button => {
-                    button.classList.remove('active');
-                    if (button.id === (activePage === 'game-container' ? 'nav-game' : 'nav-user')) {
-                        button.classList.add('active');
-                    }
-                });
-            }
-
-            function toggleBagSection() {
-                const bagSection = document.getElementById('bag-section');
-                bagSection.classList.toggle('active');
-                if (bagSection.classList.contains('active')) {
-                    bagSection.style.display = 'block';
-                    bagSection.style.opacity = '1';
-                    bagSection.style.visibility = 'visible';
-                    bagSection.style.transform = 'translateX(-50%) translateY(0)';
-                } else {
-                    bagSection.style.display = 'none';
-                    bagSection.style.opacity = '0';
-                    bagSection.style.visibility = 'hidden';
-                }
-            }
-
-            function toggleClub(button, club) {
-                button.classList.toggle('selected');
-                const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
-                if (degInput && button.classList.contains('selected')) {
-                    const defaultLofts = {
-                        'Gap Wedge': 50,
-                        'Sand Wedge': 56,
-                        'Lob Wedge': 60
-                    };
-                    degInput.value = degInput.value || defaultLofts[club] || '';
-                } else if (degInput) {
-                    degInput.value = '';
-                }
-            }
-
-            function saveBag() {
-                bag = [];
-                document.querySelectorAll('.club-button.selected').forEach(button => {
-                    const club = button.getAttribute('data-club');
-                    const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
-                    const degree = degInput ? parseInt(degInput.value) : null;
-                    const loftRanges = {
-                        'Gap Wedge': { min: 48, max: 54 },
-                        'Sand Wedge': { min: 52, max: 58 },
-                        'Lob Wedge': { min: 58, max: 64 }
-                    };
-                    if (degree && degInput && loftRanges[club]) {
-                        if (degree < loftRanges[club].min || degree > loftRanges[club].max) {
-                            alert(`Invalid loft for ${club}. Must be between ${loftRanges[club].min}° and ${loftRanges[club].max}°.`);
-                            return;
-                        }
-                        bag.push({ name: club, loft: degree });
+                function toggleResetConfirm() {
+                    console.log('toggleResetConfirm called');
+                    const resetConfirm = document.getElementById('reset-confirm');
+                    resetConfirm.classList.toggle('active');
+                    if (resetConfirm.classList.contains('active')) {
+                        resetConfirm.style.display = 'block';
+                        resetConfirm.style.opacity = '1';
+                        resetConfirm.style.visibility = 'visible';
+                        resetConfirm.style.transform = 'translate(-50%, -50%)';
                     } else {
-                        bag.push({ name: club, loft: null });
+                        resetConfirm.style.display = 'none';
+                        resetConfirm.style.opacity = '0';
+                        resetConfirm.style.visibility = 'hidden';
                     }
-                });
-                localStorage.setItem('fairwayFocusBag', JSON.stringify(bag));
-                alert('Bag saved successfully!');
-                toggleBagSection();
-                drawClubDistanceGraph();
-            }
-
-            function toggleResetConfirm() {
-                const resetConfirm = document.getElementById('reset-confirm');
-                resetConfirm.classList.toggle('active');
-                if (resetConfirm.classList.contains('active')) {
-                    resetConfirm.style.display = 'block';
-                    resetConfirm.style.opacity = '1';
-                    resetConfirm.style.visibility = 'visible';
-                    resetConfirm.style.transform = 'translate(-50%, -50%)';
-                } else {
-                    resetConfirm.style.display = 'none';
-                    resetConfirm.style.opacity = '0';
-                    resetConfirm.style.visibility = 'hidden';
-                }
-            }
-
-            function resetAllData() {
-                localStorage.removeItem('fairwayFocusBag');
-                localStorage.removeItem('fairwayFocusHistory');
-                localStorage.removeItem('fairwayFocusGoal');
-                localStorage.removeItem('fairwayFocusSessions');
-                bag = [];
-                history = [];
-                goal = null;
-                sessions = [];
-                currentSession = [];
-                document.querySelectorAll('.club-button.selected').forEach(button => {
-                    button.classList.remove('selected');
-                    const club = button.getAttribute('data-club');
-                    const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
-                    if (degInput) degInput.value = '';
-                });
-                document.getElementById('average-circle').innerHTML = '';
-                document.getElementById('history-graph').innerHTML = '';
-                document.getElementById('club-distance-graph').innerHTML = '';
-                document.getElementById('progress-dashboard').innerHTML = '<h3>Progress Overview</h3><ul><li>No data available.</li></ul>';
-                document.getElementById('goal-score').value = '';
-                toggleResetConfirm();
-                showPage('user-container');
-                alert('All data has been reset.');
-            }
-
-            function updateProgressDashboard() {
-                const dashboard = document.getElementById('progress-dashboard');
-                if (history.length === 0) {
-                    dashboard.innerHTML = '<h3>Progress Overview</h3><ul><li>No data available. Start a practice session!</li></ul>';
-                    return;
                 }
 
-                const avgScore = history.length > 0 ? Math.round(history.reduce((sum, entry) => sum + entry.score, 0) / history.length) : 0;
-                const bestSession = sessions.length > 0 ? Math.max(...sessions.map(s => s.average || 0)) : 0;
-                const consistency = history.length > 1 ? Math.round(100 - (Math.sqrt(history.reduce((sum, entry) => sum + Math.pow(entry.score - avgScore, 2), 0) / history.length) / 100 * 100)) : 100;
-
-                let goalStatus = 'No goal set.';
-                if (goal) {
-                    goalStatus = avgScore >= goal ? `Goal Achieved! (${avgScore}/${goal})` : `Progress: ${avgScore}/${goal}`;
+                function resetAllData() {
+                    console.log('resetAllData called');
+                    localStorage.removeItem('fairwayFocusBag');
+                    localStorage.removeItem('fairwayFocusHistory');
+                    localStorage.removeItem('fairwayFocusGoal');
+                    localStorage.setItem('fairwayFocusSessions', JSON.stringify(sessions));
+                    bag = [];
+                    history = [];
+                    goal = null;
+                    sessions = [];
+                    currentSession = [];
+                    document.querySelectorAll('.club-button.selected').forEach(button => {
+                        button.classList.remove('selected');
+                        const club = button.getAttribute('data-club');
+                        const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
+                        if (degInput) degInput.value = '';
+                    });
+                    document.getElementById('average-circle').innerHTML = '';
+                    document.getElementById('history-graph').innerHTML = '';
+                    document.getElementById('club-distance-graph').innerHTML = '';
+                    document.getElementById('progress-dashboard').innerHTML = '<h3>Progress Overview</h3><ul><li>No data available.</li></ul>';
+                    document.getElementById('goal-score').value = '';
+                    toggleResetConfirm();
+                    showPage('user-container');
+                    alert('All data has been reset.');
                 }
 
-                dashboard.innerHTML = `
-                    <h3>Progress Overview</h3>
-                    <ul>
-                        <li>Average Score: ${avgScore}/100</li>
-                        <li>Best Session: ${bestSession}/100</li>
-                        <li>Consistency Rating: ${consistency}%</li>
-                        <li>Goal Status: ${goalStatus}</li>
-                    </ul>
-                `;
-            }
+                function updateProgressDashboard() {
+                    console.log('updateProgressDashboard called');
+                    const dashboard = document.getElementById('progress-dashboard');
+                    if (history.length === 0) {
+                        dashboard.innerHTML = '<h3>Progress Overview</h3><ul><li>No data available. Start a practice session!</li></ul>';
+                        return;
+                    }
 
-            function saveGoal() {
-                const goalScore = parseInt(document.getElementById('goal-score').value);
-                if (isNaN(goalScore) || goalScore < 0 || goalScore > 100) {
-                    alert('Please enter a valid target score (0-100).');
-                    return;
+                    const avgScore = history.length > 0 ? Math.round(history.reduce((sum, entry) => sum + (entry.score || 0), 0) / history.length) : 0;
+                    const bestSession = sessions.length > 0 ? Math.max(...sessions.map(s => s.average || 0)) : 0;
+                    const consistency = history.length > 1 ? Math.round(100 - (Math.sqrt(history.reduce((sum, entry) => sum + Math.pow((entry.score || 0) - avgScore, 2), 0) / history.length) / 100 * 100)) : 100;
+
+                    let goalStatus = 'No goal set.';
+                    if (goal) {
+                        goalStatus = avgScore >= goal ? `Goal Achieved! (${avgScore}/${goal})` : `Progress: ${avgScore}/${goal}`;
+                    }
+
+                    dashboard.innerHTML = `
+                        <h3>Progress Overview</h3>
+                        <ul>
+                            <li>Average Score: ${avgScore}/100</li>
+                            <li>Best Session: ${bestSession}/100</li>
+                            <li>Consistency Rating: ${consistency}%</li>
+                            <li>Goal Status: ${goalStatus}</li>
+                        </ul>
+                    `;
                 }
-                goal = goalScore;
-                localStorage.setItem('fairwayFocusGoal', JSON.stringify(goal));
-                alert('Goal saved successfully!');
-                updateProgressDashboard();
-            }
 
-            function generateShots() {
-                const min = parseInt(document.getElementById('minRange').value);
-                const max = parseInt(document.getElementById('maxRange').value);
-                const quantity = parseInt(document.getElementById('quantity').value);
-                const resultsDiv = document.getElementById('results');
-                resultsDiv.innerHTML = '';
-                document.getElementById('overallScore').innerHTML = '';
-                document.getElementById('insights').innerHTML = '';
+                function saveGoal() {
+                    console.log('saveGoal called');
+                    const goalScore = parseInt(document.getElementById('goal-score').value);
+                    if (isNaN(goalScore) || goalScore < 0 || goalScore > 100) {
+                        alert('Please enter a valid target score (0-100).');
+                        return;
+                    }
+                    goal = goalScore;
+                    localStorage.setItem('fairwayFocusGoal', JSON.stringify(goal));
+                    alert('Goal saved successfully!');
+                    updateProgressDashboard();
+                }
 
-                // Save previous session if it exists
-                if (currentSession.length > 0) {
-                    const sessionAverage = Math.round(currentSession.reduce((sum, shot) => sum + shot.score, 0) / currentSession.length);
+                function generateShots() {
+                    console.log('generateShots called');
+                    const min = parseInt(document.getElementById('minRange').value);
+                    const max = parseInt(document.getElementById('maxRange').value);
+                    const quantity = parseInt(document.getElementById('quantity').value);
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = '';
+                    document.getElementById('overallScore').innerHTML = '';
+                    document.getElementById('insights').innerHTML = '';
+
+                    // Save previous session if it exists
+                    if (currentSession.length > 0) {
+                        const sessionAverage = Math.round(currentSession.reduce((sum, shot) => sum + (shot.score || 0), 0) / currentSession.length);
+                        sessions.push({
+                            scores: currentSession.map(s => s.score),
+                            timestamp: currentSession[0].timestamp,
+                            average: sessionAverage
+                        });
+                        localStorage.setItem('fairwayFocusSessions', JSON.stringify(sessions));
+                    }
+
+                    currentSession = [];
+
+                    if (isNaN(min) || isNaN(max) || isNaN(quantity) || min < 0 || max > 300 || min >= max || quantity < 1 || quantity > 50) {
+                        resultsDiv.innerHTML = '<p style="color: #D32F2F;">Please enter valid numbers: min ≥ 0, max ≤ 300, min < max, 1 ≤ shots ≤ 50.</p>';
+                        return;
+                    }
+
+                    if (bag.length === 0) {
+                        resultsDiv.innerHTML = '<p style="color: #D32F2F;">Please set up your bag in the Profile tab first.</p>';
+                        return;
+                    }
+
+                    for (let i = 0; i < quantity; i++) {
+                        const distance = Math.floor(Math.random() * (max - min + 1)) + min;
+                        const shotDiv = document.createElement('div');
+                        shotDiv.className = 'shot';
+                        const clubOptions = bag.map(club => {
+                            const clubName = club.name;
+                            const clubLoft = club.loft;
+                            const displayName = ['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName) && clubLoft
+                                ? `${clubLoft}°`
+                                : clubName;
+                            const suggestion = suggestClub(distance, club);
+                            return `<option value="${clubName}|${clubLoft || ''}" ${suggestion ? 'selected' : ''}>${displayName}${suggestion ? ' (Recommended)' : ''}</option>`;
+                        }).join('');
+
+                        shotDiv.innerHTML = `
+                            <p class="target-distance">Shot ${i + 1}: Hit to <strong>${distance}</strong> yards</p>
+                            <div class="shot-inputs">
+                                <div class="shot-input-group">
+                                    <select id="club${i}" aria-label="Select club for shot ${i + 1}">${clubOptions}</select>
+                                    <label for="club${i}" data-tooltip="Select club used">Club Used:</label>
+                                </div>
+                                <div class="shot-input-group">
+                                    <input type="number" id="carryDistance${i}" placeholder="Enter carry distance" min="0" max="400" aria-label="Carry distance for shot ${i + 1}">
+                                    <label for="carryDistance${i}" data-tooltip="Enter actual distance hit">Carry Distance (yards):</label>
+                                </div>
+                                <div class="shot-input-group dispersion-group">
+                                    <input type="number" id="lateralDeviation${i}" placeholder="Enter feet off line" min="0" max="200" aria-label="Dispersion for shot ${i + 1}">
+                                    <select id="lateralDirection${i}" aria-label="Dispersion direction for shot ${i + 1}">
+                                        <option value="1">Right</option>
+                                        <option value="-1">Left</option>
+                                    </select>
+                                    <label for="lateralDeviation${i}" data-tooltip="Enter feet off target line">Dispersion (ft):</label>
+                                </div>
+                                <button class="score-shot" data-shot-index="${i}" data-distance="${distance}" aria-label="Score shot ${i + 1}" data-tooltip="Calculate shot score">Score Shot</button>
+                                <p id="score${i}" aria-live="polite"></p>
+                            </div>
+                        `;
+                        resultsDiv.appendChild(shotDiv);
+
+                        shotDiv.querySelector(`.score-shot[data-shot-index="${i}"]`).addEventListener('click', () => {
+                            console.log(`Score shot button clicked for index ${i}`);
+                            calculateScore(i, distance);
+                        });
+                    }
+                }
+
+                function suggestClub(targetDistance, club) {
+                    console.log('suggestClub called');
+                    const clubName = club.name;
+                    const clubData = history.filter(entry => entry.club === clubName);
+                    if (clubData.length < 3) return false;
+                    const avgDistance = clubData.reduce((sum, entry) => sum + (entry.carryDistance || 0), 0) / clubData.length;
+                    const variance = Math.sqrt(clubData.reduce((sum, entry) => sum + Math.pow((entry.carryDistance || 0) - avgDistance, 2), 0) / clubData.length);
+                    return Math.abs(avgDistance - targetDistance) < 10 && variance < 15;
+                }
+
+                function calculateScore(shotIndex, targetDistance) {
+                    console.log(`calculateScore called for shotIndex: ${shotIndex}, targetDistance: ${targetDistance}`);
+                    const carryDistance = parseFloat(document.getElementById(`carryDistance${shotIndex}`).value);
+                    const lateralDeviation = parseFloat(document.getElementById(`lateralDeviation${shotIndex}`).value);
+                    const lateralDirection = parseInt(document.getElementById(`lateralDirection${shotIndex}`).value);
+                    const club = document.getElementById(`club${shotIndex}`).value.split('|')[0];
+                    const scoreElement = document.getElementById(`score${shotIndex}`);
+
+                    if (isNaN(carryDistance) || isNaN(lateralDeviation) || carryDistance < 0 || lateralDeviation < 0) {
+                        scoreElement.innerHTML = '<span style="color: #D32F2F;">Please enter valid numbers for carry distance and dispersion (≥ 0).</span>';
+                        return;
+                    }
+
+                    const distanceError = Math.abs(targetDistance - carryDistance);
+                    const maxDistanceError = targetDistance * 0.2;
+                    const distanceScore = Math.max(0, 50 * (1 - distanceError / maxDistanceError));
+                    const maxLateralDeviation = 90;
+                    const effectiveLateralDeviation = lateralDeviation * lateralDirection;
+                    const lateralScore = Math.max(0, 50 * (1 - Math.abs(effectiveLateralDeviation) / maxLateralDeviation));
+                    const totalScore = Math.round(distanceScore + lateralScore);
+
+                    scoreElement.innerHTML = `Score: ${totalScore}/100`;
+                    const clubName = document.getElementById(`club${shotIndex}`).value.split('|');
+                    const fullClubName = ['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName[0]) && clubName[1]
+                        ? `${clubName[1]}°`
+                        : clubName[0];
+                    const note = document.getElementById('session-note').value;
+                    const shotData = {
+                        score: totalScore,
+                        carryDistance,
+                        club: fullClubName,
+                        lateralDeviation: effectiveLateralDeviation,
+                        timestamp: new Date().getTime(),
+                        targetDistance,
+                        note
+                    };
+                    history.push(shotData);
+                    currentSession.push(shotData);
+                    localStorage.setItem('fairwayFocusHistory', JSON.stringify(history));
+                    console.log('Shot added to currentSession:', shotData);
+                    drawHistoryGraph();
+                    drawClubDistanceGraph();
+                    updateProgressDashboard();
+                }
+
+                function calculateOverallAverage() {
+                    console.log('calculateOverallAverage called');
+                    const overallScoreElement = document.getElementById('overallScore');
+                    const insightsDiv = document.getElementById('insights');
+                    if (currentSession.length === 0) {
+                        overallScoreElement.innerHTML = '<span style="color: #D32F2F;">No scores entered yet. Score at least one shot first.</span>';
+                        insightsDiv.innerHTML = '';
+                        return;
+                    }
+
+                    const totalScore = currentSession.reduce((sum, shot) => sum + (shot.score || 0), 0);
+                    const averageScore = Math.round(totalScore / currentSession.length);
+                    overallScoreElement.innerHTML = `Overall Average Score: ${averageScore}/100`;
+
+                    // Save session average
                     sessions.push({
                         scores: currentSession.map(shot => shot.score),
                         timestamp: currentSession[0].timestamp,
-                        average: sessionAverage
+                        average: averageScore
                     });
                     localStorage.setItem('fairwayFocusSessions', JSON.stringify(sessions));
-                    console.log('Saved session:', { scores: currentSession.map(shot => shot.score), average: sessionAverage, timestamp: currentSession[0].timestamp });
+                    console.log('Saved session on Calculate Overall Average:', { scores: currentSession.map(shot => shot.score), average: averageScore, timestamp: currentSession[0].timestamp });
+
+                    // Generate insights
+                    const scores = currentSession.map((shot, i) => ({
+                        index: i,
+                        score: shot.score,
+                        carryDistance: shot.carryDistance,
+                        lateralDeviation: shot.lateralDeviation,
+                        club: shot.club,
+                        targetDistance: shot.targetDistance
+                    }));
+                    generateInsights(scores, averageScore);
+
+                    // Update Profile page
+                    updateProgressDashboard();
+                    drawHistoryGraph();
                 }
 
-                currentSession = [];
-                console.log('New session started');
+                function generateInsights(scores, overallAverage) {
+                    console.log('generateInsights called');
+                    const insightsDiv = document.getElementById('insights');
+                    let insights = '<h3>Session Insights</h3><ul>';
+                    if (scores.length === 0) {
+                        insights += '<li>No shots scored yet.</li>';
+                    } else {
+                        const avgLateral = scores.reduce((sum, s) => sum + Math.abs(s.lateralDeviation || 0), 0) / scores.length;
+                        insights += `<li>Session average score: ${overallAverage}/100, with ${avgLateral.toFixed(1)} ft average dispersion.</li>`;
+                        const rightMisses = scores.filter(s => (s.lateralDeviation || 0) > 0).length;
+                        let keyIssue = '';
+                        if (rightMisses / scores.length > 0.6) {
+                            keyIssue = 'You frequently miss right. Try adjusting your aim slightly left.';
+                        } else if (rightMisses / scores.length < 0.4) {
+                            keyIssue = 'You frequently miss left. Practice aligning slightly right of the target.';
+                        } else {
+                            const clubDistances = {};
+                            scores.forEach(shot => {
+                                if (!clubDistances[shot.club]) clubDistances[shot.club] = [];
+                                clubDistances[shot.club].push(Math.abs((shot.carryDistance || 0) - (shot.targetDistance || 0)));
+                            });
+                            let maxVarianceClub = '';
+                            let maxVariance = 0;
+                            for (const club in clubDistances) {
+                                const errors = clubDistances[club];
+                                if (errors.length > 1) {
+                                    const avgError = errors.reduce((sum, e) => sum + e, 0) / errors.length;
+                                    const variance = errors.reduce((sum, e) => sum + Math.pow(e - avgError, 2), 0) / errors.length;
+                                    if (variance > maxVariance) {
+                                        maxVariance = variance;
+                                        maxVarianceClub = club;
+                                    }
+                                }
+                            }
+                            keyIssue = maxVariance > 100 && maxVarianceClub ? `Inconsistent distances with ${maxVarianceClub}. Focus on this club.` : overallAverage > 60 ? 'Great session! Work on precision with short irons.' : 'Focus on hitting closer to target distances.';
+                        }
+                        insights += `<li><strong>Key Action:</strong> ${keyIssue}</li>`;
+                        if (goal) {
+                            insights += `<li>Goal Progress: ${overallAverage}/${goal} (${overallAverage >= goal ? 'Achieved!' : 'Keep practicing!'})</li>`;
+                        }
 
-                if (isNaN(min) || isNaN(max) || isNaN(quantity) || min < 0 || max > 300 || min >= max || quantity < 1 || quantity > 50) {
-                    resultsDiv.innerHTML = '<p style="color: #D32F2F;">Please enter valid numbers: min ≥ 0, max ≤ 300, min < max, 1 ≤ shots ≤ 50.</p>';
-                    return;
+                        const longShots = scores.filter(s => (s.targetDistance || 0) > 150).length;
+                        if (longShots / scores.length > 0.5) {
+                            insights += '<li>You practiced more long shots this session. Consider balancing with short game for better overall control.</li>';
+                        } else if (longShots / scores.length < 0.3) {
+                            insights += '<li>Focus was on shorter shots. Good for precision, but mix in longer distances to improve full bag consistency.</li>';
+                        }
+
+                        const avgDistanceError = scores.reduce((sum, s) => sum + Math.abs((s.carryDistance || 0) - (s.targetDistance || 0)), 0) / scores.length;
+                        if (avgDistanceError > 15) {
+                            insights += `<li>Average distance error was high at ${avgDistanceError.toFixed(1)} yards. Practice tempo for better control.</li>`;
+                        } else if (avgDistanceError < 5) {
+                            insights += `<li>Excellent distance control with average error of ${avgDistanceError.toFixed(1)} yards. Keep it up!</li>`;
+                        }
+
+                        const clubUsage = {};
+                        scores.forEach(s => clubUsage[s.club] = (clubUsage[s.club] || 0) + 1);
+                        const mostUsedClub = Object.keys(clubUsage).reduce((a, b) => clubUsage[a] > clubUsage[b] ? a : b, Object.keys(clubUsage)[0] || '');
+                        insights += `<li>Most used club: ${mostUsedClub} (${clubUsage[mostUsedClub] || 0} shots). Analyze its performance below.</li>`;
+                    }
+                    insights += '</ul>';
+                    insightsDiv.innerHTML = insights;
                 }
 
-                if (bag.length === 0) {
-                    resultsDiv.innerHTML = '<p style="color: #D32F2F;">Please set up your bag in the Profile tab first.</p>';
-                    return;
+                function drawHistoryGraph() {
+                    console.log('drawHistoryGraph called');
+                    const container = document.getElementById('history-graph');
+                    container.innerHTML = '<canvas id="history-canvas"></canvas>';
+                    const canvas = document.getElementById('history-canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    const allSessions = [...sessions];
+                    if (currentSession.length > 0) {
+                        const sessionAverage = Math.round(currentSession.reduce((sum, shot) => sum + (shot.score || 0), 0) / currentSession.length);
+                        allSessions.push({
+                            scores: currentSession.map(shot => shot.score),
+                            timestamp: currentSession[0].timestamp,
+                            average: sessionAverage
+                        });
+                    }
+
+                    const recentSessions = allSessions.slice(-5);
+                    const scores = recentSessions.map(session => session.average || 0);
+                    const labels = recentSessions.map(session => {
+                        const date = new Date(session.timestamp);
+                        return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear().toString().slice(-2)}`;
+                    });
+
+                    const overallAverage = scores.length > 0 ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0;
+                    const trend = scores.length >= 2 ? (scores[scores.length - 1] - scores[0]) / (scores.length - 1) > 0 ? 'up' : 'down' : 'none';
+
+                    const averageCircle = document.getElementById('average-circle');
+                    const circleColor = trend === 'up' ? '#00FF00' : trend === 'down' ? '#FF0000' : '#FFD700';
+                    averageCircle.innerHTML = `
+                        <svg width="180" height="60">
+                            <text x="0" y="30" font-family="Open Sans" font-size="12" font-weight="bold" fill="#000000" text-anchor="start" dominant-baseline="central">5 Session Avg.</text>
+                            <circle cx="120" cy="30" r="28" fill="rgba(255, 255, 255, 0.9)" stroke="${circleColor}" stroke-width="4"/>
+                            <text x="120" y="30" font-family="Open Sans" font-size="24" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">${overallAverage}</text>
+                        </svg>
+                    `;
+
+                    try {
+                        new Chart(canvas, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Average Score',
+                                    data: scores,
+                                    borderColor: '#2E7D32',
+                                    backgroundColor: 'rgba(46, 125, 50, 0.3)',
+                                    fill: true,
+                                    tension: 0.4,
+                                    pointRadius: 5,
+                                    pointHoverRadius: 8,
+                                    pointBackgroundColor: '#2E7D32',
+                                    pointBorderColor: '#FFFFFF',
+                                    pointBorderWidth: 2
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: { min: 0, max: 100, title: { display: true, text: 'Score' } },
+                                    x: { title: { display: true, text: 'Session' } }
+                                },
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: { enabled: true }
+                                }
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Error rendering history graph:', error);
+                        container.innerHTML = '<p style="color: #D32F2F; text-align: center;">Error rendering graph.</p>';
+                    }
                 }
 
-                for (let i = 0; i < quantity; i++) {
-                    const distance = Math.floor(Math.random() * (max - min + 1)) + min;
-                    const shotDiv = document.createElement('div');
-                    shotDiv.className = 'shot';
-                    const clubOptions = bag.map(club => {
+                function drawClubDistanceGraph() {
+                    console.log('drawClubDistanceGraph called');
+                    const container = document.getElementById('club-distance-graph');
+                    container.innerHTML = '<canvas id="club-distance-canvas"></canvas>';
+                    const canvas = document.getElementById('club-distance-canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    if (bag.length === 0) {
+                        container.innerHTML = '<p style="color: #D32F2F; text-align: center;">No clubs in bag. Please set up your bag.</p>';
+                        return;
+                    }
+
+                    const clubAverages = {};
+                    bag.forEach(club => {
                         const clubName = club.name;
                         const clubLoft = club.loft;
-                        const displayName = ['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName) && clubLoft
-                            ? `${clubLoft}°`
-                            : clubName;
-                        const suggestion = suggestClub(distance, club);
-                        return `<option value="${clubName}|${clubLoft || ''}" ${suggestion ? 'selected' : ''}>${displayName}${suggestion ? ' (Recommended)' : ''}</option>`;
-                    }).join('');
+                        const filterName = (['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName) && clubLoft) ? `${clubLoft}°` : clubName;
+                        const clubData = history.filter(entry => entry.club === filterName);
+                        clubAverages[filterName] = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + (entry.carryDistance || 0), 0) / clubData.length) : 0;
+                    });
 
-                    shotDiv.innerHTML = `
-                        <p class="target-distance">Shot ${i + 1}: Hit to <strong>${distance}</strong> yards</p>
-                        <div class="shot-inputs">
-                            <div class="shot-input-group">
-                                <select id="club${i}" aria-label="Select club for shot ${i + 1}">${clubOptions}</select>
-                                <label for="club${i}" data-tooltip="Select club used">Club Used:</label>
-                            </div>
-                            <div class="shot-input-group">
-                                <input type="number" id="carryDistance${i}" placeholder="Enter carry distance" min="0" max="400" aria-label="Carry distance for shot ${i + 1}">
-                                <label for="carryDistance${i}" data-tooltip="Enter actual distance hit">Carry Distance (yards):</label>
-                            </div>
-                            <div class="shot-input-group dispersion-group">
-                                <input type="number" id="lateralDeviation${i}" placeholder="Enter feet off line" min="0" max="200" aria-label="Dispersion for shot ${i + 1}">
-                                <select id="lateralDirection${i}" aria-label="Dispersion direction for shot ${i + 1}">
-                                    <option value="1">Right</option>
-                                    <option value="-1">Left</option>
-                                </select>
-                                <label for="lateralDeviation${i}" data-tooltip="Enter feet off target line">Dispersion (ft):</label>
-                            </div>
-                            <button class="score-shot" data-shot-index="${i}" data-distance="${distance}" aria-label="Score shot ${i + 1}" data-tooltip="Calculate shot score">Score Shot</button>
-                            <p id="score${i}" aria-live="polite"></p>
-                        </div>
-                    `;
-                    resultsDiv.appendChild(shotDiv);
+                    const labels = bag.map(club => {
+                        const clubName = club.name;
+                        const loft = club.loft;
+                        if (['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName) && loft) {
+                            return `${loft}°`;
+                        }
+                        const clubAbbreviations = {
+                            'Driver': 'Dr',
+                            '3 Wood': '3W',
+                            '5 Wood': '5W',
+                            '7 Wood': '7W',
+                            '9 Wood': '9W',
+                            '2 Hybrid': '2H',
+                            '3 Hybrid': '3H',
+                            '4 Hybrid': '4H',
+                            '5 Hybrid': '5H',
+                            '2 Iron': '2I',
+                            '3 Iron': '3I',
+                            '4 Iron': '4I',
+                            '5 Iron': '5I',
+                            '6 Iron': '6I',
+                            '7 Iron': '7I',
+                            '8 Iron': '8I',
+                            '9 Iron': '9I',
+                            'Pitching Wedge': 'PW',
+                            'Gap Wedge': 'GW',
+                            'Sand Wedge': 'SW',
+                            'Lob Wedge': 'LW'
+                        };
+                        return clubAbbreviations[clubName] || clubName;
+                    });
 
-                    shotDiv.querySelector(`.score-shot[data-shot-index="${i}"]`).addEventListener('click', () => calculateScore(i, distance));
-                }
-            }
+                    const distances = bag.map(club => {
+                        const clubName = club.name;
+                        const clubLoft = club.loft;
+                        const key = (['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName) && clubLoft) ? `${clubLoft}°` : clubName;
+                        return clubAverages[key];
+                    });
 
-            function suggestClub(targetDistance, club) {
-                const clubName = club.name;
-                const clubData = history.filter(entry => entry.club === clubName);
-                if (clubData.length < 3) return false;
-                const avgDistance = clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length;
-                const variance = Math.sqrt(clubData.reduce((sum, entry) => sum + Math.pow(entry.carryDistance - avgDistance, 2), 0) / clubData.length);
-                return Math.abs(avgDistance - targetDistance) < 10 && variance < 15;
-            }
-
-            function calculateScore(shotIndex, targetDistance) {
-                const carryDistance = parseFloat(document.getElementById(`carryDistance${shotIndex}`).value);
-                const lateralDeviation = parseFloat(document.getElementById(`lateralDeviation${shotIndex}`).value);
-                const lateralDirection = parseInt(document.getElementById(`lateralDirection${shotIndex}`).value);
-                const club = document.getElementById(`club${shotIndex}`).value.split('|')[0];
-                const scoreElement = document.getElementById(`score${shotIndex}`);
-
-                if (isNaN(carryDistance) || isNaN(lateralDeviation) || carryDistance < 0 || lateralDeviation < 0) {
-                    scoreElement.innerHTML = '<span style="color: #D32F2F;">Please enter valid numbers for carry distance and dispersion (≥ 0).</span>';
-                    return;
-                }
-
-                const distanceError = Math.abs(targetDistance - carryDistance);
-                const maxDistanceError = targetDistance * 0.2;
-                const distanceScore = Math.max(0, 50 * (1 - distanceError / maxDistanceError));
-                const maxLateralDeviation = 90;
-                const effectiveLateralDeviation = lateralDeviation * lateralDirection;
-                const lateralScore = Math.max(0, 50 * (1 - Math.abs(effectiveLateralDeviation) / maxLateralDeviation));
-                const totalScore = Math.round(distanceScore + lateralScore);
-
-                scoreElement.innerHTML = `Score: ${totalScore}/100`;
-                const clubName = document.getElementById(`club${shotIndex}`).value.split('|');
-                const fullClubName = ['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName[0]) && clubName[1]
-                    ? `${clubName[1]}°`
-                    : clubName[0];
-                const note = document.getElementById('session-note').value;
-                const shotData = {
-                    score: totalScore,
-                    carryDistance,
-                    club: fullClubName,
-                    lateralDeviation: effectiveLateralDeviation,
-                    timestamp: new Date().getTime(),
-                    targetDistance,
-                    note
-                };
-                history.push(shotData);
-                currentSession.push(shotData);
-                localStorage.setItem('fairwayFocusHistory', JSON.stringify(history));
-                console.log('Shot added to currentSession:', shotData);
-                drawHistoryGraph();
-                drawClubDistanceGraph();
-                updateProgressDashboard();
-            }
-
-            function calculateOverallAverage() {
-                const overallScoreElement = document.getElementById('overallScore');
-                const insightsDiv = document.getElementById('insights');
-                if (currentSession.length === 0) {
-                    overallScoreElement.innerHTML = '<span style="color: #D32F2F;">No scores entered yet. Score at least one shot first.</span>';
-                    insightsDiv.innerHTML = '';
-                    return;
-                }
-
-                const totalScore = currentSession.reduce((sum, shot) => sum + shot.score, 0);
-                const averageScore = Math.round(totalScore / currentSession.length);
-                overallScoreElement.innerHTML = `Overall Average Score: ${averageScore}/100`;
-
-                // Save session average
-                sessions.push({
-                    scores: currentSession.map(shot => shot.score),
-                    timestamp: currentSession[0].timestamp,
-                    average: averageScore
-                });
-                localStorage.setItem('fairwayFocusSessions', JSON.stringify(sessions));
-                console.log('Saved session on Calculate Overall Average:', { scores: currentSession.map(shot => shot.score), average: averageScore, timestamp: currentSession[0].timestamp });
-
-                // Generate insights
-                const scores = currentSession.map((shot, i) => ({
-                    index: i,
-                    score: shot.score,
-                    carryDistance: shot.carryDistance,
-                    lateralDeviation: shot.lateralDeviation,
-                    club: shot.club,
-                    targetDistance: shot.targetDistance
-                }));
-                generateInsights(scores, averageScore);
-
-                // Update Profile page
-                updateProgressDashboard();
-                drawHistoryGraph();
-            }
-
-            function generateInsights(scores, overallAverage) {
-                const insightsDiv = document.getElementById('insights');
-                let insights = '<h3>Session Insights</h3><ul>';
-                if (scores.length === 0) {
-                    insights += '<li>No shots scored yet.</li>';
-                } else {
-                    const avgLateral = scores.reduce((sum, s) => sum + Math.abs(s.lateralDeviation), 0) / scores.length;
-                    insights += `<li>Session average score: ${overallAverage}/100, with ${avgLateral.toFixed(1)} ft average dispersion.</li>`;
-                    const rightMisses = scores.filter(s => s.lateralDeviation > 0).length;
-                    let keyIssue = '';
-                    if (rightMisses / scores.length > 0.6) {
-                        keyIssue = 'You frequently miss right. Try adjusting your aim slightly left.';
-                    } else if (rightMisses / scores.length < 0.4) {
-                        keyIssue = 'You frequently miss left. Practice aligning slightly right of the target.';
-                    } else {
-                        const clubDistances = {};
-                        scores.forEach(shot => {
-                            if (!clubDistances[shot.club]) clubDistances[shot.club] = [];
-                            clubDistances[shot.club].push(Math.abs(shot.carryDistance - shot.targetDistance));
-                        });
-                        let maxVarianceClub = '';
-                        let maxVariance = 0;
-                        for (const club in clubDistances) {
-                            const errors = clubDistances[club];
-                            if (errors.length > 1) {
-                                const avgError = errors.reduce((sum, e) => sum + e, 0) / errors.length;
-                                const variance = errors.reduce((sum, e) => sum + Math.pow(e - avgError, 2), 0) / errors.length;
-                                if (variance > maxVariance) {
-                                    maxVariance = variance;
-                                    maxVarianceClub = club;
+                    const chartOptions = {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Average Distance (yards)',
+                                data: distances,
+                                backgroundColor: 'rgba(46, 125, 50, 0.8)',
+                                borderColor: 'rgba(46, 125, 50, 1)',
+                                borderWidth: 1,
+                                borderRadius: 10
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Distance (yards)',
+                                        font: { size: 14, weight: 'bold' }
+                                    },
+                                    suggestedMax: Math.max(...distances, 100) + 50,
+                                    grid: { display: false }
+                                },
+                                y: {
+                                    title: { display: false },
+                                    ticks: { font: { size: 12, weight: 'bold' } },
+                                    grid: { display: false }
+                                }
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    enabled: true,
+                                    backgroundColor: 'rgba(26, 60, 52, 0.9)',
+                                    titleFont: { size: 14 },
+                                    bodyFont: { size: 12 }
+                                },
+                                datalabels: {
+                                    anchor: 'end',
+                                    align: 'end',
+                                    formatter: value => value > 0 ? value : '',
+                                    font: {
+                                        family: 'Open Sans',
+                                        size: 12,
+                                        weight: 'bold'
+                                    },
+                                    color: '#1A3C34',
+                                    offset: 4
                                 }
                             }
                         }
-                        keyIssue = maxVariance > 100 && maxVarianceClub ? `Inconsistent distances with ${maxVarianceClub}. Focus on this club.` : overallAverage > 60 ? 'Great session! Work on precision with short irons.' : 'Focus on hitting closer to target distances.';
-                    }
-                    insights += `<li><strong>Key Action:</strong> ${keyIssue}</li>`;
-                    if (goal) {
-                        insights += `<li>Goal Progress: ${overallAverage}/${goal} (${overallAverage >= goal ? 'Achieved!' : 'Keep practicing!'})</li>`;
-                    }
-                }
-                insights += '</ul>';
-                insightsDiv.innerHTML = insights;
-            }
-
-            function drawHistoryGraph() {
-                const container = document.getElementById('history-graph');
-                container.innerHTML = '<canvas id="history-canvas"></canvas>';
-                const canvas = document.getElementById('history-canvas');
-                const ctx = canvas.getContext('2d');
-
-                // Include current session if it has an average
-                const allSessions = [...sessions];
-                if (currentSession.length > 0) {
-                    const sessionAverage = Math.round(currentSession.reduce((sum, shot) => sum + shot.score, 0) / currentSession.length);
-                    allSessions.push({
-                        scores: currentSession.map(shot => shot.score),
-                        timestamp: currentSession[0].timestamp,
-                        average: sessionAverage
-                    });
-                }
-
-                console.log('All sessions for graph:', allSessions);
-
-                const recentSessions = allSessions.slice(-5);
-                const scores = recentSessions.map(session => session.average || 0);
-                const labels = recentSessions.map(session => {
-                    const date = new Date(session.timestamp);
-                    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear().toString().slice(-2)}`;
-                });
-
-                const overallAverage = scores.length > 0 ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0;
-                const trend = scores.length >= 2 ? (scores[scores.length - 1] - scores[0]) / (scores.length - 1) > 0 ? 'up' : 'down' : 'none';
-
-                const averageCircle = document.getElementById('average-circle');
-                const circleColor = trend === 'up' ? '#00FF00' : trend === 'down' ? '#FF0000' : '#FFD700';
-                averageCircle.innerHTML = `
-                    <svg width="180" height="60">
-                        <text x="0" y="30" font-family="Open Sans" font-size="12" font-weight="bold" fill="#000000" text-anchor="start" dominant-baseline="central">5 Session Avg.</text>
-                        <circle cx="120" cy="30" r="28" fill="rgba(255, 255, 255, 0.9)" stroke="${circleColor}" stroke-width="4"/>
-                        <text x="120" y="30" font-family="Open Sans" font-size="24" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">${overallAverage}</text>
-                    </svg>
-                `;
-
-                new Chart(canvas, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Average Score',
-                            data: scores,
-                            borderColor: '#2E7D32',
-                            backgroundColor: 'rgba(46, 125, 50, 0.3)',
-                            fill: true,
-                            tension: 0.4,
-                            pointRadius: 5,
-                            pointHoverRadius: 8,
-                            pointBackgroundColor: '#2E7D32',
-                            pointBorderColor: '#FFFFFF',
-                            pointBorderWidth: 2
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: { min: 0, max: 100, title: { display: true, text: 'Score' } },
-                            x: { title: { display: true, text: 'Session' } }
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: { enabled: true }
-                        }
-                    }
-                });
-            }
-
-            function drawClubDistanceGraph() {
-                const container = document.getElementById('club-distance-graph');
-                container.innerHTML = '<canvas id="club-distance-canvas"></canvas>';
-                const canvas = document.getElementById('club-distance-canvas');
-                const ctx = canvas.getContext('2d');
-
-                if (bag.length === 0) {
-                    container.innerHTML = '<p style="color: #D32F2F; text-align: center;">No clubs in bag. Please set up your bag.</p>';
-                    return;
-                }
-
-                const clubAverages = {};
-                bag.forEach(club => {
-                    const clubName = club.name;
-                    const clubData = history.filter(entry => entry.club === clubName);
-                    clubAverages[clubName] = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length) : 0;
-                });
-
-                const clubAbbreviations = {
-                    'Driver': 'Dr',
-                    '3 Wood': '3w',
-                    '5 Wood': '5w',
-                    '7 Wood': '7w',
-                    '9 Wood': '9w',
-                    '2 Hybrid': '2H',
-                    '3 Hybrid': '3H',
-                    '4 Hybrid': '4H',
-                    '5 Hybrid': '5H',
-                    '2 Iron': '2i',
-                    '3 Iron': '3i',
-                    '4 Iron': '4i',
-                    '5 Iron': '5i',
-                    '6 Iron': '6i',
-                    '7 Iron': '7i',
-                    '8 Iron': '8i',
-                    '9 Iron': '9i',
-                    'Pitching Wedge': 'PW',
-                    'Gap Wedge': 'GW',
-                    'Sand Wedge': 'SW',
-                    'Lob Wedge': 'LW'
-                };
-
-                const labels = bag.map(club => {
-                    const clubName = club.name;
-                    const loft = club.loft;
-                    if (['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName) && loft) {
-                        return `${loft}°`;
-                    }
-                    return clubAbbreviations[clubName] || clubName;
-                });
-
-                const distances = bag.map(club => clubAverages[club.name]);
-
-                // Define chart options with fallback for datalabels
-                const chartOptions = {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Average Distance (yards)',
-                            data: distances,
-                            backgroundColor: 'rgba(46, 125, 50, 0.8)',
-                            borderRadius: 10
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                title: { display: true, text: 'Distance (yards)' },
-                                suggestedMax: Math.max(...Object.values(clubAverages), 100) + 50
-                            },
-                            y: { title: { display: false }, ticks: { font: { size: 10, weight: 'bold' } } }
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: { enabled: true }
-                        }
-                    }
-                };
-
-                // Only include datalabels if ChartDataLabels is available
-                if (typeof ChartDataLabels !== 'undefined') {
-                    chartOptions.options.plugins.datalabels = {
-                        anchor: 'end',
-                        align: 'end',
-                        formatter: function(value) { return value > 0 ? value : ''; },
-                        font: {
-                            family: 'Open Sans',
-                            size: 10,
-                            weight: 'bold'
-                        },
-                        color: '#1A3C34',
-                        offset: 4
                     };
-                }
 
-                try {
-                    new Chart(canvas, chartOptions);
-                } catch (error) {
-                    console.error('Error creating club distance chart:', error);
-                    container.innerHTML = '<p style="color: #D32F2F; text-align: center;">Error rendering chart. Please try again.</p>';
-                }
-            }
-
-            function exportData() {
-                if (history.length === 0) {
-                    alert('No data to export.');
-                    return;
-                }
-                const csv = ['Timestamp,Club,Target Distance,Carry Distance,Dispersion,Score,Note'];
-                history.forEach(entry => {
-                    const date = new Date(entry.timestamp).toISOString();
-                    csv.push(`${date},"${entry.club}",${entry.targetDistance},${entry.carryDistance},${entry.lateralDeviation},${entry.score},"${entry.note || ''}"`);
-                });
-                const csvContent = csv.join('\n');
-                const blob = new Blob([csvContent], { type: 'text/csv' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'fairway_focus_history.csv';
-                a.click();
-                window.URL.revokeObjectURL(url);
-            }
-
-            function resetAll() {
-                document.getElementById('minRange').value = '50';
-                document.getElementById('maxRange').value = '200';
-                document.getElementById('quantity').value = '5';
-                document.getElementById('results').innerHTML = '';
-                document.getElementById('overallScore').innerHTML = '';
-                document.getElementById('insights').innerHTML = '';
-                document.getElementById('session-note').value = '';
-
-                // Save current session before resetting
-                if (currentSession.length > 0) {
-                    const sessionAverage = Math.round(currentSession.reduce((sum, shot) => sum + shot.score, 0) / currentSession.length);
-                    sessions.push({
-                        scores: currentSession.map(shot => shot.score),
-                        timestamp: currentSession[0].timestamp,
-                        average: sessionAverage
-                    });
-                    localStorage.setItem('fairwayFocusSessions', JSON.stringify(sessions));
-                    console.log('Saved session on Reset All:', { scores: currentSession.map(shot => shot.score), average: sessionAverage, timestamp: currentSession[0].timestamp });
-                }
-
-                currentSession = [];
-                console.log('Current session reset');
-            }
-
-            // Load saved data
-            bag.forEach(club => {
-                const button = document.querySelector(`.club-button[data-club="${club.name}"]`);
-                if (button) {
-                    button.classList.add('selected');
-                    if (club.loft) {
-                        const degInput = document.getElementById(`${club.name.toLowerCase().replace(/ /g, '-')}-deg`);
-                        if (degInput) degInput.value = club.loft;
+                    try {
+                        new Chart(canvas, chartOptions);
+                    } catch (error) {
+                        console.error('Error creating club distance chart:', error);
+                        container.innerHTML = '<p style="color: #D32F2F; text-align: center;">Error rendering chart. Please try again.</p>';
                     }
                 }
-            });
-            if (goal) document.getElementById('goal-score').value = goal;
 
-            // Event listeners
-            document.getElementById('nav-game').addEventListener('click', () => showPage('game-container'));
-            document.getElementById('nav-user').addEventListener('click', () => showPage('user-container'));
-            document.getElementById('toggle-bag').addEventListener('click', toggleBagSection);
-            document.getElementById('close-bag').addEventListener('click', toggleBagSection);
-            document.getElementById('save-bag').addEventListener('click', saveBag);
-            document.getElementById('generate-shots').addEventListener('click', generateShots);
-            document.getElementById('reset-all').addEventListener('click', resetAll);
-            document.getElementById('reset-all-data').addEventListener('click', toggleResetConfirm);
-            document.getElementById('confirm-yes').addEventListener('click', resetAllData);
-            document.getElementById('confirm-no').addEventListener('click', toggleResetConfirm);
-            document.getElementById('save-goal').addEventListener('click', saveGoal);
-            document.getElementById('export-data').addEventListener('click', exportData);
-            document.getElementById('average-button').addEventListener('click', calculateOverallAverage);
-
-            document.querySelectorAll('.club-button').forEach(button => {
-                const club = button.getAttribute('data-club');
-                button.addEventListener('click', () => toggleClub(button, club));
-            });
-
-            // Keyboard accessibility for popups
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && document.getElementById('bag-section').classList.contains('active')) {
-                    toggleBagSection();
+                function populateClubSelect() {
+                    console.log('populateClubSelect called');
+                    const select = document.getElementById('club-select');
+                    select.innerHTML = '';
+                    const uniqueClubs = [...new Set(history.map(entry => entry.club))].sort();
+                    uniqueClubs.forEach(club => {
+                        const option = document.createElement('option');
+                        option.value = club;
+                        option.textContent = club;
+                        select.appendChild(option);
+                    });
                 }
-                if (e.key === 'Escape' && document.getElementById('reset-confirm').classList.contains('active')) {
-                    toggleResetConfirm();
-                }
-                if (e.key === 'Enter' && document.getElementById('reset-confirm').classList.contains('active')) {
-                    resetAllData();
-                }
-            });
 
-            showPage('game-container');
-            updateProgressDashboard();
+                function showClubData() {
+                    console.log('showClubData called');
+                    const selectedClub = document.getElementById('club-select').value;
+                    const clubData = history.filter(entry => entry.club === selectedClub);
+                    if (clubData.length === 0) {
+                        document.getElementById('club-data-graph').innerHTML = '<p style="color: #D32F2F; text-align: center;">No data for this club.</p>';
+                        document.getElementById('club-insights').innerHTML = '';
+                        return;
+                    }
+
+                    const avgDistance = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + (entry.carryDistance || 0), 0) / clubData.length) : 0;
+
+                    const container = document.getElementById('club-data-graph');
+                    container.innerHTML = '<canvas id="club-data-canvas"></canvas>';
+                    const canvas = document.getElementById('club-data-canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    const colors = clubData.map(entry => {
+                        const x = entry.lateralDeviation || 0;
+                        const y = (entry.carryDistance || 0) - (entry.targetDistance || 0);
+                        if (Math.abs(x) < 10 && Math.abs(y) < 5) return 'rgba(46, 125, 50, 0.8)'; // green for on target
+                        if (Math.abs(x) < 20 && Math.abs(y) < 10) return 'rgba(255, 165, 0, 0.8)'; // orange for close
+                        return 'rgba(255, 0, 0, 0.8)'; // red for off
+                    });
+
+                    const lateralStd = Math.sqrt(clubData.reduce((sum, entry) => sum + Math.pow((entry.lateralDeviation || 0) - (clubData.reduce((s, e) => s + (e.lateralDeviation || 0), 0) / clubData.length), 2), 0) / clubData.length) || 0;
+                    const distanceStd = Math.sqrt(clubData.reduce((sum, entry) => sum + Math.pow(((entry.carryDistance || 0) - (entry.targetDistance || 0)) - (clubData.reduce((s, e) => s + ((e.carryDistance || 0) - (e.targetDistance || 0)), 0) / clubData.length), 2), 0) / clubData.length) || 0;
+
+                    try {
+                        new Chart(canvas, {
+                            type: 'scatter',
+                            data: {
+                                datasets: [{
+                                    label: 'Shots',
+                                    data: clubData.map(entry => ({
+                                        x: entry.lateralDeviation || 0,
+                                        y: (entry.carryDistance || 0) - (entry.targetDistance || 0)
+                                    })),
+                                    backgroundColor: colors,
+                                    borderColor: 'rgba(46, 125, 50, 1)',
+                                    pointRadius: 6,
+                                    pointStyle: 'circle'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: `${selectedClub} - Avg: ${avgDistance} yds`,
+                                        font: {
+                                            family: 'Open Sans',
+                                            size: 16,
+                                            weight: 'bold'
+                                        },
+                                        padding: { top: 10, bottom: 10 }
+                                    },
+                                    tooltip: { enabled: false },
+                                    legend: { display: false },
+                                    annotation: {
+                                        annotations: {
+                                            line1: {
+                                                type: 'line',
+                                                yMin: 0,
+                                                yMax: 0,
+                                                borderColor: 'rgba(0, 0, 0, 0.5)',
+                                                borderWidth: 2
+                                            },
+                                            line2: {
+                                                type: 'line',
+                                                xMin: 0,
+                                                xMax: 0,
+                                                borderColor: 'rgba(0, 0, 0, 0.5)',
+                                                borderWidth: 2
+                                            },
+                                            ellipse1: {
+                                                type: 'ellipse',
+                                                xMin: -lateralStd,
+                                                xMax: lateralStd,
+                                                yMin: -distanceStd,
+                                                yMax: distanceStd,
+                                                backgroundColor: 'rgba(46, 125, 50, 0.2)',
+                                                borderColor: 'rgba(46, 125, 50, 0.8)',
+                                                borderWidth: 1
+                                            },
+                                            ellipse2: {
+                                                type: 'ellipse',
+                                                xMin: -lateralStd * 2,
+                                                xMax: lateralStd * 2,
+                                                yMin: -distanceStd * 2,
+                                                yMax: distanceStd * 2,
+                                                backgroundColor: 'rgba(255, 165, 0, 0.2)',
+                                                borderColor: 'rgba(255, 165, 0, 0.8)',
+                                                borderWidth: 1
+                                            }
+                                        }
+                                    },
+                                    datalabels: { display: false } // Disable point coordinates
+                                },
+                                scales: {
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Dispersion',
+                                            font: { size: 14, weight: 'bold' }
+                                        },
+                                        min: -100,
+                                        max: 100,
+                                        grid: {
+                                            drawTicks: false,
+                                            color: 'rgba(0, 0, 0, 0.1)'
+                                        },
+                                        ticks: {
+                                            font: { size: 12 }
+                                        }
+                                    },
+                                    y: {
+                                        title: {
+                                            display: true,
+                                            text: 'Distance',
+                                            font: { size: 14, weight: 'bold' }
+                                        },
+                                        min: -50,
+                                        max: 50,
+                                        grid: {
+                                            drawTicks: false,
+                                            color: 'rgba(0, 0, 0, 0.1)'
+                                        },
+                                        ticks: {
+                                            font: { size: 12 }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Error rendering club data graph:', error);
+                        container.innerHTML = '<p style="color: #D32F2F; text-align: center;">Error rendering graph.</p>';
+                    }
+
+                    const totalShots = clubData.length;
+                    const avgLateral = (clubData.reduce((sum, entry) => sum + Math.abs(entry.lateralDeviation || 0), 0) / totalShots).toFixed(1);
+                    const percentLeft = ((clubData.filter(entry => (entry.lateralDeviation || 0) < 0).length / totalShots) * 100).toFixed(0);
+                    const percentRight = ((clubData.filter(entry => (entry.lateralDeviation || 0) > 0).length / totalShots) * 100).toFixed(0);
+                    const avgDistanceError = (clubData.reduce((sum, entry) => sum + Math.abs((entry.carryDistance || 0) - (entry.targetDistance || 0)), 0) / totalShots).toFixed(1);
+                    const percentShort = ((clubData.filter(entry => (entry.carryDistance || 0) < (entry.targetDistance || 0)).length / totalShots) * 100).toFixed(0);
+                    const percentLong = ((clubData.filter(entry => (entry.carryDistance || 0) > (entry.targetDistance || 0)).length / totalShots) * 100).toFixed(0);
+                    const lateralStdFormatted = lateralStd.toFixed(1);
+                    const distanceStdFormatted = distanceStd.toFixed(1);
+
+                    document.getElementById('club-insights').innerHTML = `
+                        <h3>Club Insights</h3>
+                        <table>
+                            <tr><th>Statistic</th><th>Value</th></tr>
+                            <tr><td>Total Shots</td><td>${totalShots}</td></tr>
+                            <tr><td>Average Lateral Deviation</td><td>${avgLateral} ft</td></tr>
+                            <tr><td>Percentage Left</td><td>${percentLeft}%</td></tr>
+                            <tr><td>Percentage Right</td><td>${percentRight}%</td></tr>
+                            <tr><td>Average Distance Error</td><td>${avgDistanceError} yards</td></tr>
+                            <tr><td>Percentage Short</td><td>${percentShort}%</td></tr>
+                            <tr><td>Percentage Long</td><td>${percentLong}%</td></tr>
+                            <tr><td>Lateral Consistency (Std Dev)</td><td>${lateralStdFormatted} ft</td></tr>
+                            <tr><td>Distance Consistency (Std Dev)</td><td>${distanceStdFormatted} yards</td></tr>
+                        </table>
+                    `;
+                }
+
+                function exportData() {
+                    console.log('exportData called');
+                    if (history.length === 0) {
+                        alert('No data to export.');
+                        return;
+                    }
+                    const csv = ['Timestamp,Club,Target Distance,Carry Distance,Dispersion,Score,Note'];
+                    history.forEach(entry => {
+                        const date = new Date(entry.timestamp).toISOString();
+                        csv.push(`${date},"${entry.club || ''}",${entry.targetDistance || 0},${entry.carryDistance || 0},${entry.lateralDeviation || 0},${entry.score || 0},"${entry.note || ''}"`);
+                    });
+                    const csvContent = csv.join('\n');
+                    const blob = new Blob([csvContent], { type: 'text/csv' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'fairway_focus_history.csv';
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                }
+
+                function resetAll() {
+                    console.log('resetAll called');
+                    document.getElementById('minRange').value = '50';
+                    document.getElementById('maxRange').value = '200';
+                    document.getElementById('quantity').value = '5';
+                    document.getElementById('results').innerHTML = '';
+                    document.getElementById('overallScore').innerHTML = '';
+                    document.getElementById('insights').innerHTML = '';
+                    document.getElementById('session-note').value = '';
+
+                    if (currentSession.length > 0) {
+                        const sessionAverage = Math.round(currentSession.reduce((sum, shot) => sum + (shot.score || 0), 0) / currentSession.length);
+                        sessions.push({
+                            scores: currentSession.map(shot => shot.score),
+                            timestamp: currentSession[0].timestamp,
+                            average: sessionAverage
+                        });
+                        localStorage.setItem('fairwayFocusSessions', JSON.stringify(sessions));
+                    }
+
+                    currentSession = [];
+                }
+
+                // Load saved data
+                bag.forEach(club => {
+                    const button = document.querySelector(`.club-button[data-club="${club.name}"]`);
+                    if (button) {
+                        button.classList.add('selected');
+                        if (club.loft) {
+                            const degInput = document.getElementById(`${club.name.toLowerCase().replace(/ /g, '-')}-deg`);
+                            if (degInput) degInput.value = club.loft;
+                        }
+                    }
+                });
+                if (goal) document.getElementById('goal-score').value = goal;
+
+                // Event listeners
+                const navGame = document.getElementById('nav-game');
+                if (navGame) {
+                    navGame.addEventListener('click', () => {
+                        console.log('nav-game button clicked');
+                        showPage('game-container');
+                    });
+                }
+
+                const navUser = document.getElementById('nav-user');
+                if (navUser) {
+                    navUser.addEventListener('click', () => {
+                        console.log('nav-user button clicked');
+                        showPage('user-container');
+                    });
+                }
+
+                const toggleBag = document.getElementById('toggle-bag');
+                if (toggleBag) toggleBag.addEventListener('click', toggleBagSection);
+
+                const closeBag = document.getElementById('close-bag');
+                if (closeBag) closeBag.addEventListener('click', toggleBagSection);
+
+                const saveBagBtn = document.getElementById('save-bag');
+                if (saveBagBtn) saveBagBtn.addEventListener('click', saveBag);
+
+                const generateShotsBtn = document.getElementById('generate-shots');
+                if (generateShotsBtn) generateShotsBtn.addEventListener('click', generateShots);
+
+                const resetAllBtn = document.getElementById('reset-all');
+                if (resetAllBtn) resetAllBtn.addEventListener('click', resetAll);
+
+                const resetAllDataBtn = document.getElementById('reset-all-data');
+                if (resetAllDataBtn) resetAllDataBtn.addEventListener('click', toggleResetConfirm);
+
+                const confirmYes = document.getElementById('confirm-yes');
+                if (confirmYes) confirmYes.addEventListener('click', resetAllData);
+
+                const confirmNo = document.getElementById('confirm-no');
+                if (confirmNo) confirmNo.addEventListener('click', toggleResetConfirm);
+
+                const saveGoalBtn = document.getElementById('save-goal');
+                if (saveGoalBtn) saveGoalBtn.addEventListener('click', saveGoal);
+
+                const exportDataBtn = document.getElementById('export-data');
+                if (exportDataBtn) exportDataBtn.addEventListener('click', exportData);
+
+                const averageButton = document.getElementById('average-button');
+                if (averageButton) averageButton.addEventListener('click', calculateOverallAverage);
+
+                const clubDataBtn = document.getElementById('club-data');
+                if (clubDataBtn) clubDataBtn.addEventListener('click', () => {
+                    console.log('club-data button clicked');
+                    document.getElementById('club-data-section').style.display = 'block';
+                });
+
+                const showClubDataBtn = document.getElementById('show-club-data');
+                if (showClubDataBtn) showClubDataBtn.addEventListener('click', showClubData);
+
+                document.querySelectorAll('.club-button').forEach(button => {
+                    const club = button.getAttribute('data-club');
+                    button.addEventListener('click', () => toggleClub(button, club));
+                });
+
+                // Keyboard accessibility for popups
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && document.getElementById('bag-section').classList.contains('active')) {
+                        toggleBagSection();
+                    }
+                    if (e.key === 'Escape' && document.getElementById('reset-confirm').classList.contains('active')) {
+                        toggleResetConfirm();
+                    }
+                    if (e.key === 'Enter' && document.getElementById('reset-confirm').classList.contains('active')) {
+                        resetAllData();
+                    }
+                });
+
+                showPage('game-container');
+                updateProgressDashboard();
+            } catch (error) {
+                console.error('Error during DOMContentLoaded:', error);
+            }
         });
     </script>
 </body>
