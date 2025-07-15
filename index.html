@@ -8,6 +8,7 @@
     <title>Fairway Focus - Golf Precision Training</title>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <style>
@@ -206,10 +207,6 @@
             width: 80px;
         }
 
-        #toggle-bag {
-            margin-bottom: 20px;
-        }
-
         #average-circle {
             margin: 20px auto;
             display: flex;
@@ -315,14 +312,14 @@
             gap: 10px;
             flex-wrap: wrap;
             margin: 15px 0;
-            align-items: center; /* Added to vertically center-align items */
+            align-items: center;
         }
 
         .input-group label {
             font-weight: 600;
             color: var(--text-dark);
             font-size: 0.9rem;
-            margin-right: 5px; /* Adjusted for better spacing */
+            margin-right: 5px;
         }
 
         .input-group input[type="number"] {
@@ -333,7 +330,7 @@
             background: #FFFFFF;
             color: var(--text-dark);
             transition: var(--transition);
-            text-align: center; /* Centers the number input value */
+            text-align: center;
         }
 
         input, select {
@@ -380,8 +377,18 @@
             display: block;
         }
 
-        #results {
-            margin-top: 20px;
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-container button {
+            max-width: 160px;
+            min-height: 40px;
+            line-height: 1.2;
         }
 
         .shot {
@@ -404,9 +411,34 @@
             margin-bottom: 10px;
         }
 
-        .shot p, .shot label, .shot input, .shot select {
-            font-size: 0.9rem;
+        .shot .shot-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .shot-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+        }
+
+        .shot-input-group label {
+            font-weight: 600;
             color: var(--text-dark);
+            font-size: 0.9rem;
+            margin-left: 10px;
+            flex: 1;
+        }
+
+        .shot-input-group input, .shot-input-group select {
+            width: 100px;
+        }
+
+        .shot p[id^="score"] {
+            color: var(--text-dark);
+            font-weight: 600;
         }
 
         #overallScore {
@@ -414,16 +446,33 @@
             font-size: 1.1rem;
             font-weight: 700;
             color: var(--accent-gold);
+            display: inline-block;
+            margin-left: 10px;
         }
 
         #insights {
             margin-top: 15px;
             font-size: 0.9rem;
             color: var(--text-dark);
-            padding: 10px;
+            padding: 15px;
             background: var(--fairway-beige);
             border-radius: 8px;
             box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        #insights ul {
+            list-style: disc;
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        #insights li {
+            margin-bottom: 8px;
+        }
+
+        #insights h3 {
+            margin-bottom: 10px;
         }
 
         #history-graph, #club-distance-graph {
@@ -530,7 +579,7 @@
             border-radius: 6px;
             font-size: 0.8rem;
             white-space: nowrap;
-            z-index: 300; /* Increased to appear above header */
+            z-index: 300;
         }
 
         @media (max-width: 393px) {
@@ -613,6 +662,11 @@
                 max-width: 160px;
             }
 
+            .btn-container button {
+                max-width: 140px;
+                min-height: 36px;
+            }
+
             .shot {
                 display: grid;
                 grid-template-rows: auto auto auto auto auto;
@@ -636,6 +690,18 @@
             .shot input[id^="lateralDeviation"],
             .shot select[id^="lateralDirection"] {
                 width: 80px;
+            }
+
+            .shot-input-group input, .shot-input-group select {
+                width: 80px;
+            }
+
+            #insights {
+                padding: 10px;
+            }
+
+            #insights ul {
+                padding-left: 15px;
             }
         }
     </style>
@@ -665,7 +731,10 @@
         <button id="generate-shots" aria-label="Generate practice shots" data-tooltip="Generate new shots">Generate Shots</button>
         <button id="reset-all" class="reset" aria-label="Reset practice inputs" data-tooltip="Clear all inputs">Reset All</button>
         <div id="results" aria-live="polite"></div>
-        <div id="overallScore" aria-live="polite"></div>
+        <div class="btn-container">
+            <button id="average-button" aria-label="Calculate overall average score" data-tooltip="Calculate session average">Calculate Overall Average</button>
+            <span id="overallScore" aria-live="polite"></span>
+        </div>
         <div id="insights" aria-live="polite"></div>
         <div id="session-notes">
             <label for="session-note" data-tooltip="Add notes about this session">Session Notes:</label>
@@ -685,9 +754,11 @@
         <div id="goal-setting">
             <label for="goal-score" data-tooltip="Set a target score for your next session">Target Score:</label>
             <input type="number" id="goal-score" min="0" max="100" placeholder="e.g., 80" aria-label="Target score for next session">
-            <button id="save-goal" aria-label="Save practice goal" data-tooltip="Save your target score">Save Goal</button>
         </div>
-        <button id="toggle-bag" aria-label="Manage golf bag" data-tooltip="Select clubs for your bag">Manage Bag</button>
+        <div class="btn-container">
+            <button id="save-goal" aria-label="Save practice goal" data-tooltip="Save your target score">Save Goal</button>
+            <button id="toggle-bag" aria-label="Manage golf bag" data-tooltip="Select clubs for your bag">Manage Bag</button>
+        </div>
         <div id="average-circle"></div>
         <div id="history-graph"></div>
         <div id="club-distance-graph"></div>
@@ -700,7 +771,10 @@
             <div class="club-row"><button class="club-button" data-club="5 Wood" aria-label="Select 5 Wood">5 Wood</button></div>
             <div class="club-row"><button class="club-button" data-club="7 Wood" aria-label="Select 7 Wood">7 Wood</button></div>
             <div class="club-row"><button class="club-button" data-club="9 Wood" aria-label="Select 9 Wood">9 Wood</button></div>
-            <div class="club-row"><button class="club-button" data-club="Hybrid" aria-label="Select Hybrid">Hybrid</button><input type="number" id="hybrid-deg" placeholder="°" min="15" max="30" style="width: 60px;" aria-label="Hybrid loft in degrees"></div>
+            <div class="club-row"><button class="club-button" data-club="2 Hybrid" aria-label="Select 2 Hybrid">2 Hybrid</button></div>
+            <div class="club-row"><button class="club-button" data-club="3 Hybrid" aria-label="Select 3 Hybrid">3 Hybrid</button></div>
+            <div class="club-row"><button class="club-button" data-club="4 Hybrid" aria-label="Select 4 Hybrid">4 Hybrid</button></div>
+            <div class="club-row"><button class="club-button" data-club="5 Hybrid" aria-label="Select 5 Hybrid">5 Hybrid</button></div>
             <div class="club-row"><button class="club-button" data-club="2 Iron" aria-label="Select 2 Iron">2 Iron</button></div>
             <div class="club-row"><button class="club-button" data-club="3 Iron" aria-label="Select 3 Iron">3 Iron</button></div>
             <div class="club-row"><button class="club-button" data-club="4 Iron" aria-label="Select 4 Iron">4 Iron</button></div>
@@ -709,7 +783,7 @@
             <div class="club-row"><button class="club-button" data-club="7 Iron" aria-label="Select 7 Iron">7 Iron</button></div>
             <div class="club-row"><button class="club-button" data-club="8 Iron" aria-label="Select 8 Iron">8 Iron</button></div>
             <div class="club-row"><button class="club-button" data-club="9 Iron" aria-label="Select 9 Iron">9 Iron</button></div>
-            <div class="club-row"><button class="club-button" data-club="Pitching Wedge" aria-label="Select Pitching Wedge">Pitching Wedge</button><input type="number" id="pitching-wedge-deg" placeholder="°" min="40" max="50" style="width: 60px;" aria-label="Pitching Wedge loft in degrees"></div>
+            <div class="club-row"><button class="club-button" data-club="Pitching Wedge" aria-label="Select Pitching Wedge">Pitching Wedge</button></div>
             <div class="club-row"><button class="club-button" data-club="Gap Wedge" aria-label="Select Gap Wedge">Gap Wedge</button><input type="number" id="gap-wedge-deg" placeholder="°" min="48" max="54" style="width: 60px;" aria-label="Gap Wedge loft in degrees"></div>
             <div class="club-row"><button class="club-button" data-club="Sand Wedge" aria-label="Select Sand Wedge">Sand Wedge</button><input type="number" id="sand-wedge-deg" placeholder="°" min="52" max="58" style="width: 60px;" aria-label="Sand Wedge loft in degrees"></div>
             <div class="club-row"><button class="club-button" data-club="Lob Wedge" aria-label="Select Lob Wedge">Lob Wedge</button><input type="number" id="lob-wedge-deg" placeholder="°" min="58" max="64" style="width: 60px;" aria-label="Lob Wedge loft in degrees"></div>
@@ -725,574 +799,631 @@
     </div>
 
     <script>
-        let history = JSON.parse(localStorage.getItem('fairwayFocusHistory') || localStorage.getItem('pinSeekerHistory')) || [];
-        let bag = JSON.parse(localStorage.getItem('fairwayFocusBag') || localStorage.getItem('pinSeekerBag')) || [];
-        let goal = JSON.parse(localStorage.getItem('fairwayFocusGoal')) || null;
+        // Ensure Chart.js and ChartDataLabels are loaded before registering
+        document.addEventListener('DOMContentLoaded', () => {
+            // Register ChartDataLabels plugin
+            if (typeof ChartDataLabels !== 'undefined') {
+                Chart.register(ChartDataLabels);
+            } else {
+                console.warn('ChartDataLabels plugin not loaded. Data labels will be disabled.');
+            }
 
-        function showPage(pageId) {
-            console.log(`showPage called with pageId: ${pageId}`);
-            const currentPage = document.querySelector('.container.active:not(#bag-section):not(#reset-confirm)');
-            if (currentPage && currentPage.id === pageId) return;
+            let history = JSON.parse(localStorage.getItem('fairwayFocusHistory') || localStorage.getItem('pinSeekerHistory')) || [];
+            let bag = JSON.parse(localStorage.getItem('fairwayFocusBag') || localStorage.getItem('pinSeekerBag')) || [];
+            let goal = JSON.parse(localStorage.getItem('fairwayFocusGoal')) || null;
+            let sessions = JSON.parse(localStorage.getItem('fairwayFocusSessions')) || [];
+            let currentSession = [];
 
-            document.querySelectorAll('.container').forEach(container => {
-                if (container.id !== 'bag-section' && container.id !== 'reset-confirm') {
-                    container.classList.remove('active');
-                    container.style.display = 'none';
-                    container.style.opacity = '0';
-                    container.style.transform = 'translateY(20px)';
+            function showPage(pageId) {
+                console.log(`showPage called with pageId: ${pageId}`);
+                const currentPage = document.querySelector('.container.active:not(#bag-section):not(#reset-confirm)');
+                if (currentPage && currentPage.id === pageId) return;
+
+                document.querySelectorAll('.container').forEach(container => {
+                    if (container.id !== 'bag-section' && container.id !== 'reset-confirm') {
+                        container.classList.remove('active');
+                        container.style.display = 'none';
+                        container.style.opacity = '0';
+                        container.style.transform = 'translateY(20px)';
+                    }
+                });
+                const targetContainer = document.getElementById(pageId);
+                targetContainer.classList.add('active');
+                targetContainer.style.display = 'block';
+                setTimeout(() => {
+                    targetContainer.style.opacity = '1';
+                    targetContainer.style.transform = 'translateY(0)';
+                }, 50);
+                updateNavButtons(pageId);
+                if (pageId === 'user-container') {
+                    updateProgressDashboard();
+                    drawHistoryGraph();
+                    drawClubDistanceGraph();
                 }
-            });
-            const targetContainer = document.getElementById(pageId);
-            targetContainer.classList.add('active');
-            targetContainer.style.display = 'block';
-            setTimeout(() => {
-                targetContainer.style.opacity = '1';
-                targetContainer.style.transform = 'translateY(0)';
-            }, 50);
-            updateNavButtons(pageId);
-            if (pageId === 'user-container') {
-                updateProgressDashboard();
-                drawHistoryGraph();
+            }
+
+            function updateNavButtons(activePage) {
+                document.querySelectorAll('.nav-bar button').forEach(button => {
+                    button.classList.remove('active');
+                    if (button.id === (activePage === 'game-container' ? 'nav-game' : 'nav-user')) {
+                        button.classList.add('active');
+                    }
+                });
+            }
+
+            function toggleBagSection() {
+                const bagSection = document.getElementById('bag-section');
+                bagSection.classList.toggle('active');
+                if (bagSection.classList.contains('active')) {
+                    bagSection.style.display = 'block';
+                    bagSection.style.opacity = '1';
+                    bagSection.style.visibility = 'visible';
+                    bagSection.style.transform = 'translateX(-50%) translateY(0)';
+                } else {
+                    bagSection.style.display = 'none';
+                    bagSection.style.opacity = '0';
+                    bagSection.style.visibility = 'hidden';
+                }
+            }
+
+            function toggleClub(button, club) {
+                button.classList.toggle('selected');
+                const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
+                if (degInput && button.classList.contains('selected')) {
+                    const defaultLofts = {
+                        'Gap Wedge': 50,
+                        'Sand Wedge': 56,
+                        'Lob Wedge': 60
+                    };
+                    degInput.value = degInput.value || defaultLofts[club] || '';
+                } else if (degInput) {
+                    degInput.value = '';
+                }
+            }
+
+            function saveBag() {
+                bag = [];
+                document.querySelectorAll('.club-button.selected').forEach(button => {
+                    const club = button.getAttribute('data-club');
+                    const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
+                    const degree = degInput ? parseInt(degInput.value) : null;
+                    const loftRanges = {
+                        'Gap Wedge': { min: 48, max: 54 },
+                        'Sand Wedge': { min: 52, max: 58 },
+                        'Lob Wedge': { min: 58, max: 64 }
+                    };
+                    if (degree && degInput && loftRanges[club]) {
+                        if (degree < loftRanges[club].min || degree > loftRanges[club].max) {
+                            alert(`Invalid loft for ${club}. Must be between ${loftRanges[club].min}° and ${loftRanges[club].max}°.`);
+                            return;
+                        }
+                        bag.push({ name: club, loft: degree });
+                    } else {
+                        bag.push({ name: club, loft: null });
+                    }
+                });
+                localStorage.setItem('fairwayFocusBag', JSON.stringify(bag));
+                alert('Bag saved successfully!');
+                toggleBagSection();
                 drawClubDistanceGraph();
             }
-        }
 
-        function updateNavButtons(activePage) {
-            document.querySelectorAll('.nav-bar button').forEach(button => {
-                button.classList.remove('active');
-                if (button.id === (activePage === 'game-container' ? 'nav-game' : 'nav-user')) {
-                    button.classList.add('active');
-                }
-            });
-        }
-
-        function toggleBagSection() {
-            const bagSection = document.getElementById('bag-section');
-            bagSection.classList.toggle('active');
-            if (bagSection.classList.contains('active')) {
-                bagSection.style.display = 'block';
-                bagSection.style.opacity = '1';
-                bagSection.style.visibility = 'visible';
-                bagSection.style.transform = 'translateX(-50%) translateY(0)';
-            } else {
-                bagSection.style.display = 'none';
-                bagSection.style.opacity = '0';
-                bagSection.style.visibility = 'hidden';
-            }
-        }
-
-        function toggleClub(button, club) {
-            button.classList.toggle('selected');
-            const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
-            if (degInput && button.classList.contains('selected')) {
-                const defaultLofts = {
-                    'Hybrid': 20,
-                    'Pitching Wedge': 46,
-                    'Gap Wedge': 50,
-                    'Sand Wedge': 56,
-                    'Lob Wedge': 60
-                };
-                degInput.value = degInput.value || defaultLofts[club] || '';
-            } else if (degInput) {
-                degInput.value = '';
-            }
-        }
-
-        function saveBag() {
-            bag = [];
-            document.querySelectorAll('.club-button.selected').forEach(button => {
-                const club = button.getAttribute('data-club');
-                const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
-                const degree = degInput ? parseInt(degInput.value) : null;
-                const loftRanges = {
-                    'Hybrid': { min: 15, max: 30 },
-                    'Pitching Wedge': { min: 40, max: 50 },
-                    'Gap Wedge': { min: 48, max: 54 },
-                    'Sand Wedge': { min: 52, max: 58 },
-                    'Lob Wedge': { min: 58, max: 64 }
-                };
-                if (degree && degInput && loftRanges[club]) {
-                    if (degree < loftRanges[club].min || degree > loftRanges[club].max) {
-                        alert(`Invalid loft for ${club}. Must be between ${loftRanges[club].min}° and ${loftRanges[club].max}°.`);
-                        return;
-                    }
-                    bag.push({ name: club, loft: degree });
+            function toggleResetConfirm() {
+                const resetConfirm = document.getElementById('reset-confirm');
+                resetConfirm.classList.toggle('active');
+                if (resetConfirm.classList.contains('active')) {
+                    resetConfirm.style.display = 'block';
+                    resetConfirm.style.opacity = '1';
+                    resetConfirm.style.visibility = 'visible';
+                    resetConfirm.style.transform = 'translate(-50%, -50%)';
                 } else {
-                    bag.push({ name: club, loft: null });
+                    resetConfirm.style.display = 'none';
+                    resetConfirm.style.opacity = '0';
+                    resetConfirm.style.visibility = 'hidden';
                 }
-            });
-            localStorage.setItem('fairwayFocusBag', JSON.stringify(bag));
-            alert('Bag saved successfully!');
-            toggleBagSection();
-            drawClubDistanceGraph();
-        }
-
-        function toggleResetConfirm() {
-            const resetConfirm = document.getElementById('reset-confirm');
-            resetConfirm.classList.toggle('active');
-            if (resetConfirm.classList.contains('active')) {
-                resetConfirm.style.display = 'block';
-                resetConfirm.style.opacity = '1';
-                resetConfirm.style.visibility = 'visible';
-                resetConfirm.style.transform = 'translate(-50%, -50%)';
-            } else {
-                resetConfirm.style.display = 'none';
-                resetConfirm.style.opacity = '0';
-                resetConfirm.style.visibility = 'hidden';
-            }
-        }
-
-        function resetAllData() {
-            localStorage.removeItem('fairwayFocusBag');
-            localStorage.removeItem('fairwayFocusHistory');
-            localStorage.removeItem('fairwayFocusGoal');
-            bag = [];
-            history = [];
-            goal = null;
-            document.querySelectorAll('.club-button.selected').forEach(button => {
-                button.classList.remove('selected');
-                const club = button.getAttribute('data-club');
-                const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
-                if (degInput) degInput.value = '';
-            });
-            document.getElementById('average-circle').innerHTML = '';
-            document.getElementById('history-graph').innerHTML = '';
-            document.getElementById('club-distance-graph').innerHTML = '';
-            document.getElementById('progress-dashboard').innerHTML = '<h3>Progress Overview</h3><ul><li>No data available.</li></ul>';
-            document.getElementById('goal-score').value = '';
-            toggleResetConfirm();
-            showPage('user-container');
-            alert('All data has been reset.');
-        }
-
-        function updateProgressDashboard() {
-            const dashboard = document.getElementById('progress-dashboard');
-            if (history.length === 0) {
-                dashboard.innerHTML = '<h3>Progress Overview</h3><ul><li>No data available. Start a practice session!</li></ul>';
-                return;
             }
 
-            const sessions = [];
-            let currentSession = [];
-            let currentSessionTimestamp = null;
-            let lastTimestamp = null;
-            const timeThreshold = 60 * 1000;
-            history.sort((a, b) => a.timestamp - b.timestamp);
-            history.forEach(entry => {
-                if (lastTimestamp && entry.timestamp - lastTimestamp > timeThreshold) {
-                    if (currentSession.length > 0) {
-                        sessions.push({ scores: currentSession, timestamp: currentSessionTimestamp });
-                        currentSession = [];
-                    }
+            function resetAllData() {
+                localStorage.removeItem('fairwayFocusBag');
+                localStorage.removeItem('fairwayFocusHistory');
+                localStorage.removeItem('fairwayFocusGoal');
+                localStorage.removeItem('fairwayFocusSessions');
+                bag = [];
+                history = [];
+                goal = null;
+                sessions = [];
+                currentSession = [];
+                document.querySelectorAll('.club-button.selected').forEach(button => {
+                    button.classList.remove('selected');
+                    const club = button.getAttribute('data-club');
+                    const degInput = document.getElementById(`${club.toLowerCase().replace(/ /g, '-')}-deg`);
+                    if (degInput) degInput.value = '';
+                });
+                document.getElementById('average-circle').innerHTML = '';
+                document.getElementById('history-graph').innerHTML = '';
+                document.getElementById('club-distance-graph').innerHTML = '';
+                document.getElementById('progress-dashboard').innerHTML = '<h3>Progress Overview</h3><ul><li>No data available.</li></ul>';
+                document.getElementById('goal-score').value = '';
+                toggleResetConfirm();
+                showPage('user-container');
+                alert('All data has been reset.');
+            }
+
+            function updateProgressDashboard() {
+                const dashboard = document.getElementById('progress-dashboard');
+                if (history.length === 0) {
+                    dashboard.innerHTML = '<h3>Progress Overview</h3><ul><li>No data available. Start a practice session!</li></ul>';
+                    return;
                 }
-                currentSession.push(entry.score);
-                if (!currentSessionTimestamp) currentSessionTimestamp = entry.timestamp;
-                lastTimestamp = entry.timestamp;
-            });
-            if (currentSession.length > 0) {
-                sessions.push({ scores: currentSession, timestamp: currentSessionTimestamp });
-            }
 
-            const avgScore = history.length > 0 ? Math.round(history.reduce((sum, entry) => sum + entry.score, 0) / history.length) : 0;
-            const bestSession = sessions.length > 0 ? Math.max(...sessions.map(s => s.scores.length > 0 ? Math.round(s.scores.reduce((sum, score) => sum + score, 0) / s.scores.length) : 0)) : 0;
-            const consistency = history.length > 1 ? Math.round(100 - (Math.sqrt(history.reduce((sum, entry) => sum + Math.pow(entry.score - avgScore, 2), 0) / history.length) / 100 * 100)) : 100;
+                const avgScore = history.length > 0 ? Math.round(history.reduce((sum, entry) => sum + entry.score, 0) / history.length) : 0;
+                const bestSession = sessions.length > 0 ? Math.max(...sessions.map(s => s.average || 0)) : 0;
+                const consistency = history.length > 1 ? Math.round(100 - (Math.sqrt(history.reduce((sum, entry) => sum + Math.pow(entry.score - avgScore, 2), 0) / history.length) / 100 * 100)) : 100;
 
-            let goalStatus = 'No goal set.';
-            if (goal) {
-                goalStatus = avgScore >= goal ? `Goal Achieved! (${avgScore}/${goal})` : `Progress: ${avgScore}/${goal}`;
-            }
+                let goalStatus = 'No goal set.';
+                if (goal) {
+                    goalStatus = avgScore >= goal ? `Goal Achieved! (${avgScore}/${goal})` : `Progress: ${avgScore}/${goal}`;
+                }
 
-            dashboard.innerHTML = `
-                <h3>Progress Overview</h3>
-                <ul>
-                    <li>Average Score: ${avgScore}/100</li>
-                    <li>Best Session: ${bestSession}/100</li>
-                    <li>Consistency Rating: ${consistency}%</li>
-                    <li>Goal Status: ${goalStatus}</li>
-                </ul>
-            `;
-        }
-
-        function saveGoal() {
-            const goalScore = parseInt(document.getElementById('goal-score').value);
-            if (isNaN(goalScore) || goalScore < 0 || goalScore > 100) {
-                alert('Please enter a valid target score (0-100).');
-                return;
-            }
-            goal = goalScore;
-            localStorage.setItem('fairwayFocusGoal', JSON.stringify(goal));
-            alert('Goal saved successfully!');
-            updateProgressDashboard();
-        }
-
-        function generateShots() {
-            const min = parseInt(document.getElementById('minRange').value);
-            const max = parseInt(document.getElementById('maxRange').value);
-            const quantity = parseInt(document.getElementById('quantity').value);
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
-            document.getElementById('overallScore').innerHTML = '';
-            document.getElementById('insights').innerHTML = '';
-
-            if (isNaN(min) || isNaN(max) || isNaN(quantity) || min < 0 || max > 300 || min >= max || quantity < 1 || quantity > 50) {
-                resultsDiv.innerHTML = '<p style="color: #D32F2F;">Please enter valid numbers: min ≥ 0, max ≤ 300, min < max, 1 ≤ shots ≤ 50.</p>';
-                return;
-            }
-
-            if (bag.length === 0) {
-                resultsDiv.innerHTML = '<p style="color: #D32F2F;">Please set up your bag in the Profile tab first.</p>';
-                return;
-            }
-
-            for (let i = 0; i < quantity; i++) {
-                const distance = Math.floor(Math.random() * (max - min + 1)) + min;
-                const shotDiv = document.createElement('div');
-                shotDiv.className = 'shot';
-                const clubOptions = bag.map(club => {
-                    const clubName = club.name;
-                    const clubLoft = club.loft;
-                    const displayName = clubLoft && ['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName)
-                        ? `${clubLoft}°`
-                        : clubLoft && ['Hybrid', 'Pitching Wedge'].includes(clubName)
-                        ? `${clubName} (${clubLoft}°)`
-                        : clubName;
-                    const suggestion = suggestClub(distance, club);
-                    return `<option value="${clubName}|${clubLoft || ''}" ${suggestion ? 'selected' : ''}>${displayName}${suggestion ? ' (Recommended)' : ''}</option>`;
-                }).join('');
-
-                shotDiv.innerHTML = `
-                    <p class="target-distance">Shot ${i + 1}: Hit to <strong>${distance}</strong> yards</p>
-                    <div class="shot-inputs">
-                        <div>
-                            <label for="club${i}" data-tooltip="Select club used">Club Used:</label>
-                            <select id="club${i}" aria-label="Select club for shot ${i + 1}">${clubOptions}</select>
-                        </div>
-                        <div>
-                            <label for="carryDistance${i}" data-tooltip="Enter actual distance hit">Carry Distance (yards):</label>
-                            <input type="number" id="carryDistance${i}" placeholder="Enter carry distance" min="0" max="400" aria-label="Carry distance for shot ${i + 1}">
-                        </div>
-                        <div class="dispersion-group">
-                            <label for="lateralDeviation${i}" data-tooltip="Enter feet off target line">Dispersion (ft):</label>
-                            <input type="number" id="lateralDeviation${i}" placeholder="Enter feet off line" min="0" max="200" aria-label="Dispersion for shot ${i + 1}">
-                            <select id="lateralDirection${i}" aria-label="Dispersion direction for shot ${i + 1}">
-                                <option value="1">Right</option>
-                                <option value="-1">Left</option>
-                            </select>
-                        </div>
-                        <button class="score-shot" data-shot-index="${i}" data-distance="${distance}" aria-label="Score shot ${i + 1}" data-tooltip="Calculate shot score">Score Shot</button>
-                        <p id="score${i}" aria-live="polite"></p>
-                    </div>
+                dashboard.innerHTML = `
+                    <h3>Progress Overview</h3>
+                    <ul>
+                        <li>Average Score: ${avgScore}/100</li>
+                        <li>Best Session: ${bestSession}/100</li>
+                        <li>Consistency Rating: ${consistency}%</li>
+                        <li>Goal Status: ${goalStatus}</li>
+                    </ul>
                 `;
-                resultsDiv.appendChild(shotDiv);
-
-                shotDiv.querySelector(`.score-shot[data-shot-index="${i}"]`).addEventListener('click', () => calculateScore(i, distance));
             }
 
-            const averageButton = document.createElement('button');
-            averageButton.className = 'average-button';
-            averageButton.innerHTML = 'Calculate Overall Average';
-            averageButton.setAttribute('aria-label', 'Calculate overall average score');
-            averageButton.setAttribute('data-tooltip', 'Calculate session average');
-            averageButton.addEventListener('click', calculateOverallAverage);
-            resultsDiv.appendChild(averageButton);
-        }
-
-        function suggestClub(targetDistance, club) {
-            const clubName = `${club.name}${club.loft && ['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(club.name) ? ` (${club.loft}°)` : club.loft ? ` (${club.loft}°)` : ''}`;
-            const clubData = history.filter(entry => entry.club === clubName);
-            if (clubData.length < 3) return false;
-            const avgDistance = clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length;
-            const variance = Math.sqrt(clubData.reduce((sum, entry) => sum + Math.pow(entry.carryDistance - avgDistance, 2), 0) / clubData.length);
-            return Math.abs(avgDistance - targetDistance) < 10 && variance < 15;
-        }
-
-        function calculateScore(shotIndex, targetDistance) {
-            const carryDistance = parseFloat(document.getElementById(`carryDistance${shotIndex}`).value);
-            const lateralDeviation = parseFloat(document.getElementById(`lateralDeviation${shotIndex}`).value);
-            const lateralDirection = parseInt(document.getElementById(`lateralDirection${shotIndex}`).value);
-            const club = document.getElementById(`club${shotIndex}`).value.split('|')[0];
-            const scoreElement = document.getElementById(`score${shotIndex}`);
-
-            if (isNaN(carryDistance) || isNaN(lateralDeviation) || carryDistance < 0 || lateralDeviation < 0) {
-                scoreElement.innerHTML = '<span style="color: #D32F2F;">Please enter valid numbers for carry distance and dispersion (≥ 0).</span>';
-                return;
+            function saveGoal() {
+                const goalScore = parseInt(document.getElementById('goal-score').value);
+                if (isNaN(goalScore) || goalScore < 0 || goalScore > 100) {
+                    alert('Please enter a valid target score (0-100).');
+                    return;
+                }
+                goal = goalScore;
+                localStorage.setItem('fairwayFocusGoal', JSON.stringify(goal));
+                alert('Goal saved successfully!');
+                updateProgressDashboard();
             }
 
-            const distanceError = Math.abs(targetDistance - carryDistance);
-            const maxDistanceError = targetDistance * 0.2;
-            const distanceScore = Math.max(0, 50 * (1 - distanceError / maxDistanceError));
-            const maxLateralDeviation = 90;
-            const effectiveLateralDeviation = lateralDeviation * lateralDirection;
-            const lateralScore = Math.max(0, 50 * (1 - Math.abs(effectiveLateralDeviation) / maxLateralDeviation));
-            const totalScore = Math.round(distanceScore + lateralScore);
+            function generateShots() {
+                const min = parseInt(document.getElementById('minRange').value);
+                const max = parseInt(document.getElementById('maxRange').value);
+                const quantity = parseInt(document.getElementById('quantity').value);
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = '';
+                document.getElementById('overallScore').innerHTML = '';
+                document.getElementById('insights').innerHTML = '';
 
-            scoreElement.innerHTML = `Score: ${totalScore}/100`;
-            const clubName = document.getElementById(`club${shotIndex}`).value.split('|');
-            const fullClubName = clubName[1] && ['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName[0]) ? `${clubName[1]}°` : 
-                clubName[1] && ['Hybrid', 'Pitching Wedge'].includes(clubName[0]) ? `${clubName[0]} (${clubName[1]}°)` : clubName[0];
-            const note = document.getElementById('session-note').value;
-            history.push({ score: totalScore, carryDistance, club: fullClubName, lateralDeviation: effectiveLateralDeviation, timestamp: new Date().getTime(), targetDistance, note });
-            localStorage.setItem('fairwayFocusHistory', JSON.stringify(history));
-            drawHistoryGraph();
-            drawClubDistanceGraph();
-            updateProgressDashboard();
-        }
+                // Save previous session if it exists
+                if (currentSession.length > 0) {
+                    const sessionAverage = Math.round(currentSession.reduce((sum, shot) => sum + shot.score, 0) / currentSession.length);
+                    sessions.push({
+                        scores: currentSession.map(shot => shot.score),
+                        timestamp: currentSession[0].timestamp,
+                        average: sessionAverage
+                    });
+                    localStorage.setItem('fairwayFocusSessions', JSON.stringify(sessions));
+                    console.log('Saved session:', { scores: currentSession.map(shot => shot.score), average: sessionAverage, timestamp: currentSession[0].timestamp });
+                }
 
-        function calculateOverallAverage() {
-            const quantity = parseInt(document.getElementById('quantity').value);
-            let totalScore = 0;
-            let scoredShots = 0;
-            const scores = [];
+                currentSession = [];
+                console.log('New session started');
 
-            for (let i = 0; i < quantity; i++) {
-                const scoreElement = document.getElementById(`score${i}`);
-                const scoreText = scoreElement.innerHTML;
-                if (scoreText.startsWith('Score: ')) {
-                    const score = parseInt(scoreText.replace('Score: ', '').replace('/100', ''));
-                    if (!isNaN(score)) {
-                        totalScore += score;
-                        scoredShots++;
-                        scores.push({
-                            index: i,
-                            score: score,
-                            carryDistance: parseFloat(document.getElementById(`carryDistance${i}`).value),
-                            lateralDeviation: parseFloat(document.getElementById(`lateralDeviation${i}`).value) * parseInt(document.getElementById(`lateralDirection${i}`).value),
-                            club: document.getElementById(`club${i}`).value.split('|')[0],
-                            targetDistance: parseFloat(document.getElementById(`carryDistance${i}`).parentElement.querySelector('.target-distance strong').textContent)
-                        });
-                    }
+                if (isNaN(min) || isNaN(max) || isNaN(quantity) || min < 0 || max > 300 || min >= max || quantity < 1 || quantity > 50) {
+                    resultsDiv.innerHTML = '<p style="color: #D32F2F;">Please enter valid numbers: min ≥ 0, max ≤ 300, min < max, 1 ≤ shots ≤ 50.</p>';
+                    return;
+                }
+
+                if (bag.length === 0) {
+                    resultsDiv.innerHTML = '<p style="color: #D32F2F;">Please set up your bag in the Profile tab first.</p>';
+                    return;
+                }
+
+                for (let i = 0; i < quantity; i++) {
+                    const distance = Math.floor(Math.random() * (max - min + 1)) + min;
+                    const shotDiv = document.createElement('div');
+                    shotDiv.className = 'shot';
+                    const clubOptions = bag.map(club => {
+                        const clubName = club.name;
+                        const clubLoft = club.loft;
+                        const displayName = ['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName) && clubLoft
+                            ? `${clubLoft}°`
+                            : clubName;
+                        const suggestion = suggestClub(distance, club);
+                        return `<option value="${clubName}|${clubLoft || ''}" ${suggestion ? 'selected' : ''}>${displayName}${suggestion ? ' (Recommended)' : ''}</option>`;
+                    }).join('');
+
+                    shotDiv.innerHTML = `
+                        <p class="target-distance">Shot ${i + 1}: Hit to <strong>${distance}</strong> yards</p>
+                        <div class="shot-inputs">
+                            <div class="shot-input-group">
+                                <select id="club${i}" aria-label="Select club for shot ${i + 1}">${clubOptions}</select>
+                                <label for="club${i}" data-tooltip="Select club used">Club Used:</label>
+                            </div>
+                            <div class="shot-input-group">
+                                <input type="number" id="carryDistance${i}" placeholder="Enter carry distance" min="0" max="400" aria-label="Carry distance for shot ${i + 1}">
+                                <label for="carryDistance${i}" data-tooltip="Enter actual distance hit">Carry Distance (yards):</label>
+                            </div>
+                            <div class="shot-input-group dispersion-group">
+                                <input type="number" id="lateralDeviation${i}" placeholder="Enter feet off line" min="0" max="200" aria-label="Dispersion for shot ${i + 1}">
+                                <select id="lateralDirection${i}" aria-label="Dispersion direction for shot ${i + 1}">
+                                    <option value="1">Right</option>
+                                    <option value="-1">Left</option>
+                                </select>
+                                <label for="lateralDeviation${i}" data-tooltip="Enter feet off target line">Dispersion (ft):</label>
+                            </div>
+                            <button class="score-shot" data-shot-index="${i}" data-distance="${distance}" aria-label="Score shot ${i + 1}" data-tooltip="Calculate shot score">Score Shot</button>
+                            <p id="score${i}" aria-live="polite"></p>
+                        </div>
+                    `;
+                    resultsDiv.appendChild(shotDiv);
+
+                    shotDiv.querySelector(`.score-shot[data-shot-index="${i}"]`).addEventListener('click', () => calculateScore(i, distance));
                 }
             }
 
-            const overallScoreElement = document.getElementById('overallScore');
-            if (scoredShots === 0) {
-                overallScoreElement.innerHTML = '<span style="color: #D32F2F;">No scores entered yet. Score at least one shot first.</span>';
-                document.getElementById('insights').innerHTML = '';
-            } else {
-                const averageScore = Math.round(totalScore / scoredShots);
-                overallScoreElement.innerHTML = `Overall Average Score: ${averageScore}/100`;
-                generateInsights(scores, averageScore);
+            function suggestClub(targetDistance, club) {
+                const clubName = club.name;
+                const clubData = history.filter(entry => entry.club === clubName);
+                if (clubData.length < 3) return false;
+                const avgDistance = clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length;
+                const variance = Math.sqrt(clubData.reduce((sum, entry) => sum + Math.pow(entry.carryDistance - avgDistance, 2), 0) / clubData.length);
+                return Math.abs(avgDistance - targetDistance) < 10 && variance < 15;
             }
-        }
 
-        function generateInsights(scores, overallAverage) {
-            const insightsDiv = document.getElementById('insights');
-            let insights = '<h3>Session Insights</h3><ul>';
-            if (scores.length === 0) {
-                insights += '<li>No shots scored yet.</li>';
-            } else {
-                const avgLateral = scores.reduce((sum, s) => sum + Math.abs(s.lateralDeviation), 0) / scores.length;
-                insights += `<li>Session average score: ${overallAverage}/100, with ${avgLateral.toFixed(1)} ft average dispersion.</li>`;
-                const rightMisses = scores.filter(s => s.lateralDeviation > 0).length;
-                let keyIssue = '';
-                if (rightMisses / scores.length > 0.6) {
-                    keyIssue = 'You frequently miss right. Try adjusting your aim slightly left.';
-                } else if (rightMisses / scores.length < 0.4) {
-                    keyIssue = 'You frequently miss left. Practice aligning slightly right of the target.';
+            function calculateScore(shotIndex, targetDistance) {
+                const carryDistance = parseFloat(document.getElementById(`carryDistance${shotIndex}`).value);
+                const lateralDeviation = parseFloat(document.getElementById(`lateralDeviation${shotIndex}`).value);
+                const lateralDirection = parseInt(document.getElementById(`lateralDirection${shotIndex}`).value);
+                const club = document.getElementById(`club${shotIndex}`).value.split('|')[0];
+                const scoreElement = document.getElementById(`score${shotIndex}`);
+
+                if (isNaN(carryDistance) || isNaN(lateralDeviation) || carryDistance < 0 || lateralDeviation < 0) {
+                    scoreElement.innerHTML = '<span style="color: #D32F2F;">Please enter valid numbers for carry distance and dispersion (≥ 0).</span>';
+                    return;
+                }
+
+                const distanceError = Math.abs(targetDistance - carryDistance);
+                const maxDistanceError = targetDistance * 0.2;
+                const distanceScore = Math.max(0, 50 * (1 - distanceError / maxDistanceError));
+                const maxLateralDeviation = 90;
+                const effectiveLateralDeviation = lateralDeviation * lateralDirection;
+                const lateralScore = Math.max(0, 50 * (1 - Math.abs(effectiveLateralDeviation) / maxLateralDeviation));
+                const totalScore = Math.round(distanceScore + lateralScore);
+
+                scoreElement.innerHTML = `Score: ${totalScore}/100`;
+                const clubName = document.getElementById(`club${shotIndex}`).value.split('|');
+                const fullClubName = ['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName[0]) && clubName[1]
+                    ? `${clubName[1]}°`
+                    : clubName[0];
+                const note = document.getElementById('session-note').value;
+                const shotData = {
+                    score: totalScore,
+                    carryDistance,
+                    club: fullClubName,
+                    lateralDeviation: effectiveLateralDeviation,
+                    timestamp: new Date().getTime(),
+                    targetDistance,
+                    note
+                };
+                history.push(shotData);
+                currentSession.push(shotData);
+                localStorage.setItem('fairwayFocusHistory', JSON.stringify(history));
+                console.log('Shot added to currentSession:', shotData);
+                drawHistoryGraph();
+                drawClubDistanceGraph();
+                updateProgressDashboard();
+            }
+
+            function calculateOverallAverage() {
+                const overallScoreElement = document.getElementById('overallScore');
+                const insightsDiv = document.getElementById('insights');
+                if (currentSession.length === 0) {
+                    overallScoreElement.innerHTML = '<span style="color: #D32F2F;">No scores entered yet. Score at least one shot first.</span>';
+                    insightsDiv.innerHTML = '';
+                    return;
+                }
+
+                const totalScore = currentSession.reduce((sum, shot) => sum + shot.score, 0);
+                const averageScore = Math.round(totalScore / currentSession.length);
+                overallScoreElement.innerHTML = `Overall Average Score: ${averageScore}/100`;
+
+                // Save session average
+                sessions.push({
+                    scores: currentSession.map(shot => shot.score),
+                    timestamp: currentSession[0].timestamp,
+                    average: averageScore
+                });
+                localStorage.setItem('fairwayFocusSessions', JSON.stringify(sessions));
+                console.log('Saved session on Calculate Overall Average:', { scores: currentSession.map(shot => shot.score), average: averageScore, timestamp: currentSession[0].timestamp });
+
+                // Generate insights
+                const scores = currentSession.map((shot, i) => ({
+                    index: i,
+                    score: shot.score,
+                    carryDistance: shot.carryDistance,
+                    lateralDeviation: shot.lateralDeviation,
+                    club: shot.club,
+                    targetDistance: shot.targetDistance
+                }));
+                generateInsights(scores, averageScore);
+
+                // Update Profile page
+                updateProgressDashboard();
+                drawHistoryGraph();
+            }
+
+            function generateInsights(scores, overallAverage) {
+                const insightsDiv = document.getElementById('insights');
+                let insights = '<h3>Session Insights</h3><ul>';
+                if (scores.length === 0) {
+                    insights += '<li>No shots scored yet.</li>';
                 } else {
-                    const clubDistances = {};
-                    scores.forEach(shot => {
-                        if (!clubDistances[shot.club]) clubDistances[shot.club] = [];
-                        clubDistances[shot.club].push(Math.abs(shot.carryDistance - shot.targetDistance));
-                    });
-                    let maxVarianceClub = '';
-                    let maxVariance = 0;
-                    for (const club in clubDistances) {
-                        const errors = clubDistances[club];
-                        if (errors.length > 1) {
-                            const avgError = errors.reduce((sum, e) => sum + e, 0) / errors.length;
-                            const variance = errors.reduce((sum, e) => sum + Math.pow(e - avgError, 2), 0) / errors.length;
-                            if (variance > maxVariance) {
-                                maxVariance = variance;
-                                maxVarianceClub = club;
+                    const avgLateral = scores.reduce((sum, s) => sum + Math.abs(s.lateralDeviation), 0) / scores.length;
+                    insights += `<li>Session average score: ${overallAverage}/100, with ${avgLateral.toFixed(1)} ft average dispersion.</li>`;
+                    const rightMisses = scores.filter(s => s.lateralDeviation > 0).length;
+                    let keyIssue = '';
+                    if (rightMisses / scores.length > 0.6) {
+                        keyIssue = 'You frequently miss right. Try adjusting your aim slightly left.';
+                    } else if (rightMisses / scores.length < 0.4) {
+                        keyIssue = 'You frequently miss left. Practice aligning slightly right of the target.';
+                    } else {
+                        const clubDistances = {};
+                        scores.forEach(shot => {
+                            if (!clubDistances[shot.club]) clubDistances[shot.club] = [];
+                            clubDistances[shot.club].push(Math.abs(shot.carryDistance - shot.targetDistance));
+                        });
+                        let maxVarianceClub = '';
+                        let maxVariance = 0;
+                        for (const club in clubDistances) {
+                            const errors = clubDistances[club];
+                            if (errors.length > 1) {
+                                const avgError = errors.reduce((sum, e) => sum + e, 0) / errors.length;
+                                const variance = errors.reduce((sum, e) => sum + Math.pow(e - avgError, 2), 0) / errors.length;
+                                if (variance > maxVariance) {
+                                    maxVariance = variance;
+                                    maxVarianceClub = club;
+                                }
                             }
                         }
+                        keyIssue = maxVariance > 100 && maxVarianceClub ? `Inconsistent distances with ${maxVarianceClub}. Focus on this club.` : overallAverage > 60 ? 'Great session! Work on precision with short irons.' : 'Focus on hitting closer to target distances.';
                     }
-                    keyIssue = maxVariance > 100 && maxVarianceClub ? `Inconsistent distances with ${maxVarianceClub}. Focus on this club.` : overallAverage > 60 ? 'Great session! Work on precision with short irons.' : 'Focus on hitting closer to target distances.';
-                }
-                insights += `<li><strong>Key Action:</strong> ${keyIssue}</li>`;
-                if (goal) {
-                    insights += `<li>Goal Progress: ${overallAverage}/${goal} (${overallAverage >= goal ? 'Achieved!' : 'Keep practicing!'})</li>`;
-                }
-            }
-            insights += '</ul>';
-            insightsDiv.innerHTML = insights;
-        }
-
-        function drawHistoryGraph() {
-            const container = document.getElementById('history-graph');
-            container.innerHTML = '<canvas id="history-canvas"></canvas>';
-            const canvas = document.getElementById('history-canvas');
-            const ctx = canvas.getContext('2d');
-
-            const sessions = [];
-            let currentSession = [];
-            let currentSessionTimestamp = null;
-            let lastTimestamp = null;
-            const timeThreshold = 60 * 1000;
-            history.sort((a, b) => a.timestamp - b.timestamp);
-            history.forEach(entry => {
-                if (lastTimestamp && entry.timestamp - lastTimestamp > timeThreshold) {
-                    if (currentSession.length > 0) {
-                        sessions.push({ scores: currentSession, timestamp: currentSessionTimestamp });
-                        currentSession = [];
+                    insights += `<li><strong>Key Action:</strong> ${keyIssue}</li>`;
+                    if (goal) {
+                        insights += `<li>Goal Progress: ${overallAverage}/${goal} (${overallAverage >= goal ? 'Achieved!' : 'Keep practicing!'})</li>`;
                     }
                 }
-                currentSession.push(entry.score);
-                if (!currentSessionTimestamp) currentSessionTimestamp = entry.timestamp;
-                lastTimestamp = entry.timestamp;
-            });
-            if (currentSession.length > 0) {
-                sessions.push({ scores: currentSession, timestamp: currentSessionTimestamp });
+                insights += '</ul>';
+                insightsDiv.innerHTML = insights;
             }
 
-            const recentSessions = sessions.slice(-5);
-            const scores = recentSessions.map(session => session.scores.length > 0 ? Math.round(session.scores.reduce((sum, score) => sum + score, 0) / session.scores.length) : 0);
-            const labels = recentSessions.map(session => {
-                const date = new Date(session.timestamp);
-                return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear().toString().slice(-2)}`;
-            });
+            function drawHistoryGraph() {
+                const container = document.getElementById('history-graph');
+                container.innerHTML = '<canvas id="history-canvas"></canvas>';
+                const canvas = document.getElementById('history-canvas');
+                const ctx = canvas.getContext('2d');
 
-            const overallAverage = scores.length > 0 ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0;
-            const trend = scores.length >= 2 ? (scores[scores.length - 1] - scores[0]) / (scores.length - 1) > 0 ? 'up' : 'down' : 'none';
+                // Include current session if it has an average
+                const allSessions = [...sessions];
+                if (currentSession.length > 0) {
+                    const sessionAverage = Math.round(currentSession.reduce((sum, shot) => sum + shot.score, 0) / currentSession.length);
+                    allSessions.push({
+                        scores: currentSession.map(shot => shot.score),
+                        timestamp: currentSession[0].timestamp,
+                        average: sessionAverage
+                    });
+                }
 
-            const averageCircle = document.getElementById('average-circle');
-            const circleColor = trend === 'up' ? '#00FF00' : trend === 'down' ? '#FF0000' : '#FFD700';
-            averageCircle.innerHTML = `
-                <svg width="180" height="60">
-                    <text x="0" y="30" font-family="Open Sans" font-size="12" font-weight="bold" fill="#000000" text-anchor="start" dominant-baseline="central">5 Session Avg.</text>
-                    <circle cx="120" cy="30" r="28" fill="rgba(255, 255, 255, 0.9)" stroke="${circleColor}" stroke-width="4"/>
-                    <text x="120" y="30" font-family="Open Sans" font-size="24" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">${overallAverage}</text>
-                </svg>
-            `;
+                console.log('All sessions for graph:', allSessions);
 
-            new Chart(canvas, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Average Score',
-                        data: scores,
-                        borderColor: '#2E7D32',
-                        backgroundColor: 'rgba(46, 125, 50, 0.3)',
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 5,
-                        pointHoverRadius: 8,
-                        pointBackgroundColor: '#2E7D32',
-                        pointBorderColor: '#FFFFFF',
-                        pointBorderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { min: 0, max: 100, title: { display: true, text: 'Score' } },
-                        x: { title: { display: true, text: 'Session' } }
+                const recentSessions = allSessions.slice(-5);
+                const scores = recentSessions.map(session => session.average || 0);
+                const labels = recentSessions.map(session => {
+                    const date = new Date(session.timestamp);
+                    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear().toString().slice(-2)}`;
+                });
+
+                const overallAverage = scores.length > 0 ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0;
+                const trend = scores.length >= 2 ? (scores[scores.length - 1] - scores[0]) / (scores.length - 1) > 0 ? 'up' : 'down' : 'none';
+
+                const averageCircle = document.getElementById('average-circle');
+                const circleColor = trend === 'up' ? '#00FF00' : trend === 'down' ? '#FF0000' : '#FFD700';
+                averageCircle.innerHTML = `
+                    <svg width="180" height="60">
+                        <text x="0" y="30" font-family="Open Sans" font-size="12" font-weight="bold" fill="#000000" text-anchor="start" dominant-baseline="central">5 Session Avg.</text>
+                        <circle cx="120" cy="30" r="28" fill="rgba(255, 255, 255, 0.9)" stroke="${circleColor}" stroke-width="4"/>
+                        <text x="120" y="30" font-family="Open Sans" font-size="24" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">${overallAverage}</text>
+                    </svg>
+                `;
+
+                new Chart(canvas, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Average Score',
+                            data: scores,
+                            borderColor: '#2E7D32',
+                            backgroundColor: 'rgba(46, 125, 50, 0.3)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointHoverRadius: 8,
+                            pointBackgroundColor: '#2E7D32',
+                            pointBorderColor: '#FFFFFF',
+                            pointBorderWidth: 2
+                        }]
                     },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: true }
-                    }
-                }
-            });
-        }
-
-        function drawClubDistanceGraph() {
-            const container = document.getElementById('club-distance-graph');
-            container.innerHTML = '<canvas id="club-distance-canvas"></canvas>';
-            const canvas = document.getElementById('club-distance-canvas');
-            const ctx = canvas.getContext('2d');
-
-            if (bag.length === 0) return;
-
-            const clubAverages = {};
-            bag.forEach(club => {
-                const clubName = `${club.name}${club.loft && ['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(club.name) ? ` (${club.loft}°)` : club.loft ? ` (${club.loft}°)` : ''}`;
-                const clubData = history.filter(entry => entry.club === clubName);
-                clubAverages[clubName] = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length) : 0;
-            });
-
-            const clubAbbreviations = {
-                'Driver': 'Dr', '3 Wood': '3w', '5 Wood': '5w', '7 Wood': '7w', '9 Wood': '9w',
-                'Hybrid': 'Hy', '2 Iron': '2i', '3 Iron': '3i', '4 Iron': '4i', '5 Iron': '5i',
-                '6 Iron': '6i', '7 Iron': '7i', '8 Iron': '8i', '9 Iron': '9i',
-                'Pitching Wedge': 'PW', 'Gap Wedge': 'GW', 'Sand Wedge': 'SW', 'Lob Wedge': 'LW'
-            };
-
-            const labels = bag.map(club => {
-                const clubName = club.name;
-                const loft = club.loft;
-                if (['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName) && loft) {
-                    return `${loft}°`;
-                } else if (loft) {
-                    return `${clubAbbreviations[clubName] || clubName} ${loft}°`;
-                }
-                return clubAbbreviations[clubName] || clubName;
-            });
-
-            new Chart(canvas, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Average Distance (yards)',
-                        data: bag.map(club => clubAverages[`${club.name}${club.loft && ['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(club.name) ? ` (${club.loft}°)` : club.loft ? ` (${club.loft}°)` : ''}`]),
-                        backgroundColor: 'rgba(46, 125, 50, 0.8)',
-                        borderRadius: 10
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            title: { display: true, text: 'Distance (yards)' },
-                            suggestedMax: Math.max(...Object.values(clubAverages), 100) + 50
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { min: 0, max: 100, title: { display: true, text: 'Score' } },
+                            x: { title: { display: true, text: 'Session' } }
                         },
-                        y: { title: { display: false }, ticks: { font: { size: 10, weight: 'bold' } } }
-                    },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: true }
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: true }
+                        }
                     }
-                }
-            });
-        }
-
-        function exportData() {
-            if (history.length === 0) {
-                alert('No data to export.');
-                return;
+                });
             }
-            const csv = ['Timestamp,Club,Target Distance,Carry Distance,Dispersion,Score,Note'];
-            history.forEach(entry => {
-                const date = new Date(entry.timestamp).toISOString();
-                csv.push(`${date},"${entry.club}",${entry.targetDistance},${entry.carryDistance},${entry.lateralDeviation},${entry.score},"${entry.note || ''}"`);
-            });
-            const csvContent = csv.join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'fairway_focus_history.csv';
-            a.click();
-            window.URL.revokeObjectURL(url);
-        }
 
-        function resetAll() {
-            document.getElementById('minRange').value = '50';
-            document.getElementById('maxRange').value = '200';
-            document.getElementById('quantity').value = '5';
-            document.getElementById('results').innerHTML = '';
-            document.getElementById('overallScore').innerHTML = '';
-            document.getElementById('insights').innerHTML = '';
-            document.getElementById('session-note').value = '';
-        }
+            function drawClubDistanceGraph() {
+                const container = document.getElementById('club-distance-graph');
+                container.innerHTML = '<canvas id="club-distance-canvas"></canvas>';
+                const canvas = document.getElementById('club-distance-canvas');
+                const ctx = canvas.getContext('2d');
 
-        document.addEventListener('DOMContentLoaded', () => {
+                if (bag.length === 0) {
+                    container.innerHTML = '<p style="color: #D32F2F; text-align: center;">No clubs in bag. Please set up your bag.</p>';
+                    return;
+                }
+
+                const clubAverages = {};
+                bag.forEach(club => {
+                    const clubName = club.name;
+                    const clubData = history.filter(entry => entry.club === clubName);
+                    clubAverages[clubName] = clubData.length > 0 ? Math.round(clubData.reduce((sum, entry) => sum + entry.carryDistance, 0) / clubData.length) : 0;
+                });
+
+                const clubAbbreviations = {
+                    'Driver': 'Dr',
+                    '3 Wood': '3w',
+                    '5 Wood': '5w',
+                    '7 Wood': '7w',
+                    '9 Wood': '9w',
+                    '2 Hybrid': '2H',
+                    '3 Hybrid': '3H',
+                    '4 Hybrid': '4H',
+                    '5 Hybrid': '5H',
+                    '2 Iron': '2i',
+                    '3 Iron': '3i',
+                    '4 Iron': '4i',
+                    '5 Iron': '5i',
+                    '6 Iron': '6i',
+                    '7 Iron': '7i',
+                    '8 Iron': '8i',
+                    '9 Iron': '9i',
+                    'Pitching Wedge': 'PW',
+                    'Gap Wedge': 'GW',
+                    'Sand Wedge': 'SW',
+                    'Lob Wedge': 'LW'
+                };
+
+                const labels = bag.map(club => {
+                    const clubName = club.name;
+                    const loft = club.loft;
+                    if (['Gap Wedge', 'Sand Wedge', 'Lob Wedge'].includes(clubName) && loft) {
+                        return `${loft}°`;
+                    }
+                    return clubAbbreviations[clubName] || clubName;
+                });
+
+                const distances = bag.map(club => clubAverages[club.name]);
+
+                // Define chart options with fallback for datalabels
+                const chartOptions = {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Average Distance (yards)',
+                            data: distances,
+                            backgroundColor: 'rgba(46, 125, 50, 0.8)',
+                            borderRadius: 10
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Distance (yards)' },
+                                suggestedMax: Math.max(...Object.values(clubAverages), 100) + 50
+                            },
+                            y: { title: { display: false }, ticks: { font: { size: 10, weight: 'bold' } } }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: true }
+                        }
+                    }
+                };
+
+                // Only include datalabels if ChartDataLabels is available
+                if (typeof ChartDataLabels !== 'undefined') {
+                    chartOptions.options.plugins.datalabels = {
+                        anchor: 'end',
+                        align: 'end',
+                        formatter: function(value) { return value > 0 ? value : ''; },
+                        font: {
+                            family: 'Open Sans',
+                            size: 10,
+                            weight: 'bold'
+                        },
+                        color: '#1A3C34',
+                        offset: 4
+                    };
+                }
+
+                try {
+                    new Chart(canvas, chartOptions);
+                } catch (error) {
+                    console.error('Error creating club distance chart:', error);
+                    container.innerHTML = '<p style="color: #D32F2F; text-align: center;">Error rendering chart. Please try again.</p>';
+                }
+            }
+
+            function exportData() {
+                if (history.length === 0) {
+                    alert('No data to export.');
+                    return;
+                }
+                const csv = ['Timestamp,Club,Target Distance,Carry Distance,Dispersion,Score,Note'];
+                history.forEach(entry => {
+                    const date = new Date(entry.timestamp).toISOString();
+                    csv.push(`${date},"${entry.club}",${entry.targetDistance},${entry.carryDistance},${entry.lateralDeviation},${entry.score},"${entry.note || ''}"`);
+                });
+                const csvContent = csv.join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'fairway_focus_history.csv';
+                a.click();
+                window.URL.revokeObjectURL(url);
+            }
+
+            function resetAll() {
+                document.getElementById('minRange').value = '50';
+                document.getElementById('maxRange').value = '200';
+                document.getElementById('quantity').value = '5';
+                document.getElementById('results').innerHTML = '';
+                document.getElementById('overallScore').innerHTML = '';
+                document.getElementById('insights').innerHTML = '';
+                document.getElementById('session-note').value = '';
+
+                // Save current session before resetting
+                if (currentSession.length > 0) {
+                    const sessionAverage = Math.round(currentSession.reduce((sum, shot) => sum + shot.score, 0) / currentSession.length);
+                    sessions.push({
+                        scores: currentSession.map(shot => shot.score),
+                        timestamp: currentSession[0].timestamp,
+                        average: sessionAverage
+                    });
+                    localStorage.setItem('fairwayFocusSessions', JSON.stringify(sessions));
+                    console.log('Saved session on Reset All:', { scores: currentSession.map(shot => shot.score), average: sessionAverage, timestamp: currentSession[0].timestamp });
+                }
+
+                currentSession = [];
+                console.log('Current session reset');
+            }
+
             // Load saved data
             bag.forEach(club => {
                 const button = document.querySelector(`.club-button[data-club="${club.name}"]`);
@@ -1319,6 +1450,7 @@
             document.getElementById('confirm-no').addEventListener('click', toggleResetConfirm);
             document.getElementById('save-goal').addEventListener('click', saveGoal);
             document.getElementById('export-data').addEventListener('click', exportData);
+            document.getElementById('average-button').addEventListener('click', calculateOverallAverage);
 
             document.querySelectorAll('.club-button').forEach(button => {
                 const club = button.getAttribute('data-club');
